@@ -179,6 +179,16 @@ export const chestGuides: GuideMap = {
     ['Letting the shoulders roll forward at the end of each rep.', 'Letting the weight snap back instead of controlling the stretch.'],
   ),
   'seed-cable-crossover': cableFly,
+  'seed-cable-fly-cable': variant(cableFly, {
+    steps: [
+      'Set both pulleys at about shoulder height and hold a handle in each hand.',
+      'Step forward into a split stance, chest up, with a soft bend in your elbows and your arms out to the sides.',
+      'Sweep your hands forward and together in front of your chest, level with your nipples.',
+      'Let your arms open back along the same arc until you feel a stretch across your chest.',
+    ],
+    cues: ['Keep your hands at chest height the whole way, as if sliding them along a tabletop.'],
+    mistakes: ['Letting the shoulders roll forward as the hands meet.'],
+  }),
   'seed-low-cable-fly-cable': variant(cableFly, {
     steps: [
       'Set both pulleys at the lowest position and hold a handle in each hand.',
@@ -218,6 +228,15 @@ export const chestGuides: GuideMap = {
     cues: ['This angle shifts more work to the upper chest and shoulders.'],
   }),
   'seed-chest-dip': variant(dip, { cues: ['For extra load, hang a plate or dumbbell from a dip belt.'] }),
+  'seed-chest-dip-weighted': variant(dip, {
+    setup: 'Put on a dip belt with a plate or dumbbell hanging from the chain, step up between the bars and lift yourself to straight arms. Let the weight settle so it hangs still before the first rep.',
+    cues: [
+      'Squeeze your thighs together and cross your ankles so the weight hangs still instead of swinging.',
+      'Keep the same depth you use without weight; if you have to cut it short, the load is too heavy.',
+      'Add weight in small steps (2.5–5 kg). Dips load the shoulders hard at the bottom.',
+    ],
+    mistakes: ['Letting the weight swing, which pulls you out of position.', 'Bouncing out of the bottom instead of pausing and pressing.'],
+  }),
   'seed-chest-dip-assisted': variant(dip, {
     setup: 'On an assisted dip machine, kneel or stand on the pad and grip the handles with your arms locked out. More counterweight means more help.',
     cues: ['Lower the assistance over time as you get stronger.'],

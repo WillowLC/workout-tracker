@@ -145,6 +145,16 @@
   ],
   "source": "Cable_Crossover"
  },
+ "seed-cable-fly-cable": {
+  "images": 2,
+  "primaryMuscles": [
+   "chest"
+  ],
+  "secondaryMuscles": [
+   "shoulders"
+  ],
+  "source": "Cable_Crossover"
+ },
  "seed-low-cable-fly-cable": {
   "images": 2,
   "primaryMuscles": [
@@ -212,6 +222,17 @@
   "source": "Decline_Push-Up"
  },
  "seed-chest-dip": {
+  "images": 2,
+  "primaryMuscles": [
+   "chest"
+  ],
+  "secondaryMuscles": [
+   "shoulders",
+   "triceps"
+  ],
+  "source": "Dips_-_Chest_Version"
+ },
+ "seed-chest-dip-weighted": {
   "images": 2,
   "primaryMuscles": [
    "chest"

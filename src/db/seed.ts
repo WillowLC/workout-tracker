@@ -16,10 +16,10 @@ const LIBRARY: Record<BodyPart, Row[]> = {
     ['Incline Bench Press (Barbell)'], ['Incline Bench Press (Dumbbell)'], ['Incline Bench Press (Smith Machine)'],
     ['Decline Bench Press (Barbell)'], ['Decline Bench Press (Dumbbell)'], ['Chest Press (Machine)'],
     ['Incline Chest Press (Machine)'], ['Chest Fly (Dumbbell)'], ['Incline Chest Fly (Dumbbell)'],
-    ['Chest Fly (Machine)'], ['Cable Crossover', undefined, 'Cable'], ['Low Cable Fly (Cable)'],
+    ['Chest Fly (Machine)'], ['Cable Crossover', undefined, 'Cable'], ['Cable Fly (Cable)'], ['Low Cable Fly (Cable)'],
     ['Floor Press (Barbell)'], ['Pullover (Dumbbell)'],
     ['Push Up', R, 'Bodyweight'], ['Incline Push Up', R, 'Bodyweight'], ['Decline Push Up', R, 'Bodyweight'],
-    ['Chest Dip', WB, 'Bodyweight'], ['Chest Dip (Assisted)', AB],
+    ['Chest Dip', WB, 'Bodyweight'], ['Chest Dip (Weighted)', WB, 'Bodyweight'], ['Chest Dip (Assisted)', AB],
   ],
   Back: [
     ['Deadlift (Barbell)'], ['Deadlift (Trap Bar)', undefined, 'Barbell'], ['Deadlift (Dumbbell)'],

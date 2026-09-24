@@ -41,7 +41,7 @@ export function WorkoutHome() {
 
   return (
     <div>
-      <PageHeader title={<JimLogo className="block mx-auto h-[18.5px] w-auto" />} />
+      <PageHeader title={<JimLogo className="block mx-auto my-2 h-[37px] w-auto" />} />
       {showInstall && <InstallHint ios={isIOS()} onDismiss={() => void setMeta({ installHintDismissed: true })} />}
       <main className="px-4 flex flex-col gap-6 pb-4">
         <section className="flex flex-col gap-2">

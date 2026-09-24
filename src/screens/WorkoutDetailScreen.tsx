@@ -1,0 +1,123 @@
+import { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import type { Workout } from '../domain/types';
+import { useAppStore } from '../store/appStore';
+import { useUiStore } from '../store/uiStore';
+import { useExerciseMap, useTrackingOf } from '../store/selectors';
+import { detectPRs } from '../domain/prs';
+import { completedSetCount, workoutVolume } from '../domain/records';
+import { blocks, sortedExercises, supersetInfo } from '../domain/superset';
+import { setLabels } from '../domain/sets';
+import { templateFromWorkout } from '../domain/templates';
+import { formatDuration, formatVolume } from '../domain/units';
+import { formatDateTime, formatSetWithRpe } from '../lib/format';
+import { Button, ConfirmDialog, EmptyState, PageHeader } from '../components/ui';
+import { PRBadge } from '../components/PRBadge';
+import { SupersetBracket } from '../components/SupersetBracket';
+import { WorkoutEditor } from './workout/WorkoutEditor';
+
+export function WorkoutDetailScreen() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { workouts, settings, active, startWorkout, deleteWorkout, saveWorkout, saveTemplate } = useAppStore();
+  const showToast = useUiStore((s) => s.showToast);
+  const exMap = useExerciseMap();
+  const trackingOf = useTrackingOf();
+  const w = workouts.find((x) => x.id === id);
+  const [confirm, setConfirm] = useState<'delete' | 'repeat' | null>(null);
+
+  if (!w) return <div><PageHeader title="Workout" left={<Button variant="ghost" onClick={() => navigate('/history')}>‹ Back</Button>} /><EmptyState title="Workout not found" /></div>;
+
+  const prs = detectPRs(w, workouts, trackingOf, settings.countWarmupsInStats);
+  const groups = supersetInfo(w.exercises);
+
+  const repeat = () => {
+    startWorkout({ repeat: w });
+    navigate('/workout');
+  };
+
+  const card = (weId: string) => {
+    const we = w.exercises.find((e) => e.id === weId)!;
+    const t = trackingOf(we.exerciseId) ?? 'weight_reps';
+    const labels = setLabels(we.sets);
+    return (
+      <article key={we.id} className="bg-surface border border-border rounded-lg p-3">
+        <button type="button" className="font-semibold text-left" onClick={() => navigate(`/exercises/${we.exerciseId}`)}>{exMap.get(we.exerciseId)?.name ?? 'Unknown'}</button>
+        {we.sessionNote && <p className="text-xs text-muted">{we.sessionNote}</p>}
+        <ol className="mt-1 flex flex-col gap-0.5">
+          {we.sets.map((s, i) => (
+            <li key={s.id} className="flex items-center gap-2 text-sm tabular">
+              <span className={`w-6 text-center font-semibold ${s.type === 'warmup' ? 'text-warmup' : s.type === 'drop' ? 'text-drop' : s.type === 'failure' ? 'text-failure' : 'text-muted'}`}>{labels[i]}</span>
+              <span className="flex-1">{formatSetWithRpe(s, t, settings.unit)}</span>
+              {prs.get(s.id) && <PRBadge kinds={prs.get(s.id)!.kinds} />}
+            </li>
+          ))}
+        </ol>
+      </article>
+    );
+  };
+
+  return (
+    <div className="pb-8">
+      <PageHeader title={w.name} left={<Button variant="ghost" onClick={() => navigate('/history')}>‹</Button>} right={<Button size="sm" onClick={() => navigate(`/history/${w.id}/edit`)}>Edit</Button>} />
+      <main className="px-4 flex flex-col gap-3 max-w-2xl mx-auto">
+        <p className="text-sm text-muted">
+          {formatDateTime(w.startedAt)} · {formatDuration((w.finishedAt ?? w.startedAt) - w.startedAt)} · {formatVolume(workoutVolume(w, trackingOf, settings.countWarmupsInStats), settings.unit)} · {completedSetCount(w, settings.countWarmupsInStats)} sets
+          {prs.size > 0 && ` · ${prs.size} PRs`}
+        </p>
+        {w.note && <p className="text-sm">{w.note}</p>}
+        {blocks(sortedExercises(w)).map((b) => {
+          const g = b[0].supersetGroupId ? groups.get(b[0].supersetGroupId) : undefined;
+          return g && b.length > 1 ? <SupersetBracket key={b[0].id} letter={g.letter} colorIndex={g.colorIndex}>{b.map((we) => card(we.id))}</SupersetBracket> : card(b[0].id);
+        })}
+        <div className="flex flex-col gap-2 mt-2">
+          <Button variant="primary" onClick={() => (active ? setConfirm('repeat') : repeat())}>Repeat workout</Button>
+          <Button onClick={async () => { const t = templateFromWorkout(w, w.name); await saveTemplate(t); showToast(`Saved as template “${t.name}”`); }}>Save as template</Button>
+          <Button className="!text-danger" onClick={() => setConfirm('delete')}>Delete workout</Button>
+        </div>
+      </main>
+      <ConfirmDialog open={confirm === 'delete'} title="Delete this workout?" message="Records will be recalculated without it." onClose={() => setConfirm(null)}
+        actions={[{ label: 'Delete', variant: 'danger', onClick: async () => {
+          setConfirm(null);
+          const removed = await deleteWorkout(w.id);
+          navigate('/history');
+          if (removed) showToast('Workout deleted', () => void saveWorkout(removed));
+        } }]} />
+      <ConfirmDialog open={confirm === 'repeat'} title="Workout in progress" message="Finish or cancel the current workout first." onClose={() => setConfirm(null)}
+        actions={[{ label: 'Go to current workout', variant: 'primary', onClick: () => navigate('/workout') }]} />
+    </div>
+  );
+}
+
+export function EditWorkoutScreen() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { workouts, templates, saveWorkout } = useAppStore();
+  const original = workouts.find((x) => x.id === id);
+  const [draft, setDraft] = useState<Workout | undefined>(() => (original ? structuredClone(original) : undefined));
+  const [durationMin, setDurationMin] = useState(() => (original ? String(Math.round(((original.finishedAt ?? original.startedAt) - original.startedAt) / 60000)) : ''));
+  if (!draft || !original) return <EmptyState title="Workout not found" />;
+  const template = templates.find((t) => t.id === draft.templateId);
+
+  const save = async () => {
+    const mins = Math.max(1, Number(durationMin) || 1);
+    // Drop sets that were never completed; keep exercises that still have sets.
+    const exercises = draft.exercises.map((we) => ({ ...we, sets: we.sets.filter((s) => s.completed) })).filter((we) => we.sets.length);
+    await saveWorkout({ ...draft, exercises, finishedAt: draft.startedAt + mins * 60000 });
+    navigate(`/history/${draft.id}`, { replace: true });
+  };
+
+  return (
+    <div className="pb-16">
+      <PageHeader title="Edit Workout" left={<Button variant="ghost" onClick={() => navigate(-1)}>Cancel</Button>} right={<Button variant="primary" size="sm" onClick={save}>Save</Button>} />
+      <main className="px-3 max-w-2xl mx-auto flex flex-col gap-3">
+        <label className="text-sm flex items-center gap-2">
+          <span className="text-muted">Duration (min)</span>
+          <input inputMode="numeric" className="w-20 min-h-[40px] rounded border border-border bg-surface px-2" value={durationMin} onChange={(e) => setDurationMin(e.target.value.replace(/\D/g, ''))} />
+        </label>
+        <p className="text-xs text-muted">Only checked-off sets are saved.</p>
+        <WorkoutEditor workout={draft} onChange={(fn) => setDraft((cur) => (cur ? fn(cur) : cur))} mode="edit" template={template} />
+      </main>
+    </div>
+  );
+}

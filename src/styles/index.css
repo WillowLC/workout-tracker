@@ -1,0 +1,20 @@
+@import './tokens.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+input, select, textarea { color: var(--color-text); background: transparent; }
+input::placeholder, textarea::placeholder { color: var(--color-text-muted); opacity: 0.6; }
+:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 1px; }
+.pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+.pt-safe { padding-top: env(safe-area-inset-top); }
+.tabular { font-variant-numeric: tabular-nums; }

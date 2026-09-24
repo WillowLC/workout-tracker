@@ -10,7 +10,7 @@ export function Heatmap({ weeks }: { weeks: { date: number; count: number }[][] 
               <div
                 key={d.date}
                 title={new Date(d.date).toDateString()}
-                className={`aspect-square rounded-sm ${d.count < 0 ? 'bg-transparent' : d.count > 0 ? 'bg-success' : 'bg-surface-2 border border-border'}`}
+                className={`aspect-square rounded-sm ${d.count < 0 ? 'bg-transparent' : d.count > 0 ? 'bg-accent' : 'bg-surface-2 border border-border'}`}
               />
             ))}
           </div>

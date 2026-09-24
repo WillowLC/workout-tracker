@@ -6,8 +6,9 @@ export function RestTimerBar({ remainingSec, totalSec, label, onAdjust, onSkip }
   const pct = totalSec > 0 ? Math.max(0, Math.min(1, remainingSec / totalSec)) : 0;
   return (
     <div role="timer" aria-live="off" aria-label={`Rest ${formatClock(remainingSec)}`} className="bg-accent text-accent-contrast rounded-lg overflow-hidden shadow-lg">
-      <div className="h-1 bg-accent-contrast/30">
-        <div className="h-full bg-accent-contrast" style={{ width: `${pct * 100}%` }} />
+      <div className="h-1 relative">
+        <div className="absolute inset-0 bg-accent-contrast opacity-30" />
+        <div className="relative h-full bg-accent-contrast" style={{ width: `${pct * 100}%` }} />
       </div>
       <div className="flex items-center gap-2 px-3 py-2">
         <div className="flex-1">

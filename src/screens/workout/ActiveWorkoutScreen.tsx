@@ -7,7 +7,7 @@ import { finalizeWorkout, pendingSetsWithValues } from '../../domain/workoutOps'
 import { workoutMatchesTemplate } from '../../domain/templates';
 import { formatClock } from '../../domain/units';
 import { useNow } from '../../lib/useNow';
-import { Button, ConfirmDialog } from '../../components/ui';
+import { ConfirmDialog } from '../../components/ui';
 import { WorkoutEditor } from './WorkoutEditor';
 import { useWorkoutContext } from './useExerciseContext';
 
@@ -62,16 +62,16 @@ export function ActiveWorkoutScreen() {
 
   return (
     <div className="min-h-full bg-bg pb-40">
-      <header className="sticky top-0 z-20 bg-bg/95 backdrop-blur pt-safe border-b border-border">
-        <div className="flex items-center gap-2 px-2 min-h-[52px] max-w-2xl mx-auto">
-          <Button variant="ghost" aria-label="Minimise workout" onClick={() => navigate('/')}>▼</Button>
-          <p className="flex-1 text-center tabular font-semibold" aria-label="Elapsed time">{formatClock((now - active.startedAt) / 1000)}</p>
-          <Button variant="primary" size="sm" onClick={onFinish}>Finish</Button>
+      <header className="sticky top-0 z-20 bg-bg pt-safe">
+        <div className="flex items-center gap-2 px-3 h-[52px] max-w-2xl mx-auto">
+          <button type="button" aria-label="Minimise workout" onClick={() => navigate('/')} className="w-11 h-11 flex items-center justify-center text-sm text-muted">▼</button>
+          <p className="flex-1 text-center tabular text-[17px] font-semibold text-accent" aria-label="Elapsed time">{formatClock((now - active.startedAt) / 1000)}</p>
+          <button type="button" onClick={onFinish} className="h-[34px] px-4 rounded bg-accent text-accent-contrast text-[15px] font-semibold">Finish</button>
         </div>
       </header>
       <main className="px-3 pt-3 max-w-2xl mx-auto">
         <WorkoutEditor workout={active} onChange={updateActive} mode="active" template={template} />
-        <Button variant="ghost" className="w-full mt-6 !text-danger" onClick={() => setDialog('cancel')}>Cancel Workout</Button>
+        <button type="button" className="w-full h-11 mt-3 text-[15px] font-medium text-danger" onClick={() => setDialog('cancel')}>Cancel Workout</button>
       </main>
 
       <ConfirmDialog

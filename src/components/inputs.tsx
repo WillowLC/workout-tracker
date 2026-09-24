@@ -1,7 +1,14 @@
 import { useState, type InputHTMLAttributes } from 'react';
 import { formatClock, formatNumber, parseClock } from '../domain/units';
 
-type Base = Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 'placeholder'>;
+type Base = Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 'placeholder'> & {
+  /** 'field' = filled input; 'plain' = value shown as text (completed set). */
+  tone?: 'field' | 'plain';
+};
+
+const FIELD_BASE =
+  'num-input w-full h-9 text-center rounded tabular font-semibold text-[17px] caret-accent focus:outline-none focus-visible:outline-none focus:shadow-[0_0_0_1.5px_var(--color-text)] disabled:opacity-100';
+const toneClass = (tone: Base['tone']) => (tone === 'plain' ? 'bg-transparent' : 'bg-surface-2');
 
 /**
  * Numeric input with a local text draft (so "82." can be typed) and a greyed
@@ -13,6 +20,7 @@ export function NumberInput({
   onChange,
   decimals = true,
   className = '',
+  tone = 'field',
   onFocus,
   onBlur,
   ...rest
@@ -26,7 +34,7 @@ export function NumberInput({
       type="text"
       inputMode={decimals ? 'decimal' : 'numeric'}
       autoComplete="off"
-      className={`w-full text-center rounded bg-surface-2 min-h-[36px] tabular font-medium ${className}`}
+      className={`${FIELD_BASE} ${toneClass(tone)} ${className}`}
       value={focused ? draft : formatted}
       placeholder={placeholder === undefined ? '' : typeof placeholder === 'number' ? formatNumber(placeholder) : placeholder}
       onFocus={(e) => {
@@ -53,7 +61,7 @@ export function NumberInput({
 }
 
 /** Time input with stopwatch-style digit entry ("130" → 1:30). */
-export function ClockInput({ value, placeholder, onChange, className = '', ...rest }: Base & { value?: number; placeholder?: number; onChange: (v: number | undefined) => void }) {
+export function ClockInput({ value, placeholder, onChange, className = '', tone = 'field', ...rest }: Base & { value?: number; placeholder?: number; onChange: (v: number | undefined) => void }) {
   const [draft, setDraft] = useState('');
   const [focused, setFocused] = useState(false);
   return (
@@ -61,7 +69,7 @@ export function ClockInput({ value, placeholder, onChange, className = '', ...re
       type="text"
       inputMode="numeric"
       autoComplete="off"
-      className={`w-full text-center rounded bg-surface-2 min-h-[36px] tabular font-medium ${className}`}
+      className={`${FIELD_BASE} ${toneClass(tone)} ${className}`}
       value={focused ? draft : value === undefined ? '' : formatClock(value)}
       placeholder={placeholder === undefined ? '' : formatClock(placeholder)}
       onFocus={(e) => {

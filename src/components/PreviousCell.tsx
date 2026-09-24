@@ -7,7 +7,7 @@ export function PreviousCell({ text, onClick }: { text: string; onClick?: () => 
       disabled={empty}
       onClick={onClick}
       aria-label={empty ? 'No previous' : `Previous: ${text}. Tap to copy`}
-      className="w-full min-h-[36px] text-xs text-muted truncate tabular text-center"
+      className="min-w-0 min-h-[36px] text-[13px] text-muted truncate whitespace-nowrap tabular text-center"
     >
       {text}
     </button>

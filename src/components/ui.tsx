@@ -6,7 +6,7 @@ const VARIANT: Record<Variant, string> = {
   primary: 'bg-accent text-accent-contrast',
   secondary: 'bg-surface-2 text-text border border-border',
   ghost: 'bg-transparent text-text',
-  danger: 'bg-danger text-white',
+  danger: 'bg-danger text-accent-contrast',
 };
 
 export function Button({
@@ -105,7 +105,7 @@ export function Chip({ selected, children, onClick }: { selected?: boolean; chil
       type="button"
       aria-pressed={selected}
       onClick={onClick}
-      className={`shrink-0 rounded-full px-3 min-h-[36px] text-sm border ${selected ? 'bg-accent text-accent-contrast border-accent' : 'bg-surface border-border text-text'}`}
+      className={`shrink-0 rounded-full px-3.5 h-[34px] text-sm border ${selected ? 'bg-accent-soft text-accent border-accent-line font-semibold' : 'bg-surface border-border text-secondary font-medium'}`}
     >
       {children}
     </button>
@@ -147,7 +147,7 @@ export function Card({ children, className = '' }: { children: ReactNode; classN
 
 export function PageHeader({ title, left, right }: { title: ReactNode; left?: ReactNode; right?: ReactNode }) {
   return (
-    <header className="sticky top-0 z-20 bg-bg/95 backdrop-blur pt-safe">
+    <header className="sticky top-0 z-20 bg-bg pt-safe">
       <div className="flex items-center gap-2 px-4 min-h-[52px]">
         {left}
         <h1 className="text-xl font-bold flex-1 truncate">{title}</h1>

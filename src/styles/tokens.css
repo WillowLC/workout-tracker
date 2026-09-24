@@ -1,49 +1,82 @@
 /* Design tokens — the ONLY place colours, radii, spacing and fonts are defined.
    Tailwind maps its colour/radius/font names to these variables
-   (tailwind.config.js). A redesign should only need to touch this file and
-   the components in src/components. */
+   (tailwind.config.js). Visual language from Claude Design "Jim Mockups" 1c/1d:
+   graphite cards, grey completed rows, orange for BEST / PR / timer / Add / ticks. */
 :root {
-  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 
-  --color-bg: #f3f4f6;
-  --color-surface: #ffffff;
-  --color-surface-2: #f9fafb;
-  --color-border: #e5e7eb;
-  --color-text: #111827;
-  --color-text-muted: #6b7280;
-  --color-accent: #1f2937;
+  /* Light mode — same structure as the dark mockup; orange darkened for contrast on white. */
+  --color-bg: #f4f3f1;
+  --color-surface: #ffffff;            /* cards, sheets, tab bar */
+  --color-surface-2: #efeeec;          /* inputs, secondary buttons */
+  --color-section: #f4f3f1;            /* list section headers */
+  --color-row-done: #ebeae7;           /* completed set row */
+  --color-border: #e3e2df;             /* card borders */
+  --color-border-control: #d4d3cf;     /* stepper buttons, unselected checks */
+  --color-border-strong: #b9b8b4;      /* pending ✓ outline */
+  --color-divider: #ecebe8;            /* list row separators */
+  --color-text: #17181a;
+  --color-text-secondary: #3d3e42;
+  --color-text-muted: #5f6166;
+  --color-text-ghost: #7b7d82;         /* placeholder (ghost) values */
+  --color-accent: #c2540a;
   --color-accent-contrast: #ffffff;
-  --color-success: #16a34a;
-  --color-success-soft: #dcfce7;
-  --color-danger: #dc2626;
-  --color-warning: #d97706;
-  --color-pr: #ca8a04;
+  --color-accent-soft: rgba(194, 84, 10, 0.12);   /* selected chip */
+  --color-accent-line: rgba(194, 84, 10, 0.5);    /* selected chip border, next-set ring */
+  --color-accent-tint: rgba(194, 84, 10, 0.06);   /* selected list row */
+  --color-success: #1f8a4c;
+  --color-danger: #d42f2f;
+  --color-warning: #b7791f;
+  --color-pr: #c2540a;
 
-  --color-warmup: #d97706;
-  --color-drop: #7c3aed;
-  --color-failure: #dc2626;
+  --color-warmup: #b7791f;
+  --color-drop: #7c4ddb;
+  --color-failure: #d42f2f;
 
-  --color-superset-1: #2563eb;
-  --color-superset-2: #db2777;
-  --color-superset-3: #059669;
-  --color-superset-4: #ea580c;
+  --color-superset-1: #2f6fb8;
+  --color-superset-2: #c2417f;
+  --color-superset-3: #1f8a63;
+  --color-superset-4: #8a6d12;
 
-  --radius: 8px;
-  --radius-lg: 14px;
+  --radius: 8px;       /* inputs, buttons, set rows */
+  --radius-md: 10px;   /* big outline buttons, thumbnails */
+  --radius-lg: 14px;   /* cards, sheets, floating bars */
   --space-page: 16px;
   --tabbar-height: 56px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-bg: #111827;
-    --color-surface: #1f2937;
-    --color-surface-2: #273244;
-    --color-border: #374151;
-    --color-text: #f9fafb;
-    --color-text-muted: #9ca3af;
-    --color-accent: #e5e7eb;
-    --color-accent-contrast: #111827;
-    --color-success-soft: #14532d;
+    --color-bg: #141517;
+    --color-surface: #1d1e21;
+    --color-surface-2: #26282b;
+    --color-section: #1b1c1f;
+    --color-row-done: #2c2e32;
+    --color-border: #2a2c30;
+    --color-border-control: #34363a;
+    --color-border-strong: #45474c;
+    --color-divider: #222427;
+    --color-text: #f3f2f0;
+    --color-text-secondary: #c9c9cc;
+    --color-text-muted: #9b9ca1;
+    --color-text-ghost: #6e7076;
+    --color-accent: #ff8a3d;
+    --color-accent-contrast: #141517;
+    --color-accent-soft: rgba(255, 138, 61, 0.16);
+    --color-accent-line: rgba(255, 138, 61, 0.7);
+    --color-accent-tint: rgba(255, 138, 61, 0.08);
+    --color-success: #4cc27a;
+    --color-danger: #ff6b6b;
+    --color-warning: #f2b84b;
+    --color-pr: #ff8a3d;
+
+    --color-warmup: #f2b84b;
+    --color-drop: #b69cff;
+    --color-failure: #ff6b6b;
+
+    --color-superset-1: #6aa7e8;
+    --color-superset-2: #f07bb3;
+    --color-superset-3: #5cc9a0;
+    --color-superset-4: #e0c35c;
   }
 }

@@ -25,7 +25,7 @@ function Row({ label, children, hint }: { label: string; children: React.ReactNo
 function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) {
   return (
     <button type="button" role="switch" aria-checked={checked} aria-label={label} onClick={() => onChange(!checked)}
-      className={`w-12 h-7 rounded-full relative ${checked ? 'bg-success' : 'bg-border'}`}>
+      className={`w-12 h-7 rounded-full relative ${checked ? 'bg-accent' : 'bg-border-strong'}`}>
       <span className={`absolute top-0.5 w-6 h-6 rounded-full bg-white shadow transition-all ${checked ? 'left-[22px]' : 'left-0.5'}`} />
     </button>
   );

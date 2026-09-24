@@ -183,8 +183,10 @@ export function WorkoutEditor({ workout: w, onChange, mode, template }: { workou
 
   return (
     <div className="flex flex-col gap-3">
-      <input aria-label="Workout name" className={`${inputClass} font-semibold text-lg`} value={w.name} onChange={(e) => onChange((cur) => ({ ...cur, name: e.target.value }))} />
-      <textarea aria-label="Workout note" placeholder="Workout note" rows={1} className={`${inputClass} py-2 text-sm`} value={w.note ?? ''} onChange={(e) => onChange((cur) => ({ ...cur, note: e.target.value || undefined }))} />
+      <div className="flex flex-col gap-1 px-1.5 pb-1">
+        <input aria-label="Workout name" className="w-full bg-transparent rounded text-2xl font-bold tracking-[-.015em] focus:outline-none focus-visible:shadow-[0_0_0_1.5px_var(--color-text)]" value={w.name} onChange={(e) => onChange((cur) => ({ ...cur, name: e.target.value }))} />
+        <textarea aria-label="Workout note" placeholder="Add a note…" rows={1} className="w-full bg-transparent rounded resize-none text-sm text-secondary focus:outline-none focus-visible:shadow-[0_0_0_1.5px_var(--color-text)]" value={w.note ?? ''} onChange={(e) => onChange((cur) => ({ ...cur, note: e.target.value || undefined }))} />
+      </div>
 
       {sorted.length === 0 && <EmptyState title="No exercises yet" message="Add exercises from the library to start logging sets." />}
 
@@ -200,7 +202,9 @@ export function WorkoutEditor({ workout: w, onChange, mode, template }: { workou
         return renderCard(block[0].id);
       })}
 
-      <Button variant="secondary" size="lg" onClick={() => setPicker({ kind: 'add' })}>+ Add Exercises</Button>
+      <button type="button" onClick={() => setPicker({ kind: 'add' })} className="mt-1 h-12 rounded-md border-[1.5px] border-accent text-accent text-base font-semibold">
+        + Add Exercises
+      </button>
 
       {/* Set-type menu */}
       <Sheet open={!!setMenuSet} title={`Set ${setMenuSet ? setLabels(setMenuWe!.sets)[setMenuWe!.sets.indexOf(setMenuSet)] : ''}`} onClose={() => setSetMenu(null)}>

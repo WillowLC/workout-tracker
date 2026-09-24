@@ -10,12 +10,12 @@ import { ClockInput, NumberInput } from './inputs';
 export type SetColumn = { key: 'weight' | 'reps' | 'durationSec' | 'distanceM'; label: string };
 
 export function setGridStyle(columns: number, showRpe: boolean): CSSProperties {
-  return { gridTemplateColumns: `2.25rem minmax(0,1fr) repeat(${columns}, 4.25rem)${showRpe ? ' 3rem' : ''} 2.75rem` };
+  return { gridTemplateColumns: `36px minmax(0,1fr) repeat(${columns}, ${columns > 1 ? 64 : 80}px)${showRpe ? ' 48px' : ''} 40px` };
 }
 
 export function SetTableHeader({ columns, showRpe }: { columns: SetColumn[]; showRpe: boolean }) {
   return (
-    <div className="grid gap-1.5 px-3 text-[11px] font-semibold text-muted uppercase" style={setGridStyle(columns.length, showRpe)} aria-hidden>
+    <div className="grid gap-1.5 px-3 py-1 text-[11px] font-semibold tracking-[.06em] text-muted uppercase" style={setGridStyle(columns.length, showRpe)} aria-hidden>
       <span className="text-center">Set</span>
       <span className="text-center">Previous</span>
       {columns.map((c) => (
@@ -55,12 +55,12 @@ export function SetRow(p: SetRowProps) {
   const [swipe, setSwipe] = useState(0);
   const [weightFocused, setWeightFocused] = useState(false);
   const start = useRef<{ x: number; y: number } | null>(null);
-  const isDrop = p.type === 'drop';
   const ariaBase = `Set ${p.label}`;
   const effectiveWeight = p.values.weight ?? p.placeholder?.weight;
 
+  const tone = p.completed ? ('plain' as const) : ('field' as const);
   const field = (c: SetColumn) => {
-    const common = { 'aria-label': `${ariaBase} ${c.label}`, disabled: !p.onChange };
+    const common = { 'aria-label': `${ariaBase} ${c.label}`, disabled: !p.onChange, tone };
     if (c.key === 'durationSec')
       return <ClockInput key={c.key} {...common} value={p.values.durationSec} placeholder={p.placeholder?.durationSec} onChange={(v) => p.onChange?.({ durationSec: v })} />;
     if (c.key === 'distanceM')
@@ -91,12 +91,12 @@ export function SetRow(p: SetRowProps) {
   return (
     <div className="relative" data-set-row={p.setId}>
       {p.onDelete && swipe < 0 && (
-        <button type="button" onClick={() => { setSwipe(0); p.onDelete?.(); }} className="absolute inset-y-0 right-0 w-24 bg-danger text-white text-sm font-semibold rounded">
+        <button type="button" onClick={() => { setSwipe(0); p.onDelete?.(); }} className="absolute inset-y-0 right-0 w-24 bg-danger text-accent-contrast text-sm font-semibold rounded">
           Delete
         </button>
       )}
       <div
-        className={`relative grid gap-1.5 items-center px-3 py-1 transition-transform ${p.completed ? 'bg-success-soft' : 'bg-surface'} ${p.highlighted ? 'ring-2 ring-inset ring-accent' : ''}`}
+        className={`relative grid gap-1.5 items-center px-3 py-1 rounded tabular transition-transform ${p.completed ? 'bg-row-done' : 'bg-surface'} ${p.highlighted ? 'shadow-[inset_0_0_0_1.5px_var(--color-accent-line)]' : ''}`}
         style={{ ...setGridStyle(p.columns.length, p.showRpe), transform: swipe ? `translateX(${swipe}px)` : undefined }}
         onTouchStart={(e) => { start.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }; }}
         onTouchMove={(e) => {
@@ -108,16 +108,14 @@ export function SetRow(p: SetRowProps) {
         }}
         onTouchEnd={() => { setSwipe((s) => (s < -48 ? -96 : 0)); start.current = null; }}
       >
-        <div className={isDrop ? 'pl-2 border-l-2 border-drop' : ''}>
-          <SetTypeBadge type={p.type} label={p.label} onClick={p.onTypeClick} />
-        </div>
-        <div className="min-w-0 flex items-center justify-center gap-1">
+        <SetTypeBadge type={p.type} label={p.label} onClick={p.onTypeClick} />
+        <div className="min-w-0 flex items-center justify-center gap-[5px]">
           <PreviousCell text={p.previousText} onClick={p.onPreviousClick} />
           {p.prKinds && p.prKinds.length > 0 && <PRBadge kinds={p.prKinds} compact />}
         </div>
         {p.columns.map(field)}
         {p.showRpe && (
-          <NumberInput aria-label={`${ariaBase} RPE`} disabled={!p.onChange} value={p.values.rpe} placeholder={p.placeholder?.rpe}
+          <NumberInput aria-label={`${ariaBase} RPE`} tone={tone} disabled={!p.onChange} value={p.values.rpe} placeholder={p.placeholder?.rpe}
             onChange={(v) => p.onChange?.({ rpe: v === undefined ? undefined : Math.min(10, Math.max(6, Math.round(v * 2) / 2)) })} />
         )}
         <button
@@ -126,22 +124,27 @@ export function SetRow(p: SetRowProps) {
           disabled={!p.onToggleComplete}
           aria-pressed={p.completed}
           aria-label={p.completed ? `${ariaBase} completed. Tap to undo` : `Complete ${ariaBase.toLowerCase()}`}
-          className={`min-h-[36px] rounded font-bold ${p.completed ? 'bg-success text-white' : 'bg-surface-2 text-muted'}`}
+          className="h-10 w-full flex items-center justify-center"
         >
-          ✓
+          <span
+            aria-hidden
+            className={`w-8 h-8 rounded flex items-center justify-center text-sm font-extrabold ${p.completed ? 'bg-accent text-accent-contrast' : 'border-[1.5px] border-border-strong text-ghost'}`}
+          >
+            ✓
+          </span>
         </button>
       </div>
       {weightFocused && p.onChange && (
-        <div className="flex items-center justify-end gap-2 px-3 pb-1 bg-surface">
-          <button type="button" onPointerDown={keepFocus} onMouseDown={keepFocus} onClick={() => step(-1)} className="min-h-[36px] px-3 rounded bg-surface-2 text-sm tabular">
+        <div className="flex items-center justify-end gap-1.5 px-3 pt-1 pb-2">
+          <button type="button" onPointerDown={keepFocus} onMouseDown={keepFocus} onClick={() => step(-1)} className="h-8 px-3 rounded border border-border-control text-sm font-medium tabular">
             −{formatNumber(toDisplayWeight(p.weightStepKg ?? 2.5, p.unit))}
           </button>
           {p.plates && (
-            <button type="button" onPointerDown={keepFocus} onMouseDown={keepFocus} onClick={() => p.onPlates?.(effectiveWeight ?? 0)} className="min-h-[36px] px-3 rounded bg-surface-2 text-sm">
+            <button type="button" onPointerDown={keepFocus} onMouseDown={keepFocus} onClick={() => p.onPlates?.(effectiveWeight ?? 0)} className="h-8 px-3 rounded border border-border-control text-sm font-medium">
               Plates
             </button>
           )}
-          <button type="button" onPointerDown={keepFocus} onMouseDown={keepFocus} onClick={() => step(1)} className="min-h-[36px] px-3 rounded bg-surface-2 text-sm tabular">
+          <button type="button" onPointerDown={keepFocus} onMouseDown={keepFocus} onClick={() => step(1)} className="h-8 px-3 rounded border border-border-control text-sm font-medium tabular">
             +{formatNumber(toDisplayWeight(p.weightStepKg ?? 2.5, p.unit))}
           </button>
         </div>

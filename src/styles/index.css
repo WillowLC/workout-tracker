@@ -10,10 +10,15 @@ body {
   color: var(--color-text);
   font-family: var(--font-sans);
   -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
   overscroll-behavior-y: none;
 }
 input, select, textarea { color: var(--color-text); background: transparent; }
-input::placeholder, textarea::placeholder { color: var(--color-text-muted); opacity: 0.6; }
+input::placeholder, textarea::placeholder { color: var(--color-text-ghost); opacity: 1; }
+/* Ghost values (PREVIOUS placeholders) are lighter than typed values. */
+.num-input::placeholder { font-weight: 500; }
+/* Exercise image slot until real images/GIFs exist. */
+.thumb-placeholder { background: repeating-linear-gradient(135deg, var(--color-surface-2) 0 6px, var(--color-surface) 6px 12px); }
 :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 1px; }
 .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
 .pt-safe { padding-top: env(safe-area-inset-top); }

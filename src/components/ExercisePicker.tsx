@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import type { Exercise } from '../domain/types';
 import { ExerciseList } from './ExerciseList';
-import { Button } from './ui';
 
 /** Full-screen library picker. Multi-select for "+ Add Exercises"; single for replace / superset. */
 export function ExercisePicker({ title, exercises, recentIds, multiSelect, onDone, onCancel, onCreate }: {
@@ -16,13 +15,14 @@ export function ExercisePicker({ title, exercises, recentIds, multiSelect, onDon
   const [selected, setSelected] = useState<string[]>([]);
   return (
     <div className="fixed inset-0 z-50 bg-bg flex flex-col pt-safe" role="dialog" aria-modal="true" aria-label={title}>
-      <div className="flex items-center gap-2 px-2 min-h-[52px]">
-        <Button variant="ghost" onClick={onCancel}>Cancel</Button>
-        <h2 className="flex-1 text-center font-semibold">{title}</h2>
+      <div className="flex items-center gap-2 px-3 h-[52px]">
+        <button type="button" onClick={onCancel} className="h-11 px-2 text-base text-secondary">Cancel</button>
+        <h2 className="flex-1 text-center text-[17px] font-bold truncate">{title}</h2>
         {multiSelect ? (
-          <Button variant="primary" size="sm" disabled={!selected.length} onClick={() => onDone(selected)}>
+          <button type="button" disabled={!selected.length} onClick={() => onDone(selected)}
+            className="h-9 px-3.5 rounded-md bg-accent text-accent-contrast text-[15px] font-bold tabular disabled:opacity-40">
             Add{selected.length ? ` (${selected.length})` : ''}
-          </Button>
+          </button>
         ) : (
           <span className="w-[72px]" />
         )}

@@ -10,6 +10,7 @@ import { relativeDays } from '../lib/format';
 import { isIOS, isStandalone } from '../pwa/storage';
 import { Button, Card, ConfirmDialog, EmptyState, PageHeader, Sheet } from '../components/ui';
 import { InstallHint } from '../components/shell';
+import { JimLogo } from '../components/JimLogo';
 
 export function WorkoutHome() {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ export function WorkoutHome() {
 
   return (
     <div>
-      <PageHeader title={<span className="block text-center text-2xl text-accent">Jim</span>} />
+      <PageHeader title={<JimLogo className="block mx-auto h-[18.5px] w-auto" />} />
       {showInstall && <InstallHint ios={isIOS()} onDismiss={() => void setMeta({ installHintDismissed: true })} />}
       <main className="px-4 flex flex-col gap-6 pb-4">
         <section className="flex flex-col gap-2">

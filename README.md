@@ -35,7 +35,8 @@ npm run preview        # serve the build (use preview:pages after build:pages)
 npm run e2e            # Playwright: full "definition of done" scenario + offline cold start
 npm run e2e:update     # Playwright: update banner flow (rebuilds while the app is open)
 npm run deploy         # commit if needed + push → auto-deploy
-npm run icons          # regenerate the placeholder icons
+npm run icons          # regenerate the app icons + favicon
+npm run media          # re-download/resize exercise photos (macOS)
 ```
 
 The e2e scripts run against a preview server, which must already be running: `BASE_URL=http://localhost:4173/ npm run e2e`. They need Chromium, installed with `npx playwright install chromium`. They aren't part of CI.
@@ -131,5 +132,6 @@ Where the brief didn't specify something, I followed Strong/Hevy:
 - **Built-in exercises** can't be renamed, deleted or archived, but you can give them a note. Custom exercises can be edited and archived; archiving keeps their history. Creating an exercise from the picker's "Create …" shortcut uses Other / Other / weight & reps, which you can change later in Exercises.
 - **The library** is seeded with about 180 exercises. Seeded exercises have stable IDs (`seed-bench-press-barbell`), so re-seeding after an update only adds new ones and never overwrites your notes.
 - **Backups:** the JSON backup includes the in-progress workout and your settings. *Merge* only adds items whose IDs aren't already present. *Replace* wipes the current data first. The CSV has one row per set, with weight in your chosen unit.
+- **Exercise guides and photos:** every built-in exercise has original how-to steps, form cues and common mistakes, written for Jim (`src/db/guides/`). Strong's own photos, videos and text are copyrighted, so they aren't used. Photos and muscle data for 157 of the 180 exercises come from [free-exercise-db](https://github.com/yuhonas/free-exercise-db), which is public domain. Exercises without a genuinely matching photo keep a placeholder. Thumbnails are bundled for offline use; full photos are cached the first time you open an exercise. To change a mapping, edit `scripts/exercise-media-map.json` and run `npm run media` (macOS, uses `sips` to resize).
 - **Storage:** at startup the app calls `navigator.storage.persist()`, and Settings shows whether it was granted.
-- **Icons** are placeholders, a plain white "L" on a dark background, as requested.
+- **Icons** use the Jim wordmark (dumbbell as the "i"). `npm run icons` regenerates them from `scripts/jim-logo.json`.

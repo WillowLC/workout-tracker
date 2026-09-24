@@ -4,6 +4,7 @@ import { BODY_PARTS, EQUIPMENT } from '../domain/types';
 import { alphaSections, filterExercises } from '../domain/search';
 import { Chip, EmptyState } from './ui';
 import { ExerciseThumb } from './ExerciseThumb';
+import { exerciseMedia } from '../db/exerciseMedia';
 
 export interface ExerciseListProps {
   exercises: Exercise[];
@@ -43,7 +44,7 @@ export function ExerciseList({ exercises, recentIds = [], selectedIds = [], mult
           aria-pressed={multiSelect ? selected : undefined}
           className={`w-full text-left px-4 py-2 flex items-center gap-3 border-b border-divider ${selected ? 'bg-accent-tint' : ''}`}
         >
-          <ExerciseThumb name={e.name} />
+          <ExerciseThumb name={e.name} src={exerciseMedia(e.id)?.thumb} />
           <span className="flex-1 min-w-0 flex flex-col gap-[3px]">
             <span className="block truncate text-base font-semibold">{e.name}{e.archived ? ' (archived)' : ''}</span>
             <span className="block text-[13px] text-muted">{e.bodyPart} · {e.equipment}{e.isCustom ? ' · Custom' : ''}</span>

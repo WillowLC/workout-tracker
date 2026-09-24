@@ -1,9 +1,14 @@
+import { useState } from 'react';
+
 /**
- * 56px image slot for an exercise. No exercise images ship yet, so this shows
- * a striped placeholder with the movement's initials; swap in an <img>/GIF later.
+ * 56px image slot for an exercise: the photo thumbnail when there is one,
+ * otherwise a striped placeholder with the movement's initials.
  */
 export function ExerciseThumb({ name, src }: { name: string; src?: string }) {
-  if (src) return <img src={src} alt="" className="w-14 h-14 flex-none rounded-md object-cover bg-surface-2" />;
+  const [failed, setFailed] = useState(false);
+  if (src && !failed) {
+    return <img src={src} alt="" loading="lazy" decoding="async" onError={() => setFailed(true)} className="w-14 h-14 flex-none rounded-md object-cover bg-surface-2" />;
+  }
   const initials = name
     .replace(/\(.*\)/, '')
     .split(/[\s-]+/)

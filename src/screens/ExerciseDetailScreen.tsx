@@ -8,9 +8,12 @@ import { setLabels } from '../domain/sets';
 import { formatClock, formatDistance, formatNumber, toDisplayWeight } from '../domain/units';
 import { formatDate, formatSet, formatSetWithRpe } from '../lib/format';
 import { ExerciseForm } from '../components/ExerciseForm';
+import { ExerciseAbout } from '../components/ExerciseAbout';
+import { exerciseMedia } from '../db/exerciseMedia';
+import { EXERCISE_GUIDES } from '../db/guides';
 import { Button, Card, EmptyState, PageHeader, Sheet, Tabs } from '../components/ui';
 
-type Tab = 'history' | 'records' | 'charts';
+type Tab = 'about' | 'history' | 'records' | 'charts';
 
 export function ExerciseDetailScreen() {
   const { id } = useParams();
@@ -18,7 +21,10 @@ export function ExerciseDetailScreen() {
   const { exercises, workouts, settings, saveExercise } = useAppStore();
   const showToast = useUiStore((s) => s.showToast);
   const ex = exercises.find((e) => e.id === id);
-  const [tab, setTab] = useState<Tab>('history');
+  const guide = id ? EXERCISE_GUIDES[id] : undefined;
+  const media = id ? exerciseMedia(id) : undefined;
+  const hasAbout = !!guide || !!media;
+  const [tab, setTab] = useState<Tab>(hasAbout ? 'about' : 'history');
   const [editing, setEditing] = useState(false);
 
   const sessions = useMemo(() => (ex ? sessionsForExercise(ex.id, workouts) : []), [ex, workouts]);
@@ -59,7 +65,11 @@ export function ExerciseDetailScreen() {
       <main className="px-4 flex flex-col gap-3 max-w-2xl mx-auto">
         <p className="text-sm text-muted">{ex.bodyPart} · {ex.equipment}{ex.isCustom ? ' · Custom' : ''}{ex.archived ? ' · Archived' : ''}</p>
         {ex.notes && <p className="text-sm">📌 {ex.notes}</p>}
-        <Tabs<Tab> value={tab} onChange={setTab} options={[{ value: 'history', label: 'History' }, { value: 'records', label: 'Records' }, { value: 'charts', label: 'Charts' }]} />
+        <Tabs<Tab> value={tab} onChange={setTab} options={[...(hasAbout ? [{ value: 'about' as Tab, label: 'About' }] : []), { value: 'history', label: 'History' }, { value: 'records', label: 'Records' }, { value: 'charts', label: 'Charts' }]} />
+
+        {tab === 'about' && (
+          <ExerciseAbout name={ex.name} images={media?.images} primaryMuscles={media?.primaryMuscles} secondaryMuscles={media?.secondaryMuscles} guide={guide} />
+        )}
 
         {tab === 'history' && (sessions.length === 0 ? <EmptyState title="No history yet" message="Sessions with this exercise will appear here." /> : sessions.map(({ workout, we }) => {
           const labels = setLabels(we.sets);

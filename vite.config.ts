@@ -38,7 +38,16 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,png,svg,ico,woff,woff2,webmanifest}'],
+        // App shell + exercise thumbnails are precached (works offline immediately).
+        globPatterns: ['**/*.{js,css,html,png,svg,ico,woff,woff2,webmanifest}', 'exercise-media/*/thumb.jpg'],
+        // Full-size exercise photos are cached the first time they are viewed.
+        runtimeCaching: [
+          {
+            urlPattern: /\/exercise-media\/[^/]+\/\d\.jpg$/,
+            handler: 'CacheFirst',
+            options: { cacheName: 'exercise-photos', expiration: { maxEntries: 500 } },
+          },
+        ],
         navigateFallback: `${base}index.html`,
         cleanupOutdatedCaches: true,
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,

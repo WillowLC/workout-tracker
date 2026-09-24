@@ -59,10 +59,10 @@ await bench.getByRole('button', { name: '+ Add Set' }).click();
 await bench.getByRole('button', { name: '+ Add Set' }).click();
 await bench.getByRole('button', { name: '+ Add Set' }).click();
 await bench.getByRole('button', { name: /Set 1\. Change set type/ }).first().click();
-await page.getByRole('button', { name: 'W  Warm-up' }).click();
+await page.getByRole('button', { name: 'Warm-up', exact: true }).click();
 // rows now: W, 1, 2, 3 → make last one a drop set
 await bench.getByRole('button', { name: /Set 3\. Change set type/ }).click();
-await page.getByRole('button', { name: 'D  Drop set' }).click();
+await page.getByRole('button', { name: 'Drop set', exact: true }).click();
 const labels = await bench.locator('[data-set-row] button[aria-label*="Change set type"]').allInnerTexts();
 assert(JSON.stringify(labels) === JSON.stringify(['W', '1', '2', 'D']), 'labels W,1,2,D got ' + labels);
 
@@ -78,19 +78,39 @@ await pull.getByRole('button', { name: '+ Add Set' }).click();
 await fill(pull, '1', 30, 8);
 await fill(pull, '2', 25, 6);
 
-step('complete sets; superset rest rule');
+step('stepper updates the focused weight live');
+const w1 = bench.getByRole('textbox', { name: 'Set 1 KG' });
+await w1.click();
+await w1.fill('80');
+await bench.getByRole('button', { name: '+2.5' }).click();
+assert((await w1.inputValue()) === '82.5', 'stepper applied while focused, got ' + (await w1.inputValue()));
+assert(await w1.evaluate((el) => el === document.activeElement), 'weight field keeps focus');
+await bench.getByRole('button', { name: '−2.5' }).click();
+assert((await w1.inputValue()) === '80', 'stepper down while focused');
+
+step('complete sets; superset moves to the next exercise; no rest timer');
 await bench.getByRole('button', { name: 'Complete set w' }).click();
 await bench.getByRole('button', { name: 'Complete set 1' }).click();
-assert(!(await page.getByRole('timer').count()), 'no rest timer after bench set 1 (superset continues)');
+await page.waitForFunction(() => {
+  const row = document.querySelector('article[aria-label="Pull Up (Assisted)"] [data-set-row] > div');
+  return row && getComputedStyle(row).boxShadow.includes('inset');
+}, null, { timeout: 5000 });
 await pull.getByRole('button', { name: 'Complete set 1' }).click();
-await page.getByRole('timer').waitFor();
-step('  rest timer started after last exercise in round');
-await page.getByRole('button', { name: 'Skip' }).click();
 await bench.getByRole('button', { name: 'Complete set 2' }).click();
 await pull.getByRole('button', { name: 'Complete set 2' }).click();
-await page.getByRole('button', { name: 'Skip' }).click();
+assert(!(await page.getByRole('timer').count()) && !(await page.getByText(/^Rest/).count()), 'no rest timer anywhere');
 await bench.getByRole('button', { name: 'Complete set d' }).click();
 await shot('01-active-workout');
+
+step('exercise note keeps keyboard focus while typing');
+await page.getByRole('button', { name: 'Bench Press (Barbell) options' }).click();
+await page.getByRole('button', { name: 'Exercise note', exact: true }).click();
+const note = page.getByRole('textbox', { name: 'Note', exact: true });
+await note.pressSequentially('Grip on rings', { delay: 20 });
+assert(await note.evaluate((el) => el === document.activeElement), 'note field still focused after typing');
+assert((await note.inputValue()) === 'Grip on rings', 'note typed');
+await page.getByRole('button', { name: 'Save' }).click();
+await bench.getByText('Grip on rings').waitFor();
 
 step('reload mid-workout keeps state');
 await page.reload();

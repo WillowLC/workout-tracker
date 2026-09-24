@@ -119,7 +119,7 @@ export function ExerciseDetailScreen() {
                 {ex.archived ? 'Unarchive exercise' : 'Archive exercise'}
               </Button>
             )}
-            {!ex.isCustom && <p className="text-xs text-muted">Built-in exercises can't be renamed or deleted, but you can set a note and rest time.</p>}
+            {!ex.isCustom && <p className="text-xs text-muted">Built-in exercises can't be renamed or deleted, but you can give them a note.</p>}
           </div>
         )}
       </Sheet>

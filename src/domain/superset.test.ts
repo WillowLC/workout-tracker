@@ -20,36 +20,49 @@ const complete = (w: Workout, id: string): Workout => ({
   exercises: w.exercises.map((e) => ({ ...e, sets: e.sets.map((x) => (x.id === id ? { ...x, completed: true } : x)) })),
 });
 
-describe('superset rest-timer rule', () => {
-  it('completing A1 moves to B1 without rest', () => {
+describe('next set after completing one (superset rounds)', () => {
+  it('completing A1 moves to B1', () => {
     const w = complete(wk(), 'a1');
-    expect(afterSetCompleted(w, 'A', 'a1')).toEqual({ startRest: false, nextSetId: 'b1' });
+    expect(afterSetCompleted(w, 'A', 'a1')).toEqual({ nextSetId: 'b1' });
   });
-  it('rest starts only after the last exercise in the round, focus goes to A2', () => {
+  it('after the last exercise in the round, focus goes to A2', () => {
     const w = complete(complete(wk(), 'a1'), 'b1');
-    expect(afterSetCompleted(w, 'B', 'b1')).toMatchObject({ startRest: true, restFromWorkoutExerciseId: 'B', nextSetId: 'a2' });
+    expect(afterSetCompleted(w, 'B', 'b1')).toEqual({ nextSetId: 'a2' });
+  });
+  it('warm-ups are not rounds: A1 still pairs with B1', () => {
+    const w = wk();
+    w.exercises[0].sets = [s('aw', true, 'warmup'), s('a1', true), s('a2')];
+    expect(afterSetCompleted(w, 'A', 'a1')).toEqual({ nextSetId: 'b1' });
+  });
+  it('after a warm-up, the same exercise continues; a partner’s warm-up comes before its first set', () => {
+    const w = wk();
+    w.exercises[0].sets = [s('aw', true, 'warmup'), s('a1'), s('a2')];
+    w.exercises[1].sets = [s('bw', false, 'warmup'), s('b1'), s('b2')];
+    expect(afterSetCompleted(w, 'A', 'aw')).toEqual({ nextSetId: 'a1' });
+    w.exercises[0].sets[1] = s('a1', true);
+    expect(afterSetCompleted(w, 'A', 'a1')).toEqual({ nextSetId: 'bw' });
   });
   it('works for giant sets (3+ exercises)', () => {
     let w = wk();
     w = linkSuperset(w, 'B', 'C');
     w = complete(complete(w, 'a1'), 'b1');
-    expect(afterSetCompleted(w, 'B', 'b1')).toMatchObject({ startRest: false, nextSetId: 'c1' });
+    expect(afterSetCompleted(w, 'B', 'b1')).toEqual({ nextSetId: 'c1' });
   });
-  it('out-of-order completion: finishing B1 first sends you back to A1, no rest', () => {
+  it('out-of-order completion: finishing B1 first sends you back to A1', () => {
     const w = complete(wk(), 'b1');
-    expect(afterSetCompleted(w, 'B', 'b1')).toEqual({ startRest: false, nextSetId: 'a1' });
+    expect(afterSetCompleted(w, 'B', 'b1')).toEqual({ nextSetId: 'a1' });
   });
-  it('uneven set counts: extra sets of one member rest normally', () => {
-    let w = wk();
+  it('uneven set counts: when the group is done, moves on to the next exercise', () => {
+    const w = wk();
     w.exercises[1].sets = [s('b1', true)];
     w.exercises[0].sets = [s('a1', true), s('a2', true)];
-    expect(afterSetCompleted(w, 'A', 'a2').startRest).toBe(true);
+    expect(afterSetCompleted(w, 'A', 'a2')).toEqual({ nextSetId: 'c1' });
   });
-  it('plain exercise rests after each set, but not between a set and its drop set', () => {
+  it('plain exercise: a set goes to its drop set, then to the next set', () => {
     let w = complete(wk(), 'c1');
-    expect(afterSetCompleted(w, 'C', 'c1')).toEqual({ startRest: false, nextSetId: 'c2' });
+    expect(afterSetCompleted(w, 'C', 'c1')).toEqual({ nextSetId: 'c2' });
     w = complete(w, 'c2');
-    expect(afterSetCompleted(w, 'C', 'c2')).toMatchObject({ startRest: true, nextSetId: 'c3' });
+    expect(afterSetCompleted(w, 'C', 'c2')).toEqual({ nextSetId: 'c3' });
   });
 });
 

@@ -9,7 +9,6 @@ export interface ExerciseCardProps {
   e1rm?: string;
   exerciseNote?: string;
   sessionNote?: string;
-  restLabel?: string;
   superset?: { letter: string; colorIndex: number };
   columns: SetColumn[];
   showRpe: boolean;
@@ -33,7 +32,6 @@ export function ExerciseCard(p: ExerciseCardProps) {
           <BestLine best={p.best} e1rm={p.e1rm} />
           {p.exerciseNote && <p className="text-xs text-muted">{p.exerciseNote}</p>}
           {p.sessionNote && <p className="text-xs text-secondary">{p.sessionNote}</p>}
-          {p.restLabel && <p className="text-xs text-muted">Rest {p.restLabel}</p>}
         </div>
         {p.onMenu && (
           <button type="button" aria-label={`${p.name} options`} title={`${p.name} options`} onClick={p.onMenu}

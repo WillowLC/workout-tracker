@@ -9,7 +9,7 @@ Jim is a workout tracker, and this brief is for redesigning its interface. The a
 
 ## 1. What Jim is
 
-Jim is for logging strength training while you're actually at the gym. It follows the model of the apps Strong and Hevy: pick exercises, log sets of weight × reps, check each set off, rest, repeat. Its main value is **memory**. For every set, it shows what you lifted last time and pre-fills those numbers, so logging a set usually takes a single tap.
+Jim is for logging strength training while you're actually at the gym. It follows the model of the apps Strong and Hevy: pick exercises, log sets of weight × reps, check each set off, repeat. Its main value is **memory**. For every set, it shows what you lifted last time and pre-fills those numbers, so logging a set usually takes a single tap.
 
 **Name and personality:** "Jim", a play on "gym". Friendly and plain, without being loud. The current app icon is a placeholder, a white "L" on dark slate. Replace it.
 
@@ -62,9 +62,8 @@ These screens are full screen, with no tab bar:
 - **Exercise picker**: an overlay that can open from several places
 
 **Floating layers** sit above the tab bar, stacked from the bottom up:
-1. **ResumeBar**: shows on every tab while a workout is in progress. It gives the workout name and elapsed time, and the rest countdown if one is running. Tapping it opens the workout.
-2. **RestTimerBar**: shows only inside the active workout.
-3. **Toast**: a short message, often with an "Undo" action. It lasts 5 seconds.
+1. **ResumeBar**: shows on every tab while a workout is in progress. It gives the workout name and elapsed time. Tapping it opens the workout.
+2. **Toast**: a short message, often with an "Undo" action. It lasts 5 seconds.
 
 **Banners** appear at the top of a screen's content:
 - **Update available — Reload**
@@ -94,13 +93,11 @@ These screens are full screen, with no tab bar:
 - **A list of ExerciseCards (§5).** Exercises in a superset sit next to each other inside a coloured **SupersetBracket** labelled "Superset A", "Superset B" and so on.
 - **"+ Add Exercises"** opens the library picker, where you can select several exercises at once.
 - **"Cancel Workout"** is a quiet, danger-coloured text button at the very bottom.
-- **RestTimerBar** floats at the bottom while a rest period is running.
 - **Menus (bottom sheets):**
   - **Set menu** (tap a set number): Warm-up / Drop set / Failure / Normal, then "Superset with…", then "Delete set".
   - **Exercise ⋯ menu:**
     - Session note
     - Exercise note (every time)
-    - Rest timer (shows its current value)
     - Superset with…
     - Remove from superset (only when the exercise is in one)
     - Replace exercise
@@ -141,7 +138,7 @@ These screens are full screen, with no tab bar:
 - Filter chips for **Body part ▾** and **Equipment ▾**. Each expands a wrap of selectable chips. There's also a "Clear" chip, and an "Archived" toggle for exercises you've hidden.
 - A **"Recently used"** section at the top, then an A–Z list with sticky letter headers.
 - Each row shows the exercise name on one line and "Chest · Barbell" below it, plus "· Custom" for exercises the user created. In multi-select mode (when adding exercises to a workout), each row has a round checkmark on the right.
-- **"+ New"** opens a form for a custom exercise: name, body part, equipment, what to track, a note, and a default rest time.
+- **"+ New"** opens a form for a custom exercise: name, body part, equipment, what to track, and a note.
 - **The library is large:** about 180 exercises. Names follow Strong's pattern, "Movement (Equipment)", so they can be long: "Triceps Pushdown (Cable - Straight Bar)", "Knee Raise (Captain's Chair)".
 
 ### 4.6 Exercise detail
@@ -162,8 +159,6 @@ These screens are full screen, with no tab bar:
 Settings is a grouped list: a label on the left (with an optional hint beneath it) and a control on the right.
 - **Workout:**
   - Units: a kg/lb segmented control
-  - Default rest timer: a number
-  - Auto-start rest timer: a switch
   - Weight increment: a number
   - Barbell weight: a number
   - Count warm-ups in stats: a switch
@@ -230,7 +225,6 @@ The optional **RPE** column is a 6–10 effort rating, shown only when the setti
   - the **BestLine**: "**BEST** 100 kg × 5 · e1RM 116.7 kg", or "No records yet"
   - the exercise's permanent note, marked 📌, if any
   - a note for this session, if any
-  - "Rest: 1:30", if this exercise's rest time was changed for this workout
 - **Body:** column headings (SET / PREVIOUS / KG / REPS / ✓), then the SetRows.
 - **Footer:** a full-width "+ Add Set" button.
 
@@ -243,8 +237,7 @@ The optional **RPE** column is a 6–10 effort rating, shown only when the setti
 | **PRBadge** | "PR" chip, optionally "PR ×3". Kinds: Best set, Est. 1RM, Volume | single; multiple |
 | **SupersetBracket** | Coloured left bracket plus a "SUPERSET A" label around 2+ cards. Four rotating colours | A–D colours |
 | **SupersetTag** | Small letter chip next to the exercise name | four colours |
-| **RestTimerBar** | Floating bar: a progress line, "Rest · Bench Press", a big countdown, and −15s / +15s / Skip. The phone vibrates and beeps when it ends | running; near zero |
-| **ResumeBar** | Floating bar: "Workout in progress · Rest 1:12", the workout name, elapsed time, ▲ | with and without rest |
+| **ResumeBar** | Floating bar: "Workout in progress", the workout name, elapsed time, ▲ | |
 | **Toast** | Message plus optional Undo and ✕ | with and without undo |
 | **Banner** | Inline notice: text, an optional action button, dismiss ✕ | neutral; warning |
 | **WorkoutSummary** | Title block, 3 stat tiles, PR list, action buttons | with PRs; without |
@@ -339,7 +332,7 @@ The code keeps every colour, font and corner radius in one place, as CSS variabl
   - how PREVIOUS is matched to each set
   - the BEST rule: heaviest weight wins, reps break ties
   - PR detection
-  - how the rest timer works in supersets
+  - the order sets are highlighted in supersets
   - set-type numbering
 - **Screens, routes and flows:** you can merge or rearrange elements *within* a screen, but keep every function reachable.
 - **Data:** no accounts, sync, social features or new data fields. The app is private, stores data only on the phone, and works offline.

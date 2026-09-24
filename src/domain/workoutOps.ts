@@ -102,7 +102,7 @@ export function replaceExercise(w: Workout, weId: string, exerciseId: string): W
   return mapWE(w, weId, (we) => ({ ...we, exerciseId, sets: we.sets.map((s) => newSet(s.type)) }));
 }
 
-export function updateWorkoutExercise(w: Workout, weId: string, patch: Partial<Pick<WorkoutExercise, 'sessionNote' | 'restSeconds'>>): Workout {
+export function updateWorkoutExercise(w: Workout, weId: string, patch: Partial<Pick<WorkoutExercise, 'sessionNote'>>): Workout {
   return mapWE(w, weId, (we) => ({ ...we, ...patch }));
 }
 

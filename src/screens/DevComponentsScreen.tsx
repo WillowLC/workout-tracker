@@ -9,7 +9,6 @@ import { PreviousCell } from '../components/PreviousCell';
 import { BestLine } from '../components/BestLine';
 import { PRBadge } from '../components/PRBadge';
 import { SupersetBracket } from '../components/SupersetBracket';
-import { RestTimerBar } from '../components/RestTimerBar';
 import { WorkoutSummary } from '../components/WorkoutSummary';
 import { HistoryCard } from '../components/HistoryCard';
 import { Heatmap } from '../components/Heatmap';
@@ -90,12 +89,8 @@ export function DevComponentsScreen() {
         <SupersetBracket letter="B" colorIndex={1}><p className="text-sm">…second group colour</p></SupersetBracket>
       </Section>
 
-      <Section title="RestTimerBar (running)">
-        <RestTimerBar remainingSec={83} totalSec={120} label="Bench Press (Barbell)" onAdjust={noop} onSkip={noop} />
-      </Section>
-
       <Section title="ResumeBar / Toast / Banners">
-        <ResumeBar name="Push Day" elapsed="42:13" rest="1:12" onClick={noop} />
+        <ResumeBar name="Push Day" elapsed="42:13" onClick={noop} />
         <ToastView message="Set deleted" onUndo={noop} onDismiss={noop} />
         <UpdateBanner duringWorkout={false} onReload={noop} />
         <UpdateBanner duringWorkout onReload={noop} />

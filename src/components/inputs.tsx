@@ -29,19 +29,25 @@ export function NumberInput({
   const [draft, setDraft] = useState('');
   const [focused, setFocused] = useState(false);
   const formatted = value === undefined ? '' : formatNumber(value);
+  // While focused, show what's being typed ("82." still means 82) — unless the
+  // value changed from outside (e.g. the ±2.5 stepper), then show the new value.
+  const typed = draft === '' || draft === '.' ? undefined : Number(draft);
+  const shown = focused && typed === value ? draft : formatted;
   return (
     <input
       type="text"
       inputMode={decimals ? 'decimal' : 'numeric'}
       autoComplete="off"
       className={`${FIELD_BASE} ${toneClass(tone)} ${className}`}
-      value={focused ? draft : formatted}
+      value={shown}
       placeholder={placeholder === undefined ? '' : typeof placeholder === 'number' ? formatNumber(placeholder) : placeholder}
       onFocus={(e) => {
         setDraft(formatted);
         setFocused(true);
         const el = e.currentTarget;
-        requestAnimationFrame(() => el.select());
+        // Deferred so the tap doesn't undo the selection; skip if focus has moved on
+        // (select() on an unfocused input would steal focus back in Chrome).
+        requestAnimationFrame(() => el === document.activeElement && el.select());
         onFocus?.(e);
       }}
       onBlur={(e) => {
@@ -75,7 +81,8 @@ export function ClockInput({ value, placeholder, onChange, className = '', tone 
       onFocus={(e) => {
         setFocused(true);
         setDraft(value === undefined ? '' : formatClock(value).replace(/:/g, ''));
-        requestAnimationFrame(() => e.target.select());
+        const el = e.target;
+        requestAnimationFrame(() => el === document.activeElement && el.select());
       }}
       onBlur={() => setFocused(false)}
       onChange={(e) => {

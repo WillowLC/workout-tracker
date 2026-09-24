@@ -1,4 +1,4 @@
-import type { Exercise, Settings, Workout, WorkoutExercise, WorkoutSet } from './types';
+import type { Workout, WorkoutExercise, WorkoutSet } from './types';
 
 export function sortedExercises<T extends { order: number }>(w: { exercises: T[] }): T[] {
   return [...w.exercises].sort((a, b) => a.order - b.order);
@@ -57,41 +57,49 @@ export function supersetInfo<T extends { order: number; supersetGroupId?: string
 export function rounds(sets: WorkoutSet[]): WorkoutSet[][] {
   const out: WorkoutSet[][] = [];
   for (const s of sets) {
+    if (s.type === 'warmup') continue; // warm-ups sit outside superset rounds
     if (s.type === 'drop' && out.length) out[out.length - 1].push(s);
     else out.push([s]);
   }
   return out;
 }
 
+const openWarmup = (we: WorkoutExercise) => we.sets.find((s) => s.type === 'warmup' && !s.completed);
+
 export interface AfterCompleteResult {
-  startRest: boolean;
-  /** WorkoutExercise whose rest duration applies. */
-  restFromWorkoutExerciseId?: string;
   /** Set to highlight/scroll to next. */
   nextSetId?: string;
 }
 
 /**
- * What happens after a set is checked off:
- * - If the next set of the same exercise is a drop set → no rest, go to it.
- * - In a superset, the rest timer starts only once every member's set in this
- *   round is done (i.e. after the last exercise of the round); until then
- *   focus moves to the next member's set in the same round.
- * - A normal exercise is a superset of one, so it always rests.
+ * Which set to highlight after one is checked off:
+ * - If the next set of the same exercise is a drop set → that drop set.
+ * - After a warm-up → the next open set of the same exercise.
+ * - In a superset, the same round of the next member (A1 → B1 → A2 …), until
+ *   every member has finished the round. Warm-ups are not rounds: a member's
+ *   open warm-ups come before its first working set.
+ * - Otherwise the earliest open set in the group, then the next exercise.
  */
 export function afterSetCompleted(w: Workout, weId: string, setId: string): AfterCompleteResult {
   const all = sortedExercises(w);
   const we = all.find((e) => e.id === weId);
-  if (!we) return { startRest: false };
+  if (!we) return {};
   const idx = we.sets.findIndex((s) => s.id === setId);
-  if (idx < 0) return { startRest: false };
+  if (idx < 0) return {};
+  const set = we.sets[idx];
 
   const following = we.sets[idx + 1];
   if (following && following.type === 'drop' && !following.completed) {
-    return { startRest: false, nextSetId: following.id };
+    return { nextSetId: following.id };
   }
 
   const members = we.supersetGroupId ? all.filter((e) => e.supersetGroupId === we.supersetGroupId) : [we];
+
+  if (set.type === 'warmup') {
+    const next = we.sets.slice(idx + 1).find((s) => !s.completed);
+    return { nextSetId: (next ?? nextOpenSet(all, members))?.id };
+  }
+
   const roundIdx = rounds(we.sets).findIndex((r) => r.some((s) => s.id === setId));
   const p = members.findIndex((m) => m.id === we.id);
 
@@ -100,19 +108,19 @@ export function afterSetCompleted(w: Workout, weId: string, setId: string): Afte
     const m = members[(p + k) % members.length];
     const r = rounds(m.sets)[roundIdx];
     const open = r?.find((s) => !s.completed);
-    if (open) return { startRest: false, nextSetId: open.id };
+    if (open) return { nextSetId: (roundIdx === 0 && openWarmup(m)) ? openWarmup(m)!.id : open.id };
   }
 
-  return { startRest: true, restFromWorkoutExerciseId: we.id, nextSetId: nextOpenSet(all, members)?.id };
+  return { nextSetId: nextOpenSet(all, members)?.id };
 }
 
 function nextOpenSet(all: WorkoutExercise[], members: WorkoutExercise[]): WorkoutSet | undefined {
-  // Earliest open round within the group, member order.
+  // Earliest open round within the group, member order (open warm-ups first).
   const maxRounds = Math.max(...members.map((m) => rounds(m.sets).length));
   for (let r = 0; r < maxRounds; r++) {
     for (const m of members) {
       const open = rounds(m.sets)[r]?.find((s) => !s.completed);
-      if (open) return open;
+      if (open) return (r === 0 && openWarmup(m)) || open;
     }
   }
   // Otherwise the first open set in any later exercise.
@@ -123,8 +131,4 @@ function nextOpenSet(all: WorkoutExercise[], members: WorkoutExercise[]): Workou
     if (open) return open;
   }
   return undefined;
-}
-
-export function restSecondsFor(we: WorkoutExercise | undefined, ex: Exercise | undefined, settings: Settings): number {
-  return we?.restSeconds ?? ex?.defaultRestSeconds ?? settings.defaultRestSeconds;
 }

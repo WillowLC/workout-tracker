@@ -1,12 +1,13 @@
 // App-shell visual pieces: tab bar, resume bar, toast, banners.
 import { NavLink } from 'react-router-dom';
 import { Banner, Button } from './ui';
+import { IconExercises, IconHistory, IconSettings, IconWorkout } from './icons';
 
 const TABS = [
-  { to: '/', label: 'Workout', icon: '＋' },
-  { to: '/history', label: 'History', icon: '🕘' },
-  { to: '/exercises', label: 'Exercises', icon: '🏋' },
-  { to: '/settings', label: 'Settings', icon: '⚙' },
+  { to: '/', label: 'Workout', icon: <IconWorkout /> },
+  { to: '/history', label: 'History', icon: <IconHistory /> },
+  { to: '/exercises', label: 'Exercises', icon: <IconExercises /> },
+  { to: '/settings', label: 'Settings', icon: <IconSettings /> },
 ];
 
 export function TabBar() {
@@ -18,9 +19,9 @@ export function TabBar() {
             <NavLink
               to={t.to}
               end={t.to === '/'}
-              className={({ isActive }) => `flex flex-col items-center justify-center min-h-[56px] text-xs ${isActive ? 'text-accent font-semibold' : 'text-muted'}`}
+              className={({ isActive }) => `flex flex-col items-center justify-center gap-0.5 min-h-[56px] text-xs ${isActive ? 'text-accent font-semibold' : 'text-muted'}`}
             >
-              <span aria-hidden className="text-lg leading-none">{t.icon}</span>
+              {t.icon}
               {t.label}
             </NavLink>
           </li>
@@ -31,11 +32,11 @@ export function TabBar() {
 }
 
 /** Collapsed mini-bar for an in-progress workout, shown on every tab. */
-export function ResumeBar({ name, elapsed, rest, onClick }: { name: string; elapsed: string; rest?: string; onClick: () => void }) {
+export function ResumeBar({ name, elapsed, onClick }: { name: string; elapsed: string; onClick: () => void }) {
   return (
     <button type="button" onClick={onClick} className="w-full bg-accent text-accent-contrast rounded-lg px-4 py-2 flex items-center gap-3 shadow-lg text-left">
       <span className="flex-1 min-w-0">
-        <span className="block text-xs opacity-70">Workout in progress{rest ? ` · Rest ${rest}` : ''}</span>
+        <span className="block text-xs opacity-70">Workout in progress</span>
         <span className="block font-semibold truncate">{name}</span>
       </span>
       <span className="tabular font-semibold">{elapsed}</span>

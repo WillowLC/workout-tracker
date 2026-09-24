@@ -11,7 +11,7 @@ import { moveBlock } from '../domain/workoutOps';
 import { blocks, sortedExercises, supersetInfo } from '../domain/superset';
 import { setLabels } from '../domain/sets';
 import { Button, EmptyState, Field, IconButton, MenuList, PageHeader, Sheet, inputClass } from '../components/ui';
-import { SetTypeBadge } from '../components/SetTypeBadge';
+import { SetTypeBadge, SetTypeLetter } from '../components/SetTypeBadge';
 import { SupersetBracket, SupersetTag } from '../components/SupersetBracket';
 import { ExercisePicker } from '../components/ExercisePicker';
 import { ReorderList } from '../components/ReorderList';
@@ -110,10 +110,10 @@ export function TemplateEditorScreen() {
       </Sheet>
       <Sheet open={!!typeMenu} title="Set type" onClose={() => setTypeMenu(null)}>
         <MenuList items={[
-          { label: 'W  Warm-up', onClick: () => chooseType('warmup') },
-          { label: 'D  Drop set', onClick: () => chooseType('drop') },
-          { label: 'F  Failure', onClick: () => chooseType('failure') },
-          { label: '#  Normal', onClick: () => chooseType('normal') },
+          { label: 'Warm-up', icon: <SetTypeLetter type="warmup" />, onClick: () => chooseType('warmup') },
+          { label: 'Drop set', icon: <SetTypeLetter type="drop" />, onClick: () => chooseType('drop') },
+          { label: 'Failure', icon: <SetTypeLetter type="failure" />, onClick: () => chooseType('failure') },
+          { label: 'Normal', icon: '', onClick: () => chooseType('normal') },
         ]} />
       </Sheet>
       <Sheet open={!!ssTe} title="Superset with…" onClose={() => setSsFor(null)}>

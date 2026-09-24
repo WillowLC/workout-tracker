@@ -20,7 +20,7 @@ export function ActiveWorkoutScreen() {
   const updateActive = useAppStore((s) => s.updateActive);
   const finishActive = useAppStore((s) => s.finishActive);
   const cancelActive = useAppStore((s) => s.cancelActive);
-  const { setSummary, stopRest, setHighlight } = useUiStore();
+  const { setSummary, setHighlight } = useUiStore();
   const now = useNow(1000);
   const [dialog, setDialog] = useState<'pending' | 'empty' | 'cancel' | null>(null);
 
@@ -38,7 +38,6 @@ export function ActiveWorkoutScreen() {
       return;
     }
     const templateChanged = !!template && !workoutMatchesTemplate(finished, template);
-    stopRest();
     setHighlight(null);
     await finishActive(finished);
     setSummary({ workout: finished, templateChanged });
@@ -52,7 +51,6 @@ export function ActiveWorkoutScreen() {
 
   const onCancel = async () => {
     setDialog(null);
-    stopRest();
     setHighlight(null);
     await cancelActive();
     const pwa = usePwaStore.getState();

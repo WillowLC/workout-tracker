@@ -25,13 +25,17 @@ export function IconButton({ label, className = '', ...rest }: ButtonHTMLAttribu
 
 export function Sheet({ open, title, onClose, children, footer }: { open: boolean; title?: string; onClose: () => void; children: ReactNode; footer?: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && closeRef.current();
     window.addEventListener('keydown', onKey);
-    ref.current?.focus();
+    // Focus the dialog once on open — but never steal focus from an autofocused
+    // field inside it (that would close the phone keyboard).
+    if (!ref.current?.contains(document.activeElement)) ref.current?.focus();
     return () => window.removeEventListener('keydown', onKey);
-  }, [open, onClose]);
+  }, [open]);
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
@@ -79,7 +83,7 @@ export function ConfirmDialog({ open, title, message, actions, onClose }: { open
   );
 }
 
-export function MenuList({ items }: { items: { label: string; onClick: () => void; danger?: boolean; active?: boolean; hint?: string }[] }) {
+export function MenuList({ items }: { items: { label: string; onClick: () => void; danger?: boolean; active?: boolean; hint?: string; icon?: ReactNode }[] }) {
   return (
     <ul className="flex flex-col -mx-4">
       {items.map((it) => (
@@ -89,7 +93,10 @@ export function MenuList({ items }: { items: { label: string; onClick: () => voi
             onClick={it.onClick}
             className={`w-full text-left px-4 min-h-[48px] flex items-center justify-between ${it.danger ? 'text-danger' : ''} ${it.active ? 'font-semibold' : ''}`}
           >
-            <span>{it.label}</span>
+            <span className="flex items-center gap-3">
+              {it.icon !== undefined && <span aria-hidden className="w-5 text-center">{it.icon}</span>}
+              {it.label}
+            </span>
             {it.hint && <span className="text-muted text-sm">{it.hint}</span>}
             {it.active && <span aria-hidden>✓</span>}
           </button>

@@ -11,8 +11,7 @@ export type MetaKey =
   | 'lastBackupAt'
   | 'backupSnoozedUntil'
   | 'persistGranted'
-  | 'installHintDismissed'
-  | 'restTimer';
+  | 'installHintDismissed';
 
 export async function getMeta<T>(key: MetaKey): Promise<T | undefined> {
   return (await db.meta.get(key))?.value as T | undefined;

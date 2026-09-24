@@ -7,18 +7,19 @@ import {
   addExercises, addSet, linkSuperset, removeExercise, removeSet, reorderWorkout, replaceExercise,
   setSetType, toggleSetComplete, unlinkSuperset, updateSet, updateWorkoutExercise,
 } from '../../domain/workoutOps';
-import { afterSetCompleted, blocks, restSecondsFor, sortedExercises, supersetInfo } from '../../domain/superset';
+import { afterSetCompleted, blocks, sortedExercises, supersetInfo } from '../../domain/superset';
 import { findPreviousPerformance } from '../../domain/previous';
 import { setLabels, pickValues } from '../../domain/sets';
 import { formatNumber } from '../../domain/units';
-import { formatClock, toDisplayWeight } from '../../domain/units';
+import { toDisplayWeight } from '../../domain/units';
 import { useAppStore } from '../../store/appStore';
 import { useUiStore } from '../../store/uiStore';
 import { useRecentExerciseIds } from '../../store/selectors';
-import { primeAudio } from '../../lib/feedback';
+import { haptic } from '../../lib/feedback';
 import { columnsFor, formatSet } from '../../lib/format';
 import { ExerciseCard } from '../../components/ExerciseCard';
 import { SetRow } from '../../components/SetRow';
+import { SetTypeLetter } from '../../components/SetTypeBadge';
 import { SupersetBracket } from '../../components/SupersetBracket';
 import { ExercisePicker } from '../../components/ExercisePicker';
 import { PlateCalculator } from '../../components/PlateCalculator';
@@ -28,8 +29,6 @@ import { useWorkoutContext } from './useExerciseContext';
 
 type PickerMode = { kind: 'add' } | { kind: 'replace'; weId: string } | { kind: 'superset'; weId: string };
 
-const REST_PRESETS = [0, 30, 60, 90, 120, 150, 180, 240, 300];
-
 export function WorkoutEditor({ workout: w, onChange, mode, template }: { workout: Workout; onChange: (fn: (w: Workout) => Workout) => void; mode: 'active' | 'edit'; template?: Template }) {
   const navigate = useNavigate();
   const history = useAppStore((s) => s.workouts);
@@ -37,7 +36,7 @@ export function WorkoutEditor({ workout: w, onChange, mode, template }: { workou
   const exercises = useAppStore((s) => s.exercises);
   const saveExercise = useAppStore((s) => s.saveExercise);
   const createExercise = useAppStore((s) => s.createExercise);
-  const { showToast, startRest, highlightSetId, setHighlight } = useUiStore();
+  const { showToast, highlightSetId, setHighlight } = useUiStore();
   const recentIds = useRecentExerciseIds();
   const { exMap, trackingOf, perExercise, prs, rows, prior } = useWorkoutContext(w, history, settings, template);
 
@@ -46,7 +45,6 @@ export function WorkoutEditor({ workout: w, onChange, mode, template }: { workou
   const [picker, setPicker] = useState<PickerMode | null>(null);
   const [ssChooser, setSsChooser] = useState<string | null>(null);
   const [noteFor, setNoteFor] = useState<{ weId: string; kind: 'session' | 'exercise' } | null>(null);
-  const [restFor, setRestFor] = useState<string | null>(null);
   const [reorder, setReorder] = useState(false);
   const [plates, setPlates] = useState<number | null>(null);
   const [noteDraft, setNoteDraft] = useState('');
@@ -81,14 +79,9 @@ export function WorkoutEditor({ workout: w, onChange, mode, template }: { workou
     }
     onChange(() => next);
     if (set.completed) return; // un-checking
+    haptic();
     if (mode !== 'active') return;
-    primeAudio();
     const r = afterSetCompleted(next, weId, setId);
-    if (r.startRest && settings.autoStartRestTimer) {
-      const restWe = weById(r.restFromWorkoutExerciseId ?? weId);
-      const secs = restSecondsFor(restWe, exMap.get(restWe?.exerciseId ?? ''), settings);
-      if (secs > 0) startRest(secs, nameOf(restWe?.exerciseId ?? ''));
-    }
     setHighlight(r.nextSetId ?? null);
   };
 
@@ -129,7 +122,6 @@ export function WorkoutEditor({ workout: w, onChange, mode, template }: { workou
         e1rm={e1 !== undefined ? `${formatNumber(Math.round(toDisplayWeight(e1, settings.unit) * 10) / 10)} ${settings.unit}` : undefined}
         exerciseNote={ex?.notes}
         sessionNote={we.sessionNote}
-        restLabel={we.restSeconds !== undefined ? (we.restSeconds === 0 ? 'off' : formatClock(we.restSeconds)) : undefined}
         superset={g ? { letter: g.letter, colorIndex: g.colorIndex } : undefined}
         columns={columnsFor(t, settings.unit)}
         showRpe={settings.showRpe}
@@ -173,7 +165,6 @@ export function WorkoutEditor({ workout: w, onChange, mode, template }: { workou
   const setMenuWe = weById(setMenu?.weId ?? null);
   const setMenuSet = setMenuWe?.sets.find((s) => s.id === setMenu?.setId);
   const chooserWe = weById(ssChooser);
-  const restWe = weById(restFor);
   const noteWe = weById(noteFor?.weId ?? null);
 
   const chooseType = (type: SetType) => {
@@ -211,10 +202,10 @@ export function WorkoutEditor({ workout: w, onChange, mode, template }: { workou
         {setMenuSet && (
           <MenuList
             items={[
-              { label: 'W  Warm-up', onClick: () => chooseType('warmup'), active: setMenuSet.type === 'warmup' },
-              { label: 'D  Drop set', onClick: () => chooseType('drop'), active: setMenuSet.type === 'drop' },
-              { label: 'F  Failure', onClick: () => chooseType('failure'), active: setMenuSet.type === 'failure' },
-              { label: '#  Normal', onClick: () => chooseType('normal'), active: setMenuSet.type === 'normal' },
+              { label: 'Warm-up', icon: <SetTypeLetter type="warmup" />, onClick: () => chooseType('warmup'), active: setMenuSet.type === 'warmup' },
+              { label: 'Drop set', icon: <SetTypeLetter type="drop" />, onClick: () => chooseType('drop'), active: setMenuSet.type === 'drop' },
+              { label: 'Failure', icon: <SetTypeLetter type="failure" />, onClick: () => chooseType('failure'), active: setMenuSet.type === 'failure' },
+              { label: 'Normal', icon: '', onClick: () => chooseType('normal'), active: setMenuSet.type === 'normal' },
               { label: 'Superset with…', onClick: () => { setSsChooser(setMenu!.weId); setSetMenu(null); } },
               { label: 'Delete set', danger: true, onClick: () => { const m = setMenu!; setSetMenu(null); withUndo('Set deleted', (cur) => removeSet(cur, m.weId, m.setId)); } },
             ]}
@@ -228,8 +219,7 @@ export function WorkoutEditor({ workout: w, onChange, mode, template }: { workou
           <MenuList
             items={[
               { label: 'Session note', hint: menuWe.sessionNote ? 'edit' : undefined, onClick: () => { setNoteDraft(menuWe.sessionNote ?? ''); setNoteFor({ weId: menuWe.id, kind: 'session' }); setExMenu(null); } },
-              { label: 'Exercise note (every time)', onClick: () => { setNoteDraft(exMap.get(menuWe.exerciseId)?.notes ?? ''); setNoteFor({ weId: menuWe.id, kind: 'exercise' }); setExMenu(null); } },
-              { label: 'Rest timer', hint: formatClock(restSecondsFor(menuWe, exMap.get(menuWe.exerciseId), settings)), onClick: () => { setRestFor(menuWe.id); setExMenu(null); } },
+              { label: 'Exercise note', onClick: () => { setNoteDraft(exMap.get(menuWe.exerciseId)?.notes ?? ''); setNoteFor({ weId: menuWe.id, kind: 'exercise' }); setExMenu(null); } },
               { label: 'Superset with…', onClick: () => { setSsChooser(menuWe.id); setExMenu(null); } },
               ...(menuWe.supersetGroupId ? [{ label: 'Remove from superset', onClick: () => { onChange((cur) => unlinkSuperset(cur, menuWe.id)); setExMenu(null); } }] : []),
               { label: 'Replace exercise', onClick: () => { setPicker({ kind: 'replace', weId: menuWe.id }); setExMenu(null); } },
@@ -259,7 +249,7 @@ export function WorkoutEditor({ workout: w, onChange, mode, template }: { workou
       </Sheet>
 
       {/* Notes */}
-      <Sheet open={!!noteWe} title={noteFor?.kind === 'exercise' ? 'Exercise note (shown every time)' : 'Note for this session'} onClose={() => setNoteFor(null)}
+      <Sheet open={!!noteWe} title={noteFor?.kind === 'exercise' ? 'Exercise note' : 'Note for this session'} onClose={() => setNoteFor(null)}
         footer={<Button variant="primary" className="flex-1" onClick={() => {
           if (!noteWe || !noteFor) return;
           const text = noteDraft.trim() || undefined;
@@ -268,22 +258,6 @@ export function WorkoutEditor({ workout: w, onChange, mode, template }: { workou
           setNoteFor(null);
         }}>Save</Button>}>
         <textarea aria-label="Note" autoFocus rows={3} className={`${inputClass} py-2`} value={noteDraft} onChange={(e) => setNoteDraft(e.target.value)} />
-      </Sheet>
-
-      {/* Rest override */}
-      <Sheet open={!!restWe} title="Rest timer for this exercise" onClose={() => setRestFor(null)}>
-        {restWe && (
-          <MenuList
-            items={[
-              { label: 'Use default', hint: formatClock(exMap.get(restWe.exerciseId)?.defaultRestSeconds ?? settings.defaultRestSeconds), active: restWe.restSeconds === undefined, onClick: () => { onChange((cur) => updateWorkoutExercise(cur, restWe.id, { restSeconds: undefined })); setRestFor(null); } },
-              ...REST_PRESETS.map((sec) => ({
-                label: sec === 0 ? 'Off' : formatClock(sec),
-                active: restWe.restSeconds === sec,
-                onClick: () => { onChange((cur) => updateWorkoutExercise(cur, restWe.id, { restSeconds: sec })); setRestFor(null); },
-              })),
-            ]}
-          />
-        )}
       </Sheet>
 
       {/* Reorder */}

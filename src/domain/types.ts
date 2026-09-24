@@ -29,7 +29,6 @@ export interface Exercise {
   trackingType: TrackingType;
   isCustom: boolean;
   notes?: string;
-  defaultRestSeconds?: number;
   archived?: boolean;
 }
 
@@ -54,7 +53,6 @@ export interface WorkoutExercise {
   supersetGroupId?: string;
   sets: WorkoutSet[];
   sessionNote?: string;
-  restSeconds?: number;
 }
 
 export interface Workout {
@@ -88,8 +86,6 @@ export interface Template {
 
 export interface Settings {
   unit: 'kg' | 'lb';
-  defaultRestSeconds: number;
-  autoStartRestTimer: boolean;
   countWarmupsInStats: boolean;
   showRpe: boolean;
   weightIncrementKg: number;
@@ -98,8 +94,6 @@ export interface Settings {
 
 export const DEFAULT_SETTINGS: Settings = {
   unit: 'kg',
-  defaultRestSeconds: 120,
-  autoStartRestTimer: true,
   countWarmupsInStats: false,
   showRpe: false,
   weightIncrementKg: 2.5,

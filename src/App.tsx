@@ -5,11 +5,9 @@ import { useUiStore } from './store/uiStore';
 import { usePwaStore } from './store/pwaStore';
 import { formatClock } from './domain/units';
 import { useNow } from './lib/useNow';
-import { restFinishedAlert } from './lib/feedback';
 import { PwaManager } from './pwa/PwaManager';
 import { requestPersistentStorage } from './pwa/storage';
 import { TabBar, ResumeBar, ToastView, UpdateBanner } from './components/shell';
-import { RestTimerBar } from './components/RestTimerBar';
 import { WorkoutHome } from './screens/WorkoutHome';
 import { ActiveWorkoutScreen } from './screens/workout/ActiveWorkoutScreen';
 import { SummaryScreen } from './screens/workout/SummaryScreen';
@@ -20,28 +18,12 @@ import { TemplateEditorScreen } from './screens/TemplateEditorScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 import { EmptyState, Button } from './components/ui';
 
-/** Global rest-timer ticking: fires the alert when time is up, on any screen. */
-function useRestTimer() {
-  const rest = useUiStore((s) => s.rest);
-  const stopRest = useUiStore((s) => s.stopRest);
-  const now = useNow(250, !!rest);
-  const remaining = rest ? Math.max(0, Math.ceil((rest.endAt - now) / 1000)) : 0;
-  useEffect(() => {
-    if (rest && now >= rest.endAt) {
-      restFinishedAlert();
-      stopRest();
-    }
-  }, [rest, now, stopRest]);
-  return { rest, remaining };
-}
-
 function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
   const active = useAppStore((s) => s.active);
-  const { toast, dismissToast, adjustRest, stopRest } = useUiStore();
+  const { toast, dismissToast } = useUiStore();
   const { needRefresh, applyUpdate } = usePwaStore();
-  const { rest, remaining } = useRestTimer();
   const now = useNow(1000, !!active);
 
   const path = location.pathname;
@@ -65,9 +47,8 @@ function Layout() {
       </div>
       <div className={`fixed inset-x-0 z-40 px-3 flex flex-col gap-2 max-w-2xl mx-auto ${fullScreen ? 'bottom-3 pb-safe' : 'bottom-[calc(var(--tabbar-height)+env(safe-area-inset-bottom)+8px)]'}`}>
         {toast && <ToastView key={toast.id} message={toast.message} onUndo={toast.undo && (() => { toast.undo!(); dismissToast(); })} onDismiss={dismissToast} />}
-        {rest && path === '/workout' && <RestTimerBar remainingSec={remaining} totalSec={rest.duration} label={rest.label} onAdjust={adjustRest} onSkip={stopRest} />}
         {active && !fullScreen && (
-          <ResumeBar name={active.name} elapsed={formatClock((now - active.startedAt) / 1000)} rest={rest ? formatClock(remaining) : undefined} onClick={() => navigate('/workout')} />
+          <ResumeBar name={active.name} elapsed={formatClock((now - active.startedAt) / 1000)} onClick={() => navigate('/workout')} />
         )}
       </div>
       {!fullScreen && <TabBar />}

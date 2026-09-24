@@ -40,7 +40,7 @@ export function WorkoutHome() {
 
   return (
     <div>
-      <PageHeader title="Workout" />
+      <PageHeader title={<span className="block text-center text-2xl text-accent">Jim</span>} />
       {showInstall && <InstallHint ios={isIOS()} onDismiss={() => void setMeta({ installHintDismissed: true })} />}
       <main className="px-4 flex flex-col gap-6 pb-4">
         <section className="flex flex-col gap-2">

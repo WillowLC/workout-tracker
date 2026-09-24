@@ -56,19 +56,19 @@ src/
     previous.ts    PREVIOUS lookup + position matching
     records.ts     Best set, e1RM (Epley), volume, records, rep maxes
     prs.ts         Live PR detection (best set / e1RM / session volume)
-    superset.ts    Superset blocks, labels, rest-timer rule
+    superset.ts    Superset blocks, labels, next-set order
     workoutOps.ts  Immutable workout edits (add/remove/replace, link supersets, finish)
     templates.ts   Template <-> workout, structure comparison, template editing
     search.ts      Fuzzy library search + alphabetical sections
     units.ts       kg/lb conversion, clock parsing/formatting
     plates.ts csv.ts backup.ts history.ts
   db/            Dexie schema + migrations (db.ts), seed library (seed.ts), repository (repo.ts)
-  store/         Zustand: appStore (data, write-through to IndexedDB), uiStore (toast, rest timer), pwaStore
+  store/         Zustand: appStore (data, write-through to IndexedDB), uiStore (toast, next-set highlight), pwaStore
   pwa/           Service-worker registration & update checks, persistent storage, install detection
-  lib/           Formatting, file download, sound/vibration, backup actions
+  lib/           Formatting, file download, haptics, backup actions
   components/    Visual components. Data comes in through props only, no fetching.
                  SetRow, SetTypeBadge, PreviousCell, BestLine, PRBadge, ExerciseCard,
-                 SupersetBracket, RestTimerBar, WorkoutSummary, ExercisePicker, ExerciseList,
+                 SupersetBracket, WorkoutSummary, ExercisePicker, ExerciseList,
                  HistoryCard, Heatmap, PlateCalculator, ReorderList, ExerciseForm, shell.tsx, ui.tsx
   screens/       Containers that connect the store and domain to components
   styles/        tokens.css (ALL colours/radii/fonts) + index.css
@@ -98,11 +98,12 @@ Every colour, radius and font is a CSS variable in `src/styles/tokens.css`. `tai
   - Warm-up (W) and drop (D) sets aren't numbered. Drop sets are indented under the set before them.
   - Choosing the current type again switches the set back to Normal.
 - **Supersets:** use "Superset with…" from the set menu or the exercise's ⋯ menu. Groups of three or more exercises work too.
-  - Completing a set moves the highlight to the same round of the next exercise in the group.
-  - The rest timer starts only once every exercise in the group has finished that round.
-  - There's no rest between a set and its drop set.
+  - Completing a set moves the highlight to the same round of the next exercise in the group (A1 → B1 → A2).
+  - Warm-ups aren't part of the rounds: an exercise's warm-ups come before its first working set, so A's first working set still pairs with B's.
+  - A set with a drop set after it goes to that drop set first.
   - Groups are saved in history and in templates, and drag-reordering moves a whole group together.
-- **Rest time:** the per-workout override from the ⋯ menu wins, then the exercise's default rest, then the global default. "Off" disables it.
+- **No rest timer.** It was removed on request.
+- **Haptics:** completing a set gives a short tick. Android uses the Vibration API. iPhones don't support it, so on iOS 18+ the app toggles a hidden native switch, which plays the system haptic; older iOS gets nothing.
 - **Templates** store structure only: exercises, set types, supersets and optional target reps. Weights always come from PREVIOUS.
 
 ## Decisions & assumptions
@@ -127,7 +128,7 @@ Where the brief didn't specify something, I followed Strong/Hevy:
 - **Undo** (after deleting a set, exercise, workout or template) restores the state from just before the delete. The toast stays for 5 seconds.
 - **Moving to the next set** highlights the row and scrolls it into view. It doesn't open the keyboard.
 - **Editing a past workout:** only checked-off sets are kept. The duration can be edited. Records and PRs are recalculated automatically, because they're always derived from history rather than stored.
-- **Built-in exercises** can't be renamed, deleted or archived, but you can give them a note and a default rest time. Custom exercises can be edited and archived; archiving keeps their history. Creating an exercise from the picker's "Create …" shortcut uses Other / Other / weight & reps, which you can change later in Exercises.
+- **Built-in exercises** can't be renamed, deleted or archived, but you can give them a note. Custom exercises can be edited and archived; archiving keeps their history. Creating an exercise from the picker's "Create …" shortcut uses Other / Other / weight & reps, which you can change later in Exercises.
 - **The library** is seeded with about 180 exercises. Seeded exercises have stable IDs (`seed-bench-press-barbell`), so re-seeding after an update only adds new ones and never overwrites your notes.
 - **Backups:** the JSON backup includes the in-progress workout and your settings. *Merge* only adds items whose IDs aren't already present. *Replace* wipes the current data first. The CSV has one row per set, with weight in your chosen unit.
 - **Storage:** at startup the app calls `navigator.storage.persist()`, and Settings shows whether it was granted.

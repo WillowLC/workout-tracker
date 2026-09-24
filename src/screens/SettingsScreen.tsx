@@ -71,12 +71,6 @@ export function SettingsScreen() {
                 ))}
               </div>
             </Row>
-            <Row label="Default rest timer" hint="Seconds">
-              <div className="w-20"><NumberInput aria-label="Default rest seconds" decimals={false} value={settings.defaultRestSeconds} onChange={(v) => v !== undefined && void updateSettings({ defaultRestSeconds: v })} /></div>
-            </Row>
-            <Row label="Auto-start rest timer" hint="After completing a set">
-              <Toggle label="Auto-start rest timer" checked={settings.autoStartRestTimer} onChange={(v) => void updateSettings({ autoStartRestTimer: v })} />
-            </Row>
             <Row label="Weight increment" hint={`± step in ${unit}`}>
               <div className="w-20"><NumberInput aria-label="Weight increment" value={toDisplayWeight(settings.weightIncrementKg, unit)} onChange={(v) => v && void updateSettings({ weightIncrementKg: fromDisplayWeight(v, unit) })} /></div>
             </Row>

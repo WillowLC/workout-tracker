@@ -55,7 +55,7 @@ const LIBRARY: Record<BodyPart, Row[]> = {
     ['Handstand Push Up', R, 'Bodyweight'],
   ],
   Arms: [
-    ['Bicep Curl (Barbell)'], ['Bicep Curl (Dumbbell)'], ['Bicep Curl (Cable)'], ['Bicep Curl (Machine)'],
+    ['Bicep Curl (Barbell)'], ['Bicep Curl (Dumbbell)'], ['Bicep Curl (Cable)'], ['Bayesian Curl (Cable)'], ['Bicep Curl (Machine)'],
     ['EZ Bar Curl', undefined, 'Barbell'], ['Hammer Curl (Dumbbell)'], ['Hammer Curl (Cable)'],
     ['Preacher Curl (Barbell)'], ['Preacher Curl (Dumbbell)'], ['Preacher Curl (Machine)'],
     ['Incline Curl (Dumbbell)'], ['Concentration Curl (Dumbbell)'], ['Spider Curl (Dumbbell)'],

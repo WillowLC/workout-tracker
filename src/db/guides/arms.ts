@@ -73,6 +73,21 @@ export const armGuides: GuideMap = {
     cues: ['Rotate your palms to face up as you curl.'],
   }),
   'seed-bicep-curl-cable': variant(curl, { setup: 'Stand facing a low pulley holding a straight bar with an underhand grip, arms straight.', cues: ['The cable keeps tension on the muscle through the whole range.'] }),
+  'seed-bayesian-curl-cable': variant(curl, {
+    setup: 'Set a pulley at the lowest position with a single handle. Stand facing away from it, holding the handle in one hand, and step forward until the cable pulls your arm behind your body.',
+    steps: [
+      'Stagger your stance, with the foot opposite your working arm forward, and stand tall.',
+      'Let your working arm hang slightly behind your torso, palm facing forward, until you feel a stretch in your biceps.',
+      'Curl the handle forward and up, keeping your elbow back, until your forearm is about vertical, then squeeze.',
+      'Lower slowly until your arm is straight and back behind you again.',
+    ],
+    cues: [
+      'The stretched start, with the arm behind the body, is the point of this curl. Use the full range.',
+      'Keep your elbow pinned back; letting it swing forward turns it into a front raise.',
+      'Train one arm at a time and start with your weaker arm.',
+    ],
+    mistakes: ['Standing too close, so there is no tension or stretch at the bottom.', 'Leaning forward to help the weight up.'],
+  }),
   'seed-bicep-curl-machine': variant(preacher, { setup: 'Sit at the machine with your elbows lined up with the pivot and the backs of your arms on the pad.' }),
   'seed-ez-bar-curl': variant(curl, { setup: 'Stand tall holding an EZ bar on its angled grips, arms straight.', cues: ['The angled grip is easier on the wrists and elbows.'] }),
   'seed-hammer-curl-dumbbell': variant(curl, {

@@ -81,7 +81,19 @@ export interface Template {
   id: string;
   name: string;
   folder?: string;
+  /** Position on the Workout screen within its folder (lower first). Unset sorts last, by name. */
+  order?: number;
   exercises: TemplateExercise[];
+}
+
+/** Monday-first week: each day is a template ID or null for a rest day. */
+export type WeekPlan = (string | null)[];
+
+/** Per-folder settings. Folders themselves are implicit (Template.folder); this only adds order and a weekly split. */
+export interface FolderInfo {
+  name: string;
+  order?: number;
+  plan?: WeekPlan;
 }
 
 export interface Settings {

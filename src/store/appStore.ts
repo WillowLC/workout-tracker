@@ -1,13 +1,14 @@
 // Application data store. Holds everything in memory (the data set is small)
 // and writes through to IndexedDB on every change via src/db/repo.ts.
 import { create } from 'zustand';
-import type { Exercise, Settings, Template, Workout } from '../domain/types';
+import type { Exercise, FolderInfo, Settings, Template, Workout } from '../domain/types';
 import { DEFAULT_SETTINGS } from '../domain/types';
 import * as repo from '../db/repo';
 import { createEmptyWorkout, repeatWorkout, workoutFromTemplate } from '../domain/workoutOps';
 import { mergeById, type Backup } from '../domain/backup';
 import { newId } from '../domain/ids';
 import { lbToKg } from '../domain/units';
+import { renameFolderInfo } from '../domain/templates';
 
 export interface AppMeta {
   lastBackupAt?: number;
@@ -22,6 +23,8 @@ interface AppState {
   /** Finished workouts only. */
   workouts: Workout[];
   templates: Template[];
+  /** Folder order and weekly plans. */
+  folders: FolderInfo[];
   settings: Settings;
   active: Workout | null;
   meta: AppMeta;
@@ -41,6 +44,10 @@ interface AppState {
   // Templates
   saveTemplate: (t: Template) => Promise<void>;
   deleteTemplate: (id: string) => Promise<Template | undefined>;
+  /** Save several templates at once (e.g. after reordering). */
+  saveTemplates: (ts: Template[]) => Promise<void>;
+  saveFolders: (folders: FolderInfo[]) => Promise<void>;
+  renameFolder: (from: string, to: string) => Promise<void>;
 
   // Exercises
   saveExercise: (e: Exercise) => Promise<void>;
@@ -60,17 +67,19 @@ export const useAppStore = create<AppState>((set, get) => ({
   exercises: [],
   workouts: [],
   templates: [],
+  folders: [],
   settings: DEFAULT_SETTINGS,
   active: null,
   meta: {},
 
   init: async () => {
     const data = await repo.loadAll();
-    const [lastBackupAt, backupSnoozedUntil, persistGranted, installHintDismissed] = await Promise.all([
+    const [lastBackupAt, backupSnoozedUntil, persistGranted, installHintDismissed, folders] = await Promise.all([
       repo.getMeta<number>('lastBackupAt'),
       repo.getMeta<number>('backupSnoozedUntil'),
       repo.getMeta<boolean | null>('persistGranted'),
       repo.getMeta<boolean>('installHintDismissed'),
+      repo.getMeta<FolderInfo[]>('folders'),
     ]);
     const active = data.workouts.find((w) => w.finishedAt === undefined) ?? null;
     set({
@@ -78,6 +87,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       exercises: data.exercises,
       workouts: data.workouts.filter((w) => w.finishedAt !== undefined),
       templates: data.templates,
+      folders: folders ?? [],
       settings: data.settings,
       active,
       meta: { lastBackupAt, backupSnoozedUntil, persistGranted, installHintDismissed },
@@ -136,6 +146,24 @@ export const useAppStore = create<AppState>((set, get) => ({
     return t;
   },
 
+  saveTemplates: async (ts) => {
+    if (!ts.length) return;
+    const ids = new Set(ts.map((t) => t.id));
+    set((s) => ({ templates: [...s.templates.filter((x) => !ids.has(x.id)), ...ts] }));
+    await repo.putTemplates(ts);
+  },
+
+  saveFolders: async (folders) => {
+    set({ folders });
+    await repo.setMeta('folders', folders);
+  },
+
+  renameFolder: async (from, to) => {
+    const moved = get().templates.filter((t) => t.folder === from).map((t) => ({ ...t, folder: to }));
+    await get().saveTemplates(moved);
+    await get().saveFolders(renameFolderInfo(get().folders, from, to));
+  },
+
   saveExercise: async (e) => {
     set((s) => ({ exercises: [...s.exercises.filter((x) => x.id !== e.id), e] }));
     await repo.putExercise(e);
@@ -168,6 +196,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (mode === 'replace') {
       await repo.replaceAllData(b);
       if (b.settings) await repo.saveSettings({ ...DEFAULT_SETTINGS, ...b.settings });
+      await repo.setMeta('folders', b.folders ?? []);
       await get().init();
       return { added: b.workouts.length + b.templates.length + b.exercises.length, skipped: 0 };
     }
@@ -176,6 +205,8 @@ export const useAppStore = create<AppState>((set, get) => ({
     const ex = mergeById(s.exercises, b.exercises);
     const wo = mergeById([...s.workouts, ...activeRow], b.workouts);
     const tp = mergeById(s.templates, b.templates);
+    const newFolders = (b.folders ?? []).filter((f) => !s.folders.some((x) => x.name === f.name));
+    if (newFolders.length) await repo.setMeta('folders', [...s.folders, ...newFolders]);
     await repo.bulkAddMissing({
       exercises: ex.items.slice(s.exercises.length),
       workouts: wo.items.slice(s.workouts.length + activeRow.length),

@@ -1,4 +1,4 @@
-import type { Exercise, Settings, Template, Workout } from './types';
+import type { Exercise, FolderInfo, Settings, Template, Workout } from './types';
 
 export const BACKUP_FORMAT = 'jim-backup';
 export const BACKUP_VERSION = 1;
@@ -12,6 +12,7 @@ export interface Backup {
   workouts: Workout[];
   templates: Template[];
   settings?: Settings;
+  folders?: FolderInfo[];
 }
 
 export function makeBackup(data: Omit<Backup, 'format' | 'version' | 'exportedAt'>, now: number): Backup {

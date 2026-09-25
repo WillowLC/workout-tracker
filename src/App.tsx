@@ -16,6 +16,7 @@ import { EditWorkoutScreen, WorkoutDetailScreen } from './screens/WorkoutDetailS
 import { ExercisesScreen } from './screens/ExercisesScreen';
 import { TemplateEditorScreen } from './screens/TemplateEditorScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
+import { FolderPlanScreen } from './screens/FolderPlanScreen';
 import { EmptyState, Button } from './components/ui';
 
 function Layout() {
@@ -76,6 +77,7 @@ const router = createBrowserRouter(
         { path: '/exercises/:id', lazy: () => import('./screens/ExerciseDetailScreen').then((m) => ({ Component: m.ExerciseDetailScreen })) },
         { path: '/templates/new', element: <TemplateEditorScreen /> },
         { path: '/templates/:id', element: <TemplateEditorScreen /> },
+        { path: '/folders/:name', element: <FolderPlanScreen /> },
         { path: '/settings', element: <SettingsScreen /> },
         { path: '/dev/components', lazy: () => import('./screens/DevComponentsScreen').then((m) => ({ Component: m.DevComponentsScreen })) },
         { path: '*', element: <NotFound /> },

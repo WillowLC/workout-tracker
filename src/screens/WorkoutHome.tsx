@@ -4,22 +4,29 @@ import type { Template, Workout } from '../domain/types';
 import { useAppStore } from '../store/appStore';
 import { useUiStore } from '../store/uiStore';
 import { useExerciseMap } from '../store/selectors';
-import { duplicateTemplate, groupTemplatesByFolder } from '../domain/templates';
+import { duplicateTemplate, groupTemplatesByFolder, moveItem, renumberTemplates, reorderFolders, weekdayIndex } from '../domain/templates';
 import { sortedExercises } from '../domain/superset';
-import { relativeDays } from '../lib/format';
+import { daysAgo } from '../lib/format';
 import { isIOS, isStandalone } from '../pwa/storage';
 import { Button, Card, ConfirmDialog, EmptyState, PageHeader, Sheet } from '../components/ui';
 import { InstallHint } from '../components/shell';
 import { JimLogo } from '../components/JimLogo';
+import { ReorderList } from '../components/ReorderList';
+import { WeekStrip } from '../components/WeekStrip';
 
 export function WorkoutHome() {
   const navigate = useNavigate();
-  const { templates, workouts, active, startWorkout, cancelActive, saveTemplate, deleteTemplate, meta, setMeta } = useAppStore();
+  const { templates, folders, workouts, active, startWorkout, cancelActive, saveTemplate, saveTemplates, saveFolders, deleteTemplate, meta, setMeta } = useAppStore();
   const showToast = useUiStore((s) => s.showToast);
   const exMap = useExerciseMap();
   const [preview, setPreview] = useState<Template | null>(null);
   const [pendingStart, setPendingStart] = useState<{ template?: Template } | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Template | null>(null);
+  const [reordering, setReordering] = useState(false);
+  const groups = useMemo(() => groupTemplatesByFolder(templates, folders), [templates, folders]);
+  const folderList = groups.map(([f]) => f).filter(Boolean);
+  const today = weekdayIndex(Date.now());
+  const templateName = (id: string) => templates.find((t) => t.id === id)?.name;
 
   const lastPerformed = useMemo(() => {
     const m = new Map<string, number>();
@@ -54,8 +61,9 @@ export function WorkoutHome() {
         </section>
 
         <section className="flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-muted uppercase">Templates</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="flex-1 text-sm font-semibold text-muted uppercase">Templates</h2>
+            {(folderList.length > 1 || groups.some(([, l]) => l.length > 1)) && <Button size="sm" variant="ghost" onClick={() => setReordering(true)}>Reorder</Button>}
             <Button size="sm" onClick={() => navigate('/templates/new')}>+ Template</Button>
           </div>
           {templates.length === 0 && (
@@ -63,22 +71,44 @@ export function WorkoutHome() {
               <EmptyState title="No templates yet" message="Create a template for workouts you repeat, or save one from the summary after finishing a workout." />
             </Card>
           )}
-          {groupTemplatesByFolder(templates).map(([folder, list]) => (
-            <div key={folder || '_'} className="flex flex-col gap-2">
-              {folder && <h3 className="text-xs font-bold text-muted uppercase">📁 {folder}</h3>}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {list.map((t) => (
-                  <button key={t.id} type="button" onClick={() => setPreview(t)} className="text-left bg-surface border border-border rounded-lg p-3 min-h-[72px]">
-                    <p className="font-semibold">{t.name}</p>
-                    <p className="text-xs text-muted line-clamp-2">
-                      {sortedExercises(t).map((te) => exMap.get(te.exerciseId)?.name ?? '?').join(', ') || 'No exercises'}
-                    </p>
-                    {lastPerformed.get(t.id) && <p className="text-xs text-muted mt-1">Last: {relativeDays(lastPerformed.get(t.id)!)}</p>}
+          {groups.map(([folder, list]) => {
+            const plan = folders.find((f) => f.name === folder)?.plan;
+            const todayId = plan?.[today] ?? undefined;
+            return (
+              <div key={folder || '_'} className="flex flex-col gap-2">
+                {folder && (
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/folders/${encodeURIComponent(folder)}`)}
+                    aria-label={`Folder ${folder}: weekly plan`}
+                    className="flex items-center gap-2 min-h-[44px] -mx-1 px-1 rounded text-left"
+                  >
+                    <span className="flex-1 min-w-0 text-xs font-bold text-muted uppercase truncate">📁 {folder}</span>
+                    <WeekStrip plan={plan} today={today} nameOf={templateName} />
+                    <span aria-hidden className="text-muted">›</span>
                   </button>
-                ))}
+                )}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {list.map((t) => {
+                    const last = lastPerformed.get(t.id);
+                    const isToday = todayId === t.id;
+                    return (
+                      <button key={t.id} type="button" onClick={() => setPreview(t)} className={`text-left bg-surface border rounded-lg p-3 min-h-[72px] ${isToday ? 'border-accent-line' : 'border-border'}`}>
+                        <div className="flex items-start gap-2">
+                          <p className="flex-1 min-w-0 font-semibold">{t.name}</p>
+                          {isToday && <span className="shrink-0 rounded-full bg-accent-soft text-accent text-[11px] font-semibold px-2 py-0.5">Today</span>}
+                          <span className={`shrink-0 text-xs mt-0.5 ${last ? 'text-secondary' : 'text-muted'}`}>{last ? daysAgo(last) : 'Never done'}</span>
+                        </div>
+                        <p className="text-xs text-muted line-clamp-2">
+                          {sortedExercises(t).map((te) => exMap.get(te.exerciseId)?.name ?? '?').join(', ') || 'No exercises'}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </section>
       </main>
 
@@ -91,7 +121,7 @@ export function WorkoutHome() {
         {preview && (
           <div className="flex flex-col gap-3">
             <p className="text-sm text-muted">
-              {lastPerformed.get(preview.id) ? `Last performed ${relativeDays(lastPerformed.get(preview.id)!)}` : 'Never performed'}
+              {lastPerformed.get(preview.id) ? `Last done: ${daysAgo(lastPerformed.get(preview.id)!).toLowerCase()}` : 'Never performed'}
               {preview.folder ? ` · ${preview.folder}` : ''}
             </p>
             <ul className="flex flex-col gap-1">
@@ -109,6 +139,29 @@ export function WorkoutHome() {
             </div>
           </div>
         )}
+      </Sheet>
+
+      <Sheet open={reordering} title="Reorder" onClose={() => setReordering(false)} footer={<Button variant="primary" className="flex-1" onClick={() => setReordering(false)}>Done</Button>}>
+        <div className="flex flex-col gap-5">
+          {folderList.length > 1 && (
+            <section className="flex flex-col gap-2">
+              <h3 className="text-xs font-bold text-muted uppercase">Folders</h3>
+              <ReorderList
+                items={folderList.map((f) => ({ id: `folder:${f}`, title: `📁 ${f}` }))}
+                onMove={(from, to) => void saveFolders(reorderFolders(folders, moveItem(folderList, from, to)))}
+              />
+            </section>
+          )}
+          {groups.filter(([, list]) => list.length > 1).map(([folder, list]) => (
+            <section key={folder || '_'} className="flex flex-col gap-2">
+              <h3 className="text-xs font-bold text-muted uppercase">{folder ? `📁 ${folder}` : 'Templates'}</h3>
+              <ReorderList
+                items={list.map((t) => ({ id: t.id, title: t.name }))}
+                onMove={(from, to) => void saveTemplates(renumberTemplates(moveItem(list, from, to)))}
+              />
+            </section>
+          ))}
+        </div>
       </Sheet>
 
       <ConfirmDialog

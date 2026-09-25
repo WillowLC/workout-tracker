@@ -106,6 +106,8 @@ Every colour, radius and font is a CSS variable in `src/styles/tokens.css`. `tai
 - **No rest timer.** It was removed on request.
 - **Haptics:** completing a set gives a short tick. Android uses the Vibration API. iPhones don't support it, so on iOS 18+ the app toggles a hidden native switch, which plays the system haptic; older iOS gets nothing.
 - **Templates** store structure only: exercises, set types, supersets and optional target reps. Weights always come from PREVIOUS.
+- **Folders & weekly split:** folders still come from each template's `folder` name. Folder order and each folder's weekly plan (Monday to Sunday, one template or a rest day per day) are saved in the `folders` meta row and included in JSON backups. Tapping a folder opens its planner. On the Workout screen, the week strip and a "Today" badge show that day's template. Templates are reordered within their folder via `Template.order`; templates with no order sort last, by name.
+- **"Last done"** counts calendar days ("Today", "Yesterday", "12 days ago") from the most recent finished workout started from that template.
 
 ## Decisions & assumptions
 

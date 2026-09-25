@@ -1,4 +1,4 @@
-import type { Template, TemplateExercise, TemplateSet, Workout } from './types';
+import type { FolderInfo, Template, TemplateExercise, TemplateSet, WeekPlan, Workout } from './types';
 import { newId } from './ids';
 import { normalizeOrder, sortedExercises } from './superset';
 
@@ -54,15 +54,70 @@ export function addTemplateExercises(t: Template, exerciseIds: string[]): Templa
   return { ...t, exercises: normalizeOrder([...t.exercises, ...added]) };
 }
 
-/** Group templates by folder; unfiled templates come first under "". */
-export function groupTemplatesByFolder(templates: Template[]): [string, Template[]][] {
+const byOrderThenName = (a: { order?: number; name: string }, b: { order?: number; name: string }) =>
+  (a.order ?? Infinity) - (b.order ?? Infinity) || a.name.localeCompare(b.name);
+
+/**
+ * Group templates by folder; unfiled templates come first under "".
+ * Folders follow their saved order (then name); templates their `order` (then name).
+ */
+export function groupTemplatesByFolder(templates: Template[], folders: FolderInfo[] = []): [string, Template[]][] {
   const map = new Map<string, Template[]>();
-  for (const t of [...templates].sort((a, b) => a.name.localeCompare(b.name))) {
+  for (const t of [...templates].sort(byOrderThenName)) {
     const k = t.folder?.trim() ?? '';
     if (!map.has(k)) map.set(k, []);
     map.get(k)!.push(t);
   }
-  return [...map.entries()].sort(([a], [b]) => (a === '' ? -1 : b === '' ? 1 : a.localeCompare(b)));
+  const folderOrder = new Map(folders.map((f) => [f.name, f.order]));
+  return [...map.entries()].sort(([a], [b]) =>
+    a === '' ? -1 : b === '' ? 1 : byOrderThenName({ name: a, order: folderOrder.get(a) }, { name: b, order: folderOrder.get(b) }),
+  );
+}
+
+/** Distinct folder names in display order. */
+export function folderNames(templates: Template[], folders: FolderInfo[] = []): string[] {
+  return groupTemplatesByFolder(templates, folders).map(([f]) => f).filter(Boolean);
+}
+
+export function moveItem<T>(list: T[], from: number, to: number): T[] {
+  const next = [...list];
+  const [item] = next.splice(from, 1);
+  next.splice(to, 0, item);
+  return next;
+}
+
+/** Give templates consecutive `order` values in the given sequence; returns only those whose order changed. */
+export function renumberTemplates(list: Template[]): Template[] {
+  return list.map((t, i) => (t.order === i ? t : { ...t, order: i })).filter((t, i) => t !== list[i]);
+}
+
+/** Set folder `order` to match the given sequence of names, keeping plans. */
+export function reorderFolders(folders: FolderInfo[], names: string[]): FolderInfo[] {
+  const rest = folders.filter((f) => !names.includes(f.name));
+  return [...names.map((name, order) => ({ ...folders.find((f) => f.name === name), name, order })), ...rest];
+}
+
+export const WEEK_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
+
+/** Index into a WeekPlan (Monday = 0) for a timestamp. */
+export function weekdayIndex(ts: number): number {
+  return (new Date(ts).getDay() + 6) % 7;
+}
+
+export function emptyWeekPlan(): WeekPlan {
+  return Array(7).fill(null);
+}
+
+export function setPlanDay(folders: FolderInfo[], name: string, day: number, templateId: string | null): FolderInfo[] {
+  const cur = folders.find((f) => f.name === name);
+  const plan = [...(cur?.plan ?? emptyWeekPlan())];
+  plan[day] = templateId;
+  return cur ? folders.map((f) => (f === cur ? { ...f, plan } : f)) : [...folders, { name, plan }];
+}
+
+/** Rename a folder's settings entry (templates are renamed separately). */
+export function renameFolderInfo(folders: FolderInfo[], from: string, to: string): FolderInfo[] {
+  return folders.filter((f) => f.name !== to).map((f) => (f.name === from ? { ...f, name: to } : f));
 }
 
 // ---- Template editing (template exercises are addressed by their `order`) ----

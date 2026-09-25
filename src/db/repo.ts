@@ -11,7 +11,8 @@ export type MetaKey =
   | 'lastBackupAt'
   | 'backupSnoozedUntil'
   | 'persistGranted'
-  | 'installHintDismissed';
+  | 'installHintDismissed'
+  | 'folders';
 
 export async function getMeta<T>(key: MetaKey): Promise<T | undefined> {
   return (await db.meta.get(key))?.value as T | undefined;
@@ -50,6 +51,7 @@ export async function loadAll(): Promise<LoadedData> {
 export const putWorkout = (w: Workout) => db.workouts.put(w);
 export const deleteWorkoutRow = (id: string) => db.workouts.delete(id);
 export const putTemplate = (t: Template) => db.templates.put(t);
+export const putTemplates = (ts: Template[]) => db.templates.bulkPut(ts);
 export const deleteTemplateRow = (id: string) => db.templates.delete(id);
 export const putExercise = (e: Exercise) => db.exercises.put(e);
 export const saveSettings = (s: Settings) => setMeta('settings', s);

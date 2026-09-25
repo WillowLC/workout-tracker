@@ -44,6 +44,15 @@ export function relativeDays(ts: number, now = Date.now()): string {
   return formatDate(ts, { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+/** Calendar days between a timestamp and now, e.g. "Today", "Yesterday", "12 days ago". */
+export function daysAgo(ts: number, now = Date.now()): string {
+  const midnight = (t: number) => { const d = new Date(t); d.setHours(0, 0, 0, 0); return d.getTime(); };
+  const days = Math.round((midnight(now) - midnight(ts)) / 86_400_000);
+  if (days <= 0) return 'Today';
+  if (days === 1) return 'Yesterday';
+  return `${days} days ago`;
+}
+
 export function columnsFor(t: TrackingType, unit: Settings['unit']): { key: 'weight' | 'reps' | 'durationSec' | 'distanceM'; label: string }[] {
   switch (t) {
     case 'weight_reps':

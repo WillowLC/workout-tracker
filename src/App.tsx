@@ -8,6 +8,7 @@ import { useNow } from './lib/useNow';
 import { PwaManager } from './pwa/PwaManager';
 import { requestPersistentStorage } from './pwa/storage';
 import { TabBar, ResumeBar, ToastView, UpdateBanner } from './components/shell';
+import { PRToast } from './components/PRToast';
 import { WorkoutHome } from './screens/WorkoutHome';
 import { ActiveWorkoutScreen } from './screens/workout/ActiveWorkoutScreen';
 import { SummaryScreen } from './screens/workout/SummaryScreen';
@@ -18,18 +19,21 @@ import { ExercisesScreen } from './screens/ExercisesScreen';
 import { TemplateEditorScreen } from './screens/TemplateEditorScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 import { FolderPlanScreen } from './screens/FolderPlanScreen';
+import { GymsScreen } from './screens/GymsScreen';
+import { RecapScreen, RecapsScreen } from './screens/RecapsScreen';
+import { TrophiesScreen } from './screens/TrophiesScreen';
 import { EmptyState, Button } from './components/ui';
 
 function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
   const active = useAppStore((s) => s.active);
-  const { toast, dismissToast } = useUiStore();
+  const { toast, dismissToast, prToast, dismissPRToast } = useUiStore();
   const { needRefresh, applyUpdate } = usePwaStore();
   const now = useNow(1000, !!active);
 
   const path = location.pathname;
-  const fullScreen = path.startsWith('/workout') || path.startsWith('/dev') || path.startsWith('/templates/') || path.endsWith('/edit');
+  const fullScreen = path.startsWith('/workout') || path.startsWith('/dev') || path.startsWith('/templates/') || path.endsWith('/edit') || /^\/history\/recaps\/./.test(path);
   const onWorkoutTab = path === '/';
   // Never interrupt an active workout: during one, the banner shows only on the Workout tab
   // and the update is applied after finish/cancel.
@@ -41,6 +45,12 @@ function Layout() {
     return () => clearTimeout(id);
   }, [toast, dismissToast]);
 
+  useEffect(() => {
+    if (!prToast) return;
+    const id = setTimeout(dismissPRToast, 4500);
+    return () => clearTimeout(id);
+  }, [prToast, dismissPRToast]);
+
   return (
     <div className={`min-h-full ${fullScreen ? '' : 'pb-[calc(var(--tabbar-height)+env(safe-area-inset-bottom)+72px)]'}`}>
       {showUpdate && <div className="pt-safe"><UpdateBanner duringWorkout={!!active} onReload={applyUpdate} /></div>}
@@ -48,6 +58,7 @@ function Layout() {
         <Outlet />
       </div>
       <div className={`fixed inset-x-0 z-40 px-3 flex flex-col gap-2 max-w-2xl mx-auto ${fullScreen ? 'bottom-3 pb-safe' : 'bottom-[calc(var(--tabbar-height)+env(safe-area-inset-bottom)+8px)]'}`}>
+        {prToast && <PRToast key={prToast.id} exercise={prToast.exercise} lines={prToast.lines} onDismiss={dismissPRToast} />}
         {toast && <ToastView key={toast.id} message={toast.message} onUndo={toast.undo && (() => { toast.undo!(); dismissToast(); })} onDismiss={dismissToast} />}
         {active && !fullScreen && (
           <ResumeBar name={active.name} elapsed={formatClock((now - active.startedAt) / 1000)} onClick={() => navigate('/workout')} />
@@ -73,6 +84,9 @@ const router = createBrowserRouter(
         { path: '/workout/summary', element: <SummaryScreen /> },
         { path: '/history', element: <HistoryScreen /> },
         { path: '/history/calendar', element: <CalendarScreen /> },
+        { path: '/history/recaps', element: <RecapsScreen /> },
+        { path: '/history/recaps/:key', element: <RecapScreen /> },
+        { path: '/history/trophies', element: <TrophiesScreen /> },
         { path: '/history/:id', element: <WorkoutDetailScreen /> },
         { path: '/history/:id/edit', element: <EditWorkoutScreen /> },
         { path: '/exercises', element: <ExercisesScreen /> },
@@ -81,6 +95,7 @@ const router = createBrowserRouter(
         { path: '/templates/:id', element: <TemplateEditorScreen /> },
         { path: '/folders/:name', element: <FolderPlanScreen /> },
         { path: '/settings', element: <SettingsScreen /> },
+        { path: '/settings/gyms', element: <GymsScreen /> },
         { path: '/dev/components', lazy: () => import('./screens/DevComponentsScreen').then((m) => ({ Component: m.DevComponentsScreen })) },
         { path: '*', element: <NotFound /> },
       ],

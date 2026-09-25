@@ -1,7 +1,19 @@
 // Design reference: every key visual component in its main states, with mock data.
 // Route: /dev/components
 import type { ReactNode } from 'react';
-import type { SetType } from '../domain/types';
+import type { Muscle, SetType } from '../domain/types';
+import { MUSCLES } from '../domain/types';
+import { ProgressionHint } from '../components/ProgressionHint';
+import { PlateauCard, PlateauIdeas, PlateauTag } from '../components/Plateau';
+import { GymMenu, GymSelector } from '../components/GymSelector';
+import { MuscleTrend, WeeklySetsList, type WeeklySetsRow } from '../components/WeeklySets';
+import { HeatLegend, MuscleMap, RECENCY_LEGEND, VOLUME_LEGEND, type HeatLevel } from '../components/MuscleMap';
+import { PRToast } from '../components/PRToast';
+import { TrophyWall } from '../components/TrophyWall';
+import { LifetimeLine, VolumeComparisonLine } from '../components/VolumeComparisonLine';
+import { RecapCards, type RecapDisplay } from '../components/RecapCards';
+import { MuscleSelect } from '../components/MuscleSelect';
+import { muscleStatus } from '../domain/muscles';
 import { ExerciseCard } from '../components/ExerciseCard';
 import { SetRow, type SetColumn } from '../components/SetRow';
 import { SetTypeBadge } from '../components/SetTypeBadge';
@@ -35,6 +47,42 @@ const row = (label: string, type: SetType, extra: Partial<Parameters<typeof SetR
   <SetRow key={label + type} label={label} type={type} values={{}} placeholder={{ weight: 80, reps: 8 }} previousText="80 kg × 8" columns={cols} unit="kg" showRpe={false} completed={false}
     onChange={noop} onToggleComplete={noop} onTypeClick={noop} onPreviousClick={noop} {...extra} />
 );
+
+const weeklyMock: WeeklySetsRow[] = ([['chest', 14], ['quads', 12], ['lats', 9.5], ['triceps', 22], ['side_delts', 4], ['calves', 0], ['forearms', 0]] as [Muscle, number][])
+  .map(([muscle, sets]) => ({ muscle, sets, target: { min: 10, max: 20 }, status: muscleStatus(sets, { min: 10, max: 20 }) }));
+const volumeMock = Object.fromEntries(MUSCLES.map((m, i) => [m, (i % 5) as HeatLevel])) as Record<Muscle, HeatLevel>;
+const recencyMock = Object.fromEntries(MUSCLES.map((m, i) => [m, ((i * 3) % 5) as HeatLevel])) as Record<Muscle, HeatLevel>;
+const recapMock: RecapDisplay = {
+  title: 'Your September in lifting',
+  subtitle: 'September 2026',
+  headline: [{ label: 'Workouts', value: '13', change: 8.3 }, { label: 'Time training', value: '14h 5m' }],
+  totals: [{ label: 'Volume', value: '96,400 kg', change: 12 }, { label: 'Sets', value: '248', change: -4 }, { label: 'Reps', value: '2,310' }, { label: 'New PRs', value: '9' }],
+  comparison: { volume: '96,400 kg', text: 'about 2 humpback whales', emoji: '🐋' },
+  prCount: 9,
+  biggestJump: { exercise: 'Squat (Barbell)', from: '116.7 kg', to: '124.3 kg', pct: 6.5 },
+  heaviest: { exercise: 'Deadlift (Barbell)', set: '140 kg × 5' },
+  favourites: [
+    { label: 'Most-trained exercise', value: 'Bench Press (Barbell) · 36 sets' },
+    { label: 'Most-trained muscle', value: 'Chest · 58 sets' },
+    { label: 'Favourite day', value: 'Monday' },
+    { label: 'Favourite time', value: 'Evening' },
+    { label: 'Longest streak', value: '4 weeks in a row' },
+    { label: 'Top gym', value: 'SATS Nørrebro · 11 workouts' },
+  ],
+  muscleLevels: volumeMock,
+};
+const yearMock: RecapDisplay = {
+  ...recapMock,
+  title: 'Your 2026 in lifting',
+  subtitle: '1 Jan – 31 Dec 2026',
+  year: {
+    monthly: 'JFMAMJJASOND'.split('').map((label, i) => ({ label, value: 60 + ((i * 37) % 50), text: `${60 + ((i * 37) % 50)} t` })),
+    topExercises: [{ name: 'Bench Press (Barbell)', sets: 412 }, { name: 'Squat (Barbell)', sets: 380 }, { name: 'Lat Pulldown (Cable)', sets: 301 }, { name: 'Deadlift (Barbell)', sets: 188 }, { name: 'Leg Press', sets: 170 }],
+    prTotal: 112,
+    vsYearAgo: [{ name: 'Bench Press (Barbell)', now: '106.7 kg', then: '88.3 kg', pct: 20.8 }, { name: 'Squat (Barbell)', now: '133.3 kg', then: '110 kg', pct: 21.2 }, { name: 'Deadlift (Barbell)', now: '163.3 kg' }],
+    lifetime: { volume: '1.2 million kg', text: '3 Space Stations', emoji: '🛰️' },
+  },
+};
 
 export function DevComponentsScreen() {
   const weeks = Array.from({ length: 3 }, (_, w) =>
@@ -103,16 +151,100 @@ export function DevComponentsScreen() {
 
       <Section title="WorkoutSummary">
         <WorkoutSummary name="Push Day" date="24 Sep 2026, 18:30" duration="1h 5m" volume="8,450 kg" sets={18} count={42} inspiration={INSPIRATIONS[0]}
-          prs={[{ exercise: 'Bench Press (Barbell)', set: '102.5 kg × 5', kinds: ['Best set', 'Est. 1RM'] }]}>
+          comparison={<VolumeComparisonLine volume="8,450 kg" comparison="about 19 grand pianos" emoji="🎹" className="text-center" />}
+          prs={[
+            { exercise: 'Bench Press (Barbell)', kind: 'Best set', value: '102.5 kg × 5', was: '100 kg × 5' },
+            { exercise: 'Bench Press (Barbell)', kind: 'e1RM', value: '119.6 kg', was: '116.7 kg' },
+            { exercise: 'Hack Squat (Machine)', kind: 'Best set', value: '120 kg × 8' },
+          ]}>
           <Button variant="primary">Done</Button>
         </WorkoutSummary>
       </Section>
 
       <Section title="HistoryCard / Calendar">
-        <HistoryCard name="Push Day" date="Wednesday, 24 September" duration="1h 5m" volume="8,450 kg" prCount={2}
+        <HistoryCard name="Push Day" date="Wednesday, 24 September" duration="1h 5m" volume="8,450 kg" prCount={2} gym="SATS Nørrebro"
           exercises={[{ line: '3 × Bench Press (Barbell)', best: '100 kg × 5' }, { line: '3 × Pull Up (Assisted)', best: '-20 kg × 8' }]} />
         <WeekdayHeader />
         <WeekRows weeks={weeks} now={new Date(2026, 8, 25, 12).getTime()} />
+      </Section>
+
+      <Section title="ProgressionHint (up / hold / down)">
+        <div className="flex flex-col gap-2">
+          <ProgressionHint kind="increase" text="Try 82.5 kg × 8" onApply={noop} />
+          <ProgressionHint kind="hold" text="Stay at 80 kg, aim for 11+ reps" onApply={noop} />
+          <ProgressionHint kind="decrease" text="Consider 75 kg" onApply={noop} />
+        </div>
+      </Section>
+
+      <Section title="ExerciseCard with hint, plateau and “other gym”">
+        <ExerciseCard name="Overhead Press (Barbell)" best="52.5 kg × 5" e1rm="61.3 kg" columns={cols} showRpe={false} onMenu={noop} onAddSet={noop}
+          hint={{ kind: 'hold', text: 'Stay at 50 kg, aim for 7+ reps', onApply: noop }} plateauWeeks={8} onPlateau={noop} previousNote="other gym">
+          {row('1', 'normal')}
+        </ExerciseCard>
+      </Section>
+
+      <Section title="Plateau tag / sheet / dashboard card">
+        <PlateauTag weeks={6} onClick={noop} />
+        <div className="bg-surface border border-border rounded-lg p-4"><PlateauIdeas exercise="Overhead Press (Barbell)" weeks={8} onSnooze={noop} /></div>
+        <PlateauCard items={[{ exerciseId: 'a', name: 'Overhead Press (Barbell)', weeks: 8 }, { exerciseId: 'b', name: 'Lat Pulldown (Cable)', weeks: 6 }]} onOpen={noop} />
+      </Section>
+
+      <Section title="GymSelector">
+        <div className="flex gap-4"><GymSelector name="SATS Nørrebro" onClick={noop} /><GymSelector onClick={noop} /></div>
+        <div className="bg-surface border border-border rounded-lg px-4">
+          <GymMenu gyms={[{ id: 'a', name: 'SATS Nørrebro' }, { id: 'b', name: 'Hotel gym' }]} currentId="a" onPick={noop} onAdd={noop} onManage={noop} />
+        </div>
+      </Section>
+
+      <Section title="Weekly sets list / 12-week trend">
+        <div className="bg-surface border border-border rounded-lg px-3 py-2"><WeeklySetsList rows={weeklyMock} /></div>
+        <div className="bg-surface border border-border rounded-lg px-3 py-2">
+          <MuscleTrend target={{ min: 10, max: 20 }} weeks={[8, 10, 12, 0, 14, 16, 12, 11, 18, 22, 15, 12].map((sets, i) => ({ label: `${i + 1}/7`, sets }))} />
+        </div>
+      </Section>
+
+      <Section title="MuscleMap — volume (front + back)">
+        <MuscleMap levels={volumeMock} selected="chest" onSelect={noop} />
+        <HeatLegend labels={VOLUME_LEGEND} />
+      </Section>
+      <Section title="MuscleMap — recency">
+        <MuscleMap levels={recencyMock} onSelect={noop} />
+        <HeatLegend labels={RECENCY_LEGEND} />
+      </Section>
+      <Section title="MuscleMap — small (workout detail)">
+        <MuscleMap levels={volumeMock} height={150} />
+      </Section>
+
+      <Section title="MuscleSelect (exercise form)">
+        <MuscleSelect primary={['chest']} secondary={['front_delts', 'triceps']} onChange={noop} />
+      </Section>
+
+      <Section title="PR toast">
+        <PRToast exercise="Bench Press (Barbell)" lines={['100 kg × 5 (was 97.5 kg × 5)']} onDismiss={noop} />
+        <PRToast exercise="Bench Press (Barbell)" lines={['102.5 kg × 5 (was 100 kg × 5)', 'e1RM 119.6 kg (was 116.7 kg)', 'Volume 2,460 kg (was 2,400 kg)']} onDismiss={noop} />
+      </Section>
+
+      <Section title="Trophy wall">
+        <TrophyWall headline="47 PRs this year" groups={[
+          { month: 'September 2026', items: [
+            { id: '1', exercise: 'Bench Press (Barbell)', kind: 'Best set', value: '100 kg × 5', was: '97.5 kg × 5', date: 'Wed 24 Sep', onOpen: noop },
+            { id: '2', exercise: 'Bench Press (Barbell)', kind: 'e1RM', value: '116.7 kg', was: '113.8 kg', date: 'Wed 24 Sep', onOpen: noop },
+          ] },
+          { month: 'August 2026', items: [{ id: '3', exercise: 'Hack Squat (Machine)', kind: 'Best set', value: '120 kg × 8', date: 'Mon 4 Aug', onOpen: noop }] },
+        ]} />
+      </Section>
+
+      <Section title="Volume comparison / lifetime">
+        <VolumeComparisonLine volume="8,450 kg" comparison="about 7 grand pianos" emoji="🎹" />
+        <VolumeComparisonLine volume="310 kg" comparison="about a grizzly bear" emoji="🐻" />
+        <LifetimeLine volume="1.2 million kg" comparison="3 Space Stations" emoji="🛰️" />
+      </Section>
+
+      <Section title="Monthly recap cards">
+        <RecapCards display={recapMock} onShare={noop} />
+      </Section>
+      <Section title="Yearly recap cards">
+        <RecapCards display={yearMock} onShare={noop} />
       </Section>
 
       <Section title="PlateCalculator">

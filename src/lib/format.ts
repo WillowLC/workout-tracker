@@ -69,3 +69,39 @@ export function columnsFor(t: TrackingType, unit: Settings['unit']): { key: 'wei
       return [{ key: 'distanceM', label: 'KM' }, { key: 'durationSec', label: 'TIME' }];
   }
 }
+
+/** "80 kg" with one decimal max, in the user's unit. */
+export function formatKg(kg: number, unit: Settings['unit']): string {
+  return `${formatNumber(Math.round(toDisplayWeight(kg, unit) * 10) / 10)} ${unit}`;
+}
+
+/** Session volume in the exercise's own terms (kg, reps, time or distance). */
+export function formatExerciseVolume(v: number, t: TrackingType, unit: Settings['unit']): string {
+  if (t === 'weight_reps' || t === 'weighted_bodyweight') return `${Math.round(toDisplayWeight(v, unit)).toLocaleString('en-US')} ${unit}`;
+  if (t === 'duration') return formatClock(v);
+  if (t === 'distance_duration') return formatDistance(v);
+  return `${v} reps`;
+}
+
+export interface PRText {
+  label: string;
+  value: string;
+  /** Undefined = first ever. */
+  was?: string;
+}
+
+/** Display text for a PR: new value and what it beat. */
+export function formatPR(
+  pr: { kind: 'weight' | 'e1rm' | 'volume'; value: number; previous?: number; set: SetValues; previousSet?: SetValues },
+  t: TrackingType,
+  unit: Settings['unit'],
+): PRText {
+  switch (pr.kind) {
+    case 'weight':
+      return { label: 'Best set', value: formatSet(pr.set, t, unit), was: pr.previousSet ? formatSet(pr.previousSet, t, unit) : undefined };
+    case 'e1rm':
+      return { label: 'e1RM', value: formatKg(pr.value, unit), was: pr.previous !== undefined ? formatKg(pr.previous, unit) : undefined };
+    case 'volume':
+      return { label: 'Volume', value: formatExerciseVolume(pr.value, t, unit), was: pr.previous !== undefined ? formatExerciseVolume(pr.previous, t, unit) : undefined };
+  }
+}

@@ -11,16 +11,20 @@ import { setLabels } from '../domain/sets';
 import { templateFromWorkout } from '../domain/templates';
 import { formatDuration, formatVolume } from '../domain/units';
 import { formatDateTime, formatSetWithRpe } from '../lib/format';
+import { muscleSets, volumeLevels } from '../domain/muscles';
+import { comparisonFor, formatComparison } from '../domain/volumeComparison';
+import { COMPARISON_BY_ID } from '../data/volumeComparisons';
+import { MuscleMap } from '../components/MuscleMap';
 import { Button, ConfirmDialog, EmptyState, PageHeader } from '../components/ui';
 import { PRBadge } from '../components/PRBadge';
 import { SupersetBracket } from '../components/SupersetBracket';
 import { WorkoutEditor } from './workout/WorkoutEditor';
-import { IconChevronLeft } from '../components/icons';
+import { IconChevronLeft, IconPin } from '../components/icons';
 
 export function WorkoutDetailScreen() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { workouts, settings, active, startWorkout, deleteWorkout, saveWorkout, saveTemplate } = useAppStore();
+  const { workouts, settings, active, startWorkout, deleteWorkout, saveWorkout, saveTemplate, gyms } = useAppStore();
   const showToast = useUiStore((s) => s.showToast);
   const exMap = useExerciseMap();
   const trackingOf = useTrackingOf();
@@ -31,6 +35,12 @@ export function WorkoutDetailScreen() {
 
   const prs = detectPRs(w, workouts, trackingOf, settings.countWarmupsInStats);
   const groups = supersetInfo(w.exercises);
+  const gym = gyms.find((g) => g.id === w.gymId);
+  const volumeKg = workoutVolume(w, trackingOf, settings.countWarmupsInStats);
+  const item = w.volumeComparisonId ? COMPARISON_BY_ID.get(w.volumeComparisonId) : undefined;
+  const comparison = item && volumeKg > 0 ? comparisonFor(volumeKg, item) : undefined;
+  // One workout counts as half a week (muscles are typically trained twice weekly), so a solid session reads "in range".
+  const levels = volumeLevels(muscleSets([w], exMap, settings.countWarmupsInStats), 0.5, settings);
 
   const repeat = () => {
     startWorkout({ repeat: w });
@@ -66,7 +76,12 @@ export function WorkoutDetailScreen() {
           {formatDateTime(w.startedAt)} · {formatDuration((w.finishedAt ?? w.startedAt) - w.startedAt)} · {formatVolume(workoutVolume(w, trackingOf, settings.countWarmupsInStats), settings.unit)} · {completedSetCount(w, settings.countWarmupsInStats)} sets
           {prs.size > 0 && ` · ${prs.size} PRs`}
         </p>
+        {gym && <p className="text-sm text-muted inline-flex items-center gap-1"><IconPin size={14} />{gym.name}</p>}
+        {comparison && <p className="text-sm">{formatComparison(comparison)[0].toUpperCase() + formatComparison(comparison).slice(1)} lifted <span aria-hidden>{comparison.item.emoji}</span> <span className="text-xs text-muted">(approx.)</span></p>}
         {w.note && <p className="text-sm">{w.note}</p>}
+        <div className="bg-surface border border-border rounded-lg p-2" aria-label="Muscles worked in this workout">
+          <MuscleMap levels={levels} height={150} />
+        </div>
         {blocks(sortedExercises(w)).map((b) => {
           const g = b[0].supersetGroupId ? groups.get(b[0].supersetGroupId) : undefined;
           return g && b.length > 1 ? <SupersetBracket key={b[0].id} letter={g.letter} colorIndex={g.colorIndex}>{b.map((we) => card(we.id))}</SupersetBracket> : card(b[0].id);

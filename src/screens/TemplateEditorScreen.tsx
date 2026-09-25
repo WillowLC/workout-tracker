@@ -8,6 +8,8 @@ import {
   removeTemplateSet, setTemplateSet, unlinkTemplateSuperset,
 } from '../domain/templates';
 import { moveBlock } from '../domain/workoutOps';
+import { exerciseRepRange } from '../domain/progression';
+import { usesWeight } from '../domain/records';
 import { blocks, sortedExercises, supersetInfo } from '../domain/superset';
 import { setLabels } from '../domain/sets';
 import { Button, Chip, EmptyState, Field, IconButton, MenuList, PageHeader, Sheet, inputClass } from '../components/ui';
@@ -52,6 +54,19 @@ export function TemplateEditorScreen() {
     const te = t.exercises.find((e) => e.order === order)!;
     const labels = setLabels(te.sets);
     const g = te.supersetGroupId ? groups.get(te.supersetGroupId) : undefined;
+    const ex = exMap.get(te.exerciseId);
+    const def = exerciseRepRange(ex);
+    // Partial edits are kept locally in the template until both ends are valid.
+    const setRange = (patch: { min?: number; max?: number }) => setT((cur) => ({
+      ...cur,
+      exercises: cur.exercises.map((x) => {
+        if (x.order !== order) return x;
+        const min = 'min' in patch ? patch.min : x.repRange?.min ?? def?.min;
+        const max = 'max' in patch ? patch.max : x.repRange?.max ?? def?.max;
+        const { repRange: _r, ...rest } = x;
+        return min !== undefined && max !== undefined && min <= max && !(def && min === def.min && max === def.max) ? { ...rest, repRange: { min, max } } : rest;
+      }),
+    }));
     return (
       <article key={order} className="bg-surface border border-border rounded-lg overflow-hidden">
         <div className="flex items-center gap-2 px-3 pt-2">
@@ -71,6 +86,14 @@ export function TemplateEditorScreen() {
             </div>
           ))}
         </div>
+        {ex && usesWeight(ex.trackingType) && (
+          <div className="px-3 pb-2 flex items-center gap-2 text-sm">
+            <span className="text-muted flex-1">Rep range{te.repRange ? ' (this template)' : ''}</span>
+            <div className="w-14"><NumberInput aria-label={`${nameOf(te.exerciseId)} rep range minimum`} decimals={false} value={te.repRange?.min} placeholder={def?.min ?? '—'} onChange={(v) => setRange({ min: v })} /></div>
+            <span className="text-muted">–</span>
+            <div className="w-14"><NumberInput aria-label={`${nameOf(te.exerciseId)} rep range maximum`} decimals={false} value={te.repRange?.max} placeholder={def?.max ?? '—'} onChange={(v) => setRange({ max: v })} /></div>
+          </div>
+        )}
         <button type="button" onClick={() => setT((cur) => addTemplateSet(cur, order))} className="w-full min-h-[44px] text-sm font-medium bg-surface-2 border-t border-border">+ Add Set</button>
       </article>
     );

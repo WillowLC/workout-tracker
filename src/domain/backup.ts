@@ -1,4 +1,4 @@
-import type { Exercise, FolderInfo, Settings, Template, Workout } from './types';
+import type { Exercise, FolderInfo, Gym, Settings, Template, Workout } from './types';
 
 export const BACKUP_FORMAT = 'jim-backup';
 export const BACKUP_VERSION = 1;
@@ -13,6 +13,8 @@ export interface Backup {
   templates: Template[];
   settings?: Settings;
   folders?: FolderInfo[];
+  /** Added in v3 of the database; older backups have none. */
+  gyms?: Gym[];
 }
 
 export function makeBackup(data: Omit<Backup, 'format' | 'version' | 'exportedAt'>, now: number): Backup {
@@ -45,6 +47,10 @@ export function validateBackup(raw: unknown): ValidationResult {
       if (!isObj(we) || !isStr(we.id) || !isStr(we.exerciseId) || !Array.isArray(we.sets)) return { ok: false, error: `Workout #${i + 1} has an invalid exercise.` };
       for (const s of we.sets as unknown[]) if (!isObj(s) || !isStr(s.id)) return { ok: false, error: `Workout #${i + 1} has an invalid set.` };
     }
+  }
+  if (raw.gyms !== undefined) {
+    if (!Array.isArray(raw.gyms)) return { ok: false, error: 'Invalid "gyms" list.' };
+    for (const [i, g] of (raw.gyms as unknown[]).entries()) if (!isObj(g) || !isStr(g.id) || typeof g.name !== 'string') return { ok: false, error: `Gym #${i + 1} is invalid.` };
   }
   for (const [i, t] of templates.entries()) {
     if (!isObj(t) || !isStr(t.id) || !Array.isArray(t.exercises)) return { ok: false, error: `Template #${i + 1} is invalid.` };

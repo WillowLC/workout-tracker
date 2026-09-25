@@ -6,7 +6,7 @@ import { downloadFile, dateStamp } from './files';
 export async function exportJsonBackup() {
   const s = useAppStore.getState();
   const workouts = s.active ? [...s.workouts, s.active] : s.workouts;
-  const backup = makeBackup({ appVersion: __APP_VERSION__, exercises: s.exercises, workouts, templates: s.templates, settings: s.settings, folders: s.folders }, Date.now());
+  const backup = makeBackup({ appVersion: __APP_VERSION__, exercises: s.exercises, workouts, templates: s.templates, settings: s.settings, folders: s.folders, gyms: s.gyms }, Date.now());
   downloadFile(`jim-backup-${dateStamp()}.json`, JSON.stringify(backup, null, 1), 'application/json');
   await s.setMeta({ lastBackupAt: Date.now(), backupSnoozedUntil: undefined });
 }

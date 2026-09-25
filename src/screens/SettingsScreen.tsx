@@ -1,4 +1,8 @@
 import { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { EQUIPMENT, MUSCLES, type Muscle, type RepRange } from '../domain/types';
+import { MUSCLE_LABELS } from '../domain/muscles';
+import { defaultWeightSteps } from '../domain/weightSteps';
 import { useAppStore } from '../store/appStore';
 import { useUiStore } from '../store/uiStore';
 import { usePwaStore } from '../store/pwaStore';
@@ -9,7 +13,7 @@ import { exportCsv, exportJsonBackup } from '../lib/backupActions';
 import { checkForUpdates } from '../pwa/PwaManager';
 import { Button, Card, ConfirmDialog, PageHeader } from '../components/ui';
 import { NumberInput } from '../components/inputs';
-import { IconAlert, IconCheckCircle } from '../components/icons';
+import { IconAlert, IconCheckCircle, IconChevronDown, IconChevronRight } from '../components/icons';
 
 function Row({ label, children, hint }: { label: string; children: React.ReactNode; hint?: string }) {
   return (
@@ -32,8 +36,28 @@ function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: 
   );
 }
 
+function RangeInputs({ label, value, onChange, placeholder }: { label: string; value?: RepRange; placeholder?: RepRange; onChange: (r: RepRange | undefined) => void }) {
+  const [min, setMin] = useState<number | undefined>(value?.min);
+  const [max, setMax] = useState<number | undefined>(value?.max);
+  const commit = (a: number | undefined, b: number | undefined) => {
+    if (a === undefined && b === undefined) onChange(undefined);
+    else if (a !== undefined && b !== undefined && a <= b) onChange({ min: a, max: b });
+  };
+  return (
+    <div className="flex items-center gap-1.5">
+      <div className="w-14"><NumberInput aria-label={`${label} minimum`} decimals={false} value={min} placeholder={placeholder?.min} onChange={(v) => { setMin(v); commit(v, max); }} /></div>
+      <span className="text-muted">–</span>
+      <div className="w-14"><NumberInput aria-label={`${label} maximum`} decimals={false} value={max} placeholder={placeholder?.max} onChange={(v) => { setMax(v); commit(min, v); }} /></div>
+    </div>
+  );
+}
+
 export function SettingsScreen() {
-  const { settings, updateSettings, meta, workouts, importBackup, resetAll } = useAppStore();
+  const navigate = useNavigate();
+  const { settings, updateSettings, meta, workouts, importBackup, resetAll, gyms, loadDemoData, clearDemoData } = useAppStore();
+  const [perMuscle, setPerMuscle] = useState(false);
+  const [demoBusy, setDemoBusy] = useState(false);
+  const demoCount = workouts.filter((w) => w.demo).length;
   const showToast = useUiStore((s) => s.showToast);
   const { needRefresh, applyUpdate } = usePwaStore();
   const active = useAppStore((s) => s.active);
@@ -72,9 +96,6 @@ export function SettingsScreen() {
                 ))}
               </div>
             </Row>
-            <Row label="Weight increment" hint={`± step in ${unit}`}>
-              <div className="w-20"><NumberInput aria-label="Weight increment" value={toDisplayWeight(settings.weightIncrementKg, unit)} onChange={(v) => v && void updateSettings({ weightIncrementKg: fromDisplayWeight(v, unit) })} /></div>
-            </Row>
             <Row label="Barbell weight" hint={`For the plate calculator (${unit})`}>
               <div className="w-20"><NumberInput aria-label="Barbell weight" value={toDisplayWeight(settings.barWeightKg, unit)} onChange={(v) => v !== undefined && void updateSettings({ barWeightKg: fromDisplayWeight(v, unit) })} /></div>
             </Row>
@@ -84,6 +105,54 @@ export function SettingsScreen() {
             <Row label="Show RPE column">
               <Toggle label="Show RPE column" checked={settings.showRpe} onChange={(v) => void updateSettings({ showRpe: v })} />
             </Row>
+            <Row label="Progression hints" hint="“↑ Try 82.5 kg × 8” under each exercise">
+              <Toggle label="Progression hints" checked={settings.progressionHints} onChange={(v) => void updateSettings({ progressionHints: v })} />
+            </Row>
+            <Row label="Celebrations" hint="Confetti and a toast when you set a PR">
+              <Toggle label="Celebrations" checked={settings.celebrations} onChange={(v) => void updateSettings({ celebrations: v })} />
+            </Row>
+            <Row label="Gyms" hint={gyms.length ? `${gyms.length} gym${gyms.length === 1 ? '' : 's'} · current: ${gyms.find((g) => g.id === settings.currentGymId)?.name ?? 'none'}` : 'PREVIOUS per gym'}>
+              <Button size="sm" onClick={() => navigate('/settings/gyms')}>Manage</Button>
+            </Row>
+          </Card>
+        </section>
+
+        <section>
+          <h2 className="text-sm font-semibold text-muted uppercase mb-2">Weight steps ({unit})</h2>
+          <Card>
+            {EQUIPMENT.map((eq) => (
+              <Row key={eq} label={eq}>
+                <div className="w-20"><NumberInput aria-label={`${eq} weight step`} value={toDisplayWeight(settings.weightStepsKg[eq], unit)}
+                  onChange={(v) => v && void updateSettings({ weightStepsKg: { ...settings.weightStepsKg, [eq]: fromDisplayWeight(v, unit) } })} /></div>
+              </Row>
+            ))}
+            <div className="px-3 py-2 flex items-center gap-2">
+              <p className="flex-1 text-xs text-muted">Used by the ± buttons and progression hints. Override one exercise from its ⋯ menu in a workout.</p>
+              <Button size="sm" variant="ghost" onClick={() => void updateSettings({ weightStepsKg: defaultWeightSteps(unit) })}>Reset</Button>
+            </div>
+          </Card>
+        </section>
+
+        <section>
+          <h2 className="text-sm font-semibold text-muted uppercase mb-2">Weekly sets per muscle</h2>
+          <Card>
+            <Row label="Target range" hint="Working sets per muscle per week (secondary muscles count ½)">
+              <RangeInputs label="Weekly target" value={settings.weeklySetTarget} onChange={(r) => r && void updateSettings({ weeklySetTarget: r })} />
+            </Row>
+            <button type="button" aria-expanded={perMuscle} onClick={() => setPerMuscle((v) => !v)} className="w-full flex items-center gap-2 px-3 min-h-[44px] text-sm text-left">
+              {perMuscle ? <IconChevronDown size={16} /> : <IconChevronRight size={16} />}
+              Per-muscle targets {settings.muscleTargets && Object.keys(settings.muscleTargets).length ? `(${Object.keys(settings.muscleTargets).length} set)` : ''}
+            </button>
+            {perMuscle && MUSCLES.map((m: Muscle) => (
+              <Row key={m} label={MUSCLE_LABELS[m]}>
+                <RangeInputs label={MUSCLE_LABELS[m]} value={settings.muscleTargets?.[m]} placeholder={settings.weeklySetTarget}
+                  onChange={(r) => {
+                    const next = { ...settings.muscleTargets };
+                    if (r) next[m] = r; else delete next[m];
+                    void updateSettings({ muscleTargets: next });
+                  }} />
+              </Row>
+            ))}
           </Card>
         </section>
 
@@ -117,6 +186,21 @@ export function SettingsScreen() {
               )}
             </Row>
             {updateMsg && <p role="status" className="px-3 py-2 text-xs text-muted">{updateMsg}</p>}
+          </Card>
+        </section>
+
+        <section>
+          <h2 className="text-sm font-semibold text-muted uppercase mb-2">Developer</h2>
+          <Card>
+            <Row label="Load demo data" hint="~14 months of tagged demo workouts at two demo gyms. They mix into your stats until cleared.">
+              <Button size="sm" disabled={demoBusy} onClick={async () => { setDemoBusy(true); const n = await loadDemoData(); setDemoBusy(false); showToast(`Loaded ${n} demo workouts`); }}>Load</Button>
+            </Row>
+            <Row label="Clear demo data" hint={demoCount ? `${demoCount} demo workouts. Your own workouts are never touched.` : 'No demo data loaded'}>
+              <Button size="sm" disabled={demoBusy || !demoCount} onClick={async () => { setDemoBusy(true); const n = await clearDemoData(); setDemoBusy(false); showToast(`Removed ${n} demo workouts`); }}>Clear</Button>
+            </Row>
+            <Row label="Component gallery">
+              <Button size="sm" onClick={() => navigate('/dev/components')}>Open</Button>
+            </Row>
           </Card>
         </section>
 

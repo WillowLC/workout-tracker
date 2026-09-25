@@ -2,6 +2,8 @@ import type { ReactNode } from 'react';
 import { BestLine } from './BestLine';
 import { SetTableHeader, type SetColumn } from './SetRow';
 import { SupersetTag } from './SupersetBracket';
+import { ProgressionHint, type HintKind } from './ProgressionHint';
+import { PlateauTag } from './Plateau';
 
 export interface ExerciseCardProps {
   name: string;
@@ -12,6 +14,13 @@ export interface ExerciseCardProps {
   superset?: { letter: string; colorIndex: number };
   columns: SetColumn[];
   showRpe: boolean;
+  /** Progression suggestion chip under the BEST line. */
+  hint?: { kind: HintKind; text: string; onApply?: () => void };
+  /** Weeks without a new record (shows the plateau tag). */
+  plateauWeeks?: number;
+  onPlateau?: () => void;
+  /** Note under the PREVIOUS header, e.g. "other gym". */
+  previousNote?: string;
   children: ReactNode; // SetRows
   onMenu?: () => void;
   onNameClick?: () => void;
@@ -30,6 +39,12 @@ export function ExerciseCard(p: ExerciseCardProps) {
             </button>
           </div>
           <BestLine best={p.best} e1rm={p.e1rm} />
+          {(p.hint || p.plateauWeeks !== undefined) && (
+            <div className="flex flex-wrap gap-1.5">
+              {p.hint && <ProgressionHint {...p.hint} />}
+              {p.plateauWeeks !== undefined && <PlateauTag weeks={p.plateauWeeks} onClick={p.onPlateau} />}
+            </div>
+          )}
           {p.exerciseNote && <p className="text-xs text-muted">{p.exerciseNote}</p>}
           {p.sessionNote && <p className="text-xs text-secondary">{p.sessionNote}</p>}
         </div>
@@ -41,7 +56,7 @@ export function ExerciseCard(p: ExerciseCardProps) {
         )}
       </div>
       <div className="flex flex-col gap-0.5 px-1 pb-1.5">
-        <SetTableHeader columns={p.columns} showRpe={p.showRpe} />
+        <SetTableHeader columns={p.columns} showRpe={p.showRpe} previousNote={p.previousNote} />
         {p.children}
       </div>
       {p.onAddSet && (

@@ -11,6 +11,7 @@ export function templateFromWorkout(w: Workout, name: string, base?: Template): 
       supersetGroupId: we.supersetGroupId,
       // Keep target reps from the template where the set still exists.
       sets: we.sets.map((s, si) => ({ type: s.type, targetReps: prev?.sets[si]?.targetReps })),
+      ...(prev?.repRange ? { repRange: prev.repRange } : {}),
     };
   });
   return { id: base?.id ?? newId(), name, folder: base?.folder, exercises };

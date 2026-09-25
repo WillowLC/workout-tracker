@@ -14,11 +14,11 @@ export function setGridStyle(columns: number, showRpe: boolean): CSSProperties {
   return { gridTemplateColumns: `36px minmax(0,1fr) repeat(${columns}, ${columns > 1 ? 64 : 80}px)${showRpe ? ' 48px' : ''} 40px` };
 }
 
-export function SetTableHeader({ columns, showRpe }: { columns: SetColumn[]; showRpe: boolean }) {
+export function SetTableHeader({ columns, showRpe, previousNote }: { columns: SetColumn[]; showRpe: boolean; /** e.g. "other gym" */ previousNote?: string }) {
   return (
     <div className="grid gap-1.5 px-3 py-1 text-[11px] font-semibold tracking-[.06em] text-muted uppercase" style={setGridStyle(columns.length, showRpe)} aria-hidden>
       <span className="text-center">Set</span>
-      <span className="text-center">Previous</span>
+      <span className="text-center">Previous{previousNote && <span className="block normal-case tracking-normal font-medium text-[10px] leading-none text-warning">{previousNote}</span>}</span>
       {columns.map((c) => (
         <span key={c.key} className="text-center">{c.label}</span>
       ))}

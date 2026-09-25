@@ -5,31 +5,59 @@ export interface PreviousPerformance {
   workoutId: string;
   startedAt: number;
   sets: WorkoutSet[]; // completed sets of that session, in order
+  gymId?: string;
+  /** True when a gym was asked for, there was no session there, and this one is from a different gym. */
+  otherGym?: boolean;
 }
 
-/**
- * Most recent FINISHED workout containing the exercise — regardless of which
- * workout/template it came from (exercise memory is global). The in-progress
- * workout (no finishedAt) and `excludeWorkoutId` are ignored; `before` limits
- * the search to workouts started earlier (used when editing a past workout).
- */
-export function findPreviousPerformance(
-  exerciseId: string,
-  workouts: Workout[],
-  opts: { excludeWorkoutId?: string; before?: number } = {},
-): PreviousPerformance | undefined {
-  let best: PreviousPerformance | undefined;
+export interface PreviousOptions {
+  excludeWorkoutId?: string;
+  before?: number;
+  /** Prefer sessions at this gym. */
+  gymId?: string;
+}
+
+/** Every finished session of the exercise matching the options, newest first. */
+function allSessions(exerciseId: string, workouts: Workout[], opts: PreviousOptions): PreviousPerformance[] {
+  const out: PreviousPerformance[] = [];
   for (const w of workouts) {
     if (w.finishedAt === undefined || w.id === opts.excludeWorkoutId) continue;
     if (opts.before !== undefined && w.startedAt >= opts.before) continue;
-    if (best && w.startedAt <= best.startedAt) continue;
     // If the exercise appears twice in one workout, use its sets concatenated.
     const sets = w.exercises
       .filter((we) => we.exerciseId === exerciseId)
       .flatMap((we) => we.sets.filter((s) => s.completed));
-    if (sets.length) best = { workoutId: w.id, startedAt: w.startedAt, sets };
+    if (sets.length) out.push({ workoutId: w.id, startedAt: w.startedAt, sets, gymId: w.gymId });
   }
-  return best;
+  return out.sort((a, b) => b.startedAt - a.startedAt);
+}
+
+/**
+ * The sessions PREVIOUS draws from, newest first: those at `gymId` when there
+ * are any, otherwise all of them ("anywhere", which includes gym-less
+ * workouts). Fallback sessions from a different gym are flagged `otherGym`.
+ */
+export function previousSessions(exerciseId: string, workouts: Workout[], opts: PreviousOptions = {}): PreviousPerformance[] {
+  const all = allSessions(exerciseId, workouts, opts);
+  if (!opts.gymId) return all;
+  const atGym = all.filter((s) => s.gymId === opts.gymId);
+  if (atGym.length) return atGym;
+  return all.map((s) => (s.gymId !== undefined && s.gymId !== opts.gymId ? { ...s, otherGym: true } : s));
+}
+
+/**
+ * Most recent FINISHED workout containing the exercise — regardless of which
+ * workout/template it came from (exercise memory is global), preferring the
+ * given gym. The in-progress workout (no finishedAt) and `excludeWorkoutId`
+ * are ignored; `before` limits the search to workouts started earlier (used
+ * when editing a past workout).
+ */
+export function findPreviousPerformance(
+  exerciseId: string,
+  workouts: Workout[],
+  opts: PreviousOptions = {},
+): PreviousPerformance | undefined {
+  return previousSessions(exerciseId, workouts, opts)[0];
 }
 
 const isWarmup = (s: Pick<WorkoutSet, 'type'>) => s.type === 'warmup';

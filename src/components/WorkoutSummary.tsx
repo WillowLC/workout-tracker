@@ -5,12 +5,15 @@ import { IconBulb, IconQuote, IconTrophy } from './icons';
 
 export interface SummaryPR {
   exercise: string;
-  set: string;
-  kinds: string[];
+  /** "Best set", "e1RM", "Volume" */
+  kind: string;
+  value: string;
+  /** Previous record; undefined = first ever. */
+  was?: string;
 }
 
-/** Post-workout summary: congratulations, stats, a quote or fun fact, PRs. */
-export function WorkoutSummary({ name, date, duration, volume, sets, prs, count, inspiration, children }: {
+/** Post-workout summary: congratulations, stats, volume comparison, a quote or fun fact, PRs (old → new). */
+export function WorkoutSummary({ name, date, duration, volume, sets, prs, count, inspiration, comparison, children }: {
   name: string;
   date: string;
   duration: string;
@@ -20,6 +23,8 @@ export function WorkoutSummary({ name, date, duration, volume, sets, prs, count,
   /** This workout's number in the user's history (1 = first ever). */
   count: number;
   inspiration?: Inspiration;
+  /** The silly volume comparison line. */
+  comparison?: ReactNode;
   children?: ReactNode;
 }) {
   return (
@@ -44,6 +49,7 @@ export function WorkoutSummary({ name, date, duration, volume, sets, prs, count,
           </div>
         ))}
       </dl>
+      {comparison}
       {inspiration && (
         <figure className="rounded-lg border border-border bg-surface p-4 flex flex-col gap-2">
           <figcaption className="flex items-center gap-2 text-xs font-bold uppercase tracking-[.08em] text-muted">
@@ -74,9 +80,13 @@ export function WorkoutSummary({ name, date, duration, volume, sets, prs, count,
         <ul className="flex flex-col gap-1">
           {prs.map((p, i) => (
             <li key={i} className="text-sm flex justify-between gap-2 border-b border-border py-1">
-              <span>{p.exercise}</span>
-              <span className="text-muted text-right">
-                {p.set} · {p.kinds.join(', ')}
+              <span className="min-w-0">
+                <span className="block truncate">{p.exercise}</span>
+                <span className="block text-xs text-muted">{p.kind}</span>
+              </span>
+              <span className="text-right tabular">
+                {p.was ? <span className="text-muted">{p.was} → </span> : <span className="text-muted">First · </span>}
+                <b>{p.value}</b>
               </span>
             </li>
           ))}

@@ -1,4 +1,4 @@
-import { IconTimer, IconTrophy, IconWeight } from './icons';
+import { IconPin, IconTimer, IconTrophy, IconWeight } from './icons';
 
 export interface HistoryCardProps {
   name: string;
@@ -6,6 +6,9 @@ export interface HistoryCardProps {
   duration: string;
   volume: string;
   prCount: number;
+  gym?: string;
+  /** Demo workouts are labelled so they're easy to tell apart. */
+  demo?: boolean;
   exercises: { line: string; best: string }[];
   onClick?: () => void;
 }
@@ -15,8 +18,9 @@ export function HistoryCard(p: HistoryCardProps) {
   return (
     <button type="button" onClick={p.onClick} className="w-full text-left bg-surface rounded-lg border border-border p-3 flex flex-col gap-2">
       <div>
-        <p className="font-semibold">{p.name}</p>
+        <p className="font-semibold">{p.name}{p.demo && <span className="ml-2 text-[11px] font-semibold text-muted border border-border rounded px-1">DEMO</span>}</p>
         <p className="text-xs text-muted">{p.date}</p>
+        {p.gym && <p className="text-xs text-muted inline-flex items-center gap-1"><IconPin size={12} />{p.gym}</p>}
       </div>
       <p className="text-xs text-muted flex gap-3 items-center">
         <span className="inline-flex items-center gap-1"><IconTimer size={14} /> {p.duration}</span>

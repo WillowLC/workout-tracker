@@ -38,6 +38,18 @@
   --color-superset-3: #1f8a63;
   --color-superset-4: #8a6d12;
 
+  /* Muscle map / weekly-set shading, 0 = none … 4 = most (or most recent). */
+  --heat-0: #e3e2df;
+  --heat-1: #f6d9c2;
+  --heat-2: #eeaa78;
+  --heat-3: #d9702c;
+  --heat-4: #9c3d05;
+  --color-body-outline: #d4d3cf;       /* muscle map silhouette */
+  /* Progression hint chip */
+  --color-hint-up: #1f8a4c;
+  --color-hint-hold: #5f6166;
+  --color-hint-down: #b7791f;
+
   --radius: 8px;       /* inputs, buttons, set rows */
   --radius-md: 10px;   /* big outline buttons, thumbnails */
   --radius-lg: 14px;   /* cards, sheets, floating bars */
@@ -78,5 +90,15 @@
     --color-superset-2: #f07bb3;
     --color-superset-3: #5cc9a0;
     --color-superset-4: #e0c35c;
+
+    --heat-0: #2c2e32;
+    --heat-1: #5a3a24;
+    --heat-2: #9a5526;
+    --heat-3: #e0701f;
+    --heat-4: #ffae70;
+    --color-body-outline: #45474c;
+    --color-hint-up: #4cc27a;
+    --color-hint-hold: #9b9ca1;
+    --color-hint-down: #f2b84b;
   }
 }

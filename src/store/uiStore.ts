@@ -1,6 +1,7 @@
 // Ephemeral UI state: toasts with undo, set focus, last finish summary.
 import { create } from 'zustand';
 import type { Workout } from '../domain/types';
+import type { PRToastData } from '../components/PRToast';
 
 export interface Toast {
   id: number;
@@ -25,6 +26,10 @@ interface UiState {
 
   summary: FinishSummary | null;
   setSummary: (s: FinishSummary | null) => void;
+
+  prToast: (PRToastData & { id: number }) | null;
+  showPRToast: (t: PRToastData) => void;
+  dismissPRToast: () => void;
 }
 
 let toastSeq = 0;
@@ -39,4 +44,8 @@ export const useUiStore = create<UiState>((set) => ({
 
   summary: null,
   setSummary: (summary) => set({ summary }),
+
+  prToast: null,
+  showPRToast: (t) => set({ prToast: { ...t, id: ++toastSeq } }),
+  dismissPRToast: () => set({ prToast: null }),
 }));

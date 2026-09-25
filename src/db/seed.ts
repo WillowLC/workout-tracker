@@ -1,4 +1,5 @@
 import type { BodyPart, Equipment, Exercise, TrackingType } from '../domain/types';
+import { seedMusclesFor } from './seedMuscles';
 
 // Strong naming convention: "Movement (Equipment)". Tracking type is
 // weight_reps unless given. Equipment is derived from the parenthetical unless given.
@@ -117,5 +118,20 @@ export const SEED_EXERCISES: Exercise[] = (Object.entries(LIBRARY) as [BodyPart,
     equipment: equipment ?? equipmentFromName(name),
     trackingType: tracking ?? 'weight_reps',
     isCustom: false,
+    ...(seedMusclesFor(name) ?? { primaryMuscles: [], secondaryMuscles: [] }),
   })),
 );
+
+export const SEED_BY_ID = new Map(SEED_EXERCISES.map((e) => [e.id, e]));
+
+/**
+ * Give a stored built-in exercise the muscle tags it predates (rows seeded by
+ * an older version, or restored from an old backup). Never touches custom
+ * exercises or rows that already have tags. Returns undefined if unchanged.
+ */
+export function backfillSeedTags(e: Exercise): Exercise | undefined {
+  if (e.isCustom || e.primaryMuscles !== undefined) return undefined;
+  const seed = SEED_BY_ID.get(e.id);
+  if (!seed) return undefined;
+  return { ...e, primaryMuscles: seed.primaryMuscles, secondaryMuscles: seed.secondaryMuscles };
+}

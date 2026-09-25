@@ -11,7 +11,11 @@ import { ExerciseForm } from '../components/ExerciseForm';
 import { ExerciseAbout } from '../components/ExerciseAbout';
 import { exerciseMedia } from '../db/exerciseMedia';
 import { EXERCISE_GUIDES } from '../db/guides';
-import { Button, Card, EmptyState, PageHeader, Sheet, Tabs } from '../components/ui';
+import { Button, Card, Chip, EmptyState, PageHeader, Sheet, Tabs } from '../components/ui';
+import { MUSCLE_LABELS } from '../domain/muscles';
+import { exerciseRepRange, formatRepRange } from '../domain/progression';
+import { effectiveStepKg } from '../domain/weightSteps';
+import { formatKg } from '../lib/format';
 import { IconChevronLeft, IconPin } from '../components/icons';
 
 type Tab = 'about' | 'history' | 'records' | 'charts';
@@ -19,7 +23,8 @@ type Tab = 'about' | 'history' | 'records' | 'charts';
 export function ExerciseDetailScreen() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { exercises, workouts, settings, saveExercise } = useAppStore();
+  const { exercises, workouts, settings, saveExercise, gyms } = useAppStore();
+  const [gymFilter, setGymFilter] = useState<string>('');
   const showToast = useUiStore((s) => s.showToast);
   const ex = exercises.find((e) => e.id === id);
   const guide = id ? EXERCISE_GUIDES[id] : undefined;
@@ -29,7 +34,12 @@ export function ExerciseDetailScreen() {
   const [editing, setEditing] = useState(false);
 
   const sessions = useMemo(() => (ex ? sessionsForExercise(ex.id, workouts) : []), [ex, workouts]);
-  const records = useMemo(() => (ex ? computeRecords(ex.id, ex.trackingType, workouts, settings.countWarmupsInStats) : undefined), [ex, workouts, settings.countWarmupsInStats]);
+  // Records are global; the Records tab can optionally narrow them to one gym.
+  const records = useMemo(
+    () => (ex ? computeRecords(ex.id, ex.trackingType, gymFilter ? workouts.filter((w) => w.gymId === gymFilter) : workouts, settings.countWarmupsInStats) : undefined),
+    [ex, workouts, settings.countWarmupsInStats, gymFilter],
+  );
+  const gymsUsed = useMemo(() => gyms.filter((g) => sessions.some((s) => s.workout.gymId === g.id)), [gyms, sessions]);
 
   if (!ex || !records) return <div><PageHeader title="Exercise" left={<Button variant="ghost" aria-label="Back" onClick={() => navigate(-1)}><IconChevronLeft size={20} /></Button>} /><EmptyState title="Exercise not found" /></div>;
 
@@ -65,6 +75,11 @@ export function ExerciseDetailScreen() {
       <PageHeader title={ex.name} left={<Button variant="ghost" aria-label="Back" onClick={() => navigate(-1)}><IconChevronLeft size={20} /></Button>} right={<Button size="sm" onClick={() => setEditing(true)}>Edit</Button>} />
       <main className="px-4 flex flex-col gap-3 max-w-2xl mx-auto">
         <p className="text-sm text-muted">{ex.bodyPart} · {ex.equipment}{ex.isCustom ? ' · Custom' : ''}{ex.archived ? ' · Archived' : ''}</p>
+        <p className="text-xs text-muted">
+          {ex.primaryMuscles?.length ? `Muscles: ${ex.primaryMuscles.map((m) => MUSCLE_LABELS[m]).join(', ')}${ex.secondaryMuscles?.length ? ` · also ${ex.secondaryMuscles.map((m) => MUSCLE_LABELS[m]).join(', ')}` : ''}` : 'No muscles tagged'}
+          {exerciseRepRange(ex) && ` · Rep range ${formatRepRange(exerciseRepRange(ex))}`}
+          {(t === 'weight_reps' || t === 'weighted_bodyweight' || t === 'assisted_bodyweight') && ` · Step ${formatKg(effectiveStepKg(ex, settings), settings.unit)}`}
+        </p>
         {ex.notes && <p className="text-sm flex gap-2"><IconPin size={16} className="text-muted mt-0.5" /> <span>{ex.notes}</span></p>}
         <Tabs<Tab> value={tab} onChange={setTab} options={[...(hasAbout ? [{ value: 'about' as Tab, label: 'About' }] : []), { value: 'history', label: 'History' }, { value: 'records', label: 'Records' }, { value: 'charts', label: 'Charts' }]} />
 
@@ -91,6 +106,12 @@ export function ExerciseDetailScreen() {
 
         {tab === 'records' && (
           <div className="flex flex-col gap-3">
+            {gymsUsed.length > 0 && (
+              <div className="flex gap-2 overflow-x-auto -mx-1 px-1 pb-1" role="group" aria-label="Filter records by gym">
+                <Chip selected={!gymFilter} onClick={() => setGymFilter('')}>All gyms</Chip>
+                {gymsUsed.map((g) => <Chip key={g.id} selected={gymFilter === g.id} onClick={() => setGymFilter(g.id)}>{g.name}</Chip>)}
+              </div>
+            )}
             <Card className="p-3">
               <dl className="grid grid-cols-2 gap-y-2 text-sm">
                 <dt className="text-muted">Best set</dt><dd className="text-right font-semibold tabular">{formatSet(records.bestSet, t, unit)}</dd>

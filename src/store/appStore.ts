@@ -9,12 +9,16 @@ import { mergeById, type Backup } from '../domain/backup';
 import { newId } from '../domain/ids';
 import { lbToKg } from '../domain/units';
 import { renameFolderInfo } from '../domain/templates';
+import { drawInspiration } from '../domain/inspiration';
 
 export interface AppMeta {
   lastBackupAt?: number;
   backupSnoozedUntil?: number;
   persistGranted?: boolean | null; // null = API unsupported
   installHintDismissed?: boolean;
+  /** Remaining shuffle bag of post-workout quote/fact indices. */
+  inspirationDeck?: number[];
+  lastInspiration?: number;
 }
 
 interface AppState {
@@ -56,6 +60,8 @@ interface AppState {
   // Settings & meta
   updateSettings: (patch: Partial<Settings>) => Promise<void>;
   setMeta: (patch: AppMeta) => Promise<void>;
+  /** Pick the next post-workout quote/fact (no repeats until all are shown). */
+  nextInspiration: () => number;
 
   // Data
   importBackup: (b: Backup, mode: 'replace' | 'merge') => Promise<{ added: number; skipped: number }>;
@@ -74,12 +80,14 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   init: async () => {
     const data = await repo.loadAll();
-    const [lastBackupAt, backupSnoozedUntil, persistGranted, installHintDismissed, folders] = await Promise.all([
+    const [lastBackupAt, backupSnoozedUntil, persistGranted, installHintDismissed, folders, inspirationDeck, lastInspiration] = await Promise.all([
       repo.getMeta<number>('lastBackupAt'),
       repo.getMeta<number>('backupSnoozedUntil'),
       repo.getMeta<boolean | null>('persistGranted'),
       repo.getMeta<boolean>('installHintDismissed'),
       repo.getMeta<FolderInfo[]>('folders'),
+      repo.getMeta<number[]>('inspirationDeck'),
+      repo.getMeta<number>('lastInspiration'),
     ]);
     const active = data.workouts.find((w) => w.finishedAt === undefined) ?? null;
     set({
@@ -90,7 +98,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       folders: folders ?? [],
       settings: data.settings,
       active,
-      meta: { lastBackupAt, backupSnoozedUntil, persistGranted, installHintDismissed },
+      meta: { lastBackupAt, backupSnoozedUntil, persistGranted, installHintDismissed, inspirationDeck, lastInspiration },
     });
   },
 
@@ -190,6 +198,13 @@ export const useAppStore = create<AppState>((set, get) => ({
   setMeta: async (patch) => {
     set((s) => ({ meta: { ...s.meta, ...patch } }));
     await Promise.all(Object.entries(patch).map(([k, v]) => repo.setMeta(k as repo.MetaKey, v)));
+  },
+
+  nextInspiration: () => {
+    const { inspirationDeck, lastInspiration } = get().meta;
+    const { index, deck } = drawInspiration(inspirationDeck, lastInspiration);
+    void get().setMeta({ inspirationDeck: deck, lastInspiration: index });
+    return index;
   },
 
   importBackup: async (b, mode) => {

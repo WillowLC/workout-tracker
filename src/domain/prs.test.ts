@@ -33,8 +33,20 @@ describe('detectPRs', () => {
     expect(prs.get(cur.exercises[0].sets[0].id)?.kinds).toContain('weight');
     expect(prs.get(cur.exercises[0].sets[1].id)?.kinds ?? []).not.toContain('weight');
   });
-  it('warm-ups never award PRs by default; first-ever session awards none', () => {
-    const cur = workout(5000, [we('bench', [set(150, 1, 'warmup')]), we('squat', [set(200, 5)])], { finishedAt: undefined });
+  it('warm-ups never award PRs by default', () => {
+    const cur = workout(5000, [we('bench', [set(150, 1, 'warmup')])], { finishedAt: undefined });
+    expect(detectPRs(cur, history, t, false).size).toBe(0);
+  });
+  it('first-ever exercise: first set is a best-set PR, later sets only if they beat it', () => {
+    const cur = workout(5000, [we('squat', [set(100, 5), set(90, 5), set(110, 3)])], { finishedAt: undefined });
+    const prs = detectPRs(cur, history, t, false);
+    const [a, b, c] = cur.exercises[0].sets;
+    expect(prs.get(a.id)?.kinds).toEqual(['weight']);
+    expect(prs.get(b.id)).toBeUndefined();
+    expect(prs.get(c.id)?.kinds).toEqual(['weight']);
+  });
+  it('first-ever exercise: blank sets are not PRs', () => {
+    const cur = workout(5000, [we('squat', [set(undefined, undefined)])], { finishedAt: undefined });
     expect(detectPRs(cur, history, t, false).size).toBe(0);
   });
   it('ignores workouts that started after this one (editing history)', () => {

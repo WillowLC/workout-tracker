@@ -70,7 +70,7 @@ src/
   components/    Visual components. Data comes in through props only, no fetching.
                  SetRow, SetTypeBadge, PreviousCell, BestLine, PRBadge, ExerciseCard,
                  SupersetBracket, WorkoutSummary, ExercisePicker, ExerciseList,
-                 HistoryCard, Heatmap, PlateCalculator, ReorderList, ExerciseForm, shell.tsx, ui.tsx
+                 HistoryCard, Calendar, PlateCalculator, ReorderList, ExerciseForm, shell.tsx, ui.tsx
   screens/       Containers that connect the store and domain to components
   styles/        tokens.css (ALL colours/radii/fonts) + index.css
 scripts/         icon generator, postbuild (404.html), deploy, e2e
@@ -114,7 +114,8 @@ Every colour, radius and font is a CSS variable in `src/styles/tokens.css`. `tai
 Where the brief didn't specify something, I followed Strong/Hevy:
 
 - **Repo & hosting:** this folder had no remote, and the GitHub account had no `workout-tracker` repo. On request, a new **public** repo `WillowLC/workout-tracker` was created, so hosting is **GitHub Pages**.
-- **No PR on a first-ever session.** The first time you log an exercise sets the baseline, so the summary isn't filled with "PRs".
+- **First-ever sets are PRs.** The first time you log an exercise, your first set is a best-set PR, and so is any later set that beats it. Est. 1RM and volume PRs start from the next session, once there's a baseline.
+- **Post-workout quotes and facts** come from a list of 100+ entries in `src/domain/inspiration.ts`. They are drawn from a shuffle bag saved on the device, so none repeats until you've seen them all.
 - **Rep maxes** (Records tab) are the heaviest weight lifted for *at least* N reps. For example, 100×5 counts as a 3-rep max of 100.
 - **Volume** in workout totals is weight×reps, counting only weight and weighted-bodyweight exercises. For an exercise's own "session volume" record:
   - assisted and reps-only exercises use total reps

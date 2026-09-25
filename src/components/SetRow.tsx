@@ -6,6 +6,7 @@ import { SetTypeBadge } from './SetTypeBadge';
 import { PreviousCell } from './PreviousCell';
 import { PRBadge } from './PRBadge';
 import { ClockInput, NumberInput } from './inputs';
+import { IconCheck } from './icons';
 
 export type SetColumn = { key: 'weight' | 'reps' | 'durationSec' | 'distanceM'; label: string };
 
@@ -22,7 +23,7 @@ export function SetTableHeader({ columns, showRpe }: { columns: SetColumn[]; sho
         <span key={c.key} className="text-center">{c.label}</span>
       ))}
       {showRpe && <span className="text-center">RPE</span>}
-      <span className="text-center">✓</span>
+      <span className="flex justify-center"><IconCheck size={13} /></span>
     </div>
   );
 }
@@ -130,7 +131,7 @@ export function SetRow(p: SetRowProps) {
             aria-hidden
             className={`w-8 h-8 rounded flex items-center justify-center text-sm font-extrabold ${p.completed ? 'bg-accent text-accent-contrast' : 'border-[1.5px] border-border-strong text-ghost'}`}
           >
-            ✓
+            <IconCheck size={16} />
           </span>
         </button>
       </div>

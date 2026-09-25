@@ -13,7 +13,7 @@
   --color-row-done: #ebeae7;           /* completed set row */
   --color-border: #e3e2df;             /* card borders */
   --color-border-control: #d4d3cf;     /* stepper buttons, unselected checks */
-  --color-border-strong: #b9b8b4;      /* pending ✓ outline */
+  --color-border-strong: #b9b8b4;      /* pending check outline */
   --color-divider: #ecebe8;            /* list row separators */
   --color-text: #17181a;
   --color-text-secondary: #3d3e42;

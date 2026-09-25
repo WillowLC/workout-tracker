@@ -1,3 +1,5 @@
+import { IconTimer, IconTrophy, IconWeight } from './icons';
+
 export interface HistoryCardProps {
   name: string;
   date: string;
@@ -16,10 +18,10 @@ export function HistoryCard(p: HistoryCardProps) {
         <p className="font-semibold">{p.name}</p>
         <p className="text-xs text-muted">{p.date}</p>
       </div>
-      <p className="text-xs text-muted flex gap-3">
-        <span>⏱ {p.duration}</span>
-        <span>🏋 {p.volume}</span>
-        {p.prCount > 0 && <span className="text-pr font-semibold">🏆 {p.prCount} PR{p.prCount > 1 ? 's' : ''}</span>}
+      <p className="text-xs text-muted flex gap-3 items-center">
+        <span className="inline-flex items-center gap-1"><IconTimer size={14} /> {p.duration}</span>
+        <span className="inline-flex items-center gap-1"><IconWeight size={14} /> {p.volume}</span>
+        {p.prCount > 0 && <span className="text-pr font-semibold inline-flex items-center gap-1"><IconTrophy size={14} /> {p.prCount} PR{p.prCount > 1 ? 's' : ''}</span>}
       </p>
       <div className="grid grid-cols-[1fr_auto] gap-x-3 text-sm">
         <span className="text-xs font-semibold text-muted">Exercise</span>

@@ -1,11 +1,14 @@
 import { DndContext, closestCenter, PointerSensor, TouchSensor, KeyboardSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import type { ReactNode } from 'react';
+import { IconArrowDown, IconArrowUp, IconGrip } from './icons';
 
 export interface ReorderItem {
   id: string;
   title: string;
   subtitle?: string;
+  icon?: ReactNode;
 }
 
 function Row({ item, index, count, onMove }: { item: ReorderItem; index: number; count: number; onMove: (from: number, to: number) => void }) {
@@ -16,20 +19,20 @@ function Row({ item, index, count, onMove }: { item: ReorderItem; index: number;
       style={{ transform: CSS.Transform.toString(transform), transition }}
       className={`flex items-center gap-2 bg-surface border border-border rounded px-2 min-h-[52px] ${isDragging ? 'shadow-lg relative z-10' : ''}`}
     >
-      <button type="button" aria-label={`Drag ${item.title}`} className="min-w-[40px] min-h-[44px] text-muted touch-none cursor-grab" {...attributes} {...listeners}>
-        ☰
+      <button type="button" aria-label={`Drag ${item.title}`} className="min-w-[40px] min-h-[44px] flex items-center justify-center text-muted touch-none cursor-grab" {...attributes} {...listeners}>
+        <IconGrip size={20} />
       </button>
       <span className="flex-1 min-w-0">
-        <span className="block truncate font-medium">{item.title}</span>
+        <span className="flex items-center gap-2 font-medium">{item.icon && <span className="text-muted" aria-hidden>{item.icon}</span>}<span className="truncate">{item.title}</span></span>
         {item.subtitle && <span className="block text-xs text-muted truncate">{item.subtitle}</span>}
       </span>
-      <button type="button" aria-label={`Move ${item.title} up`} disabled={index === 0} onClick={() => onMove(index, index - 1)} className="min-w-[40px] min-h-[44px] disabled:opacity-30">↑</button>
-      <button type="button" aria-label={`Move ${item.title} down`} disabled={index === count - 1} onClick={() => onMove(index, index + 1)} className="min-w-[40px] min-h-[44px] disabled:opacity-30">↓</button>
+      <button type="button" aria-label={`Move ${item.title} up`} disabled={index === 0} onClick={() => onMove(index, index - 1)} className="min-w-[40px] min-h-[44px] flex items-center justify-center disabled:opacity-30"><IconArrowUp size={18} /></button>
+      <button type="button" aria-label={`Move ${item.title} down`} disabled={index === count - 1} onClick={() => onMove(index, index + 1)} className="min-w-[40px] min-h-[44px] flex items-center justify-center disabled:opacity-30"><IconArrowDown size={18} /></button>
     </li>
   );
 }
 
-/** Drag-to-reorder list (touch, mouse, keyboard) with ↑/↓ buttons as an accessible fallback. */
+/** Drag-to-reorder list (touch, mouse, keyboard) with up/down buttons as an accessible fallback. */
 export function ReorderList({ items, onMove }: { items: ReorderItem[]; onMove: (from: number, to: number) => void }) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),

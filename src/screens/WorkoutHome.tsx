@@ -13,6 +13,7 @@ import { InstallHint } from '../components/shell';
 import { JimLogo } from '../components/JimLogo';
 import { ReorderList } from '../components/ReorderList';
 import { WeekStrip } from '../components/WeekStrip';
+import { IconChevronRight, IconFolder } from '../components/icons';
 
 export function WorkoutHome() {
   const navigate = useNavigate();
@@ -83,9 +84,9 @@ export function WorkoutHome() {
                     aria-label={`Folder ${folder}: weekly plan`}
                     className="flex items-center gap-2 min-h-[44px] -mx-1 px-1 rounded text-left"
                   >
-                    <span className="flex-1 min-w-0 text-xs font-bold text-muted uppercase truncate">📁 {folder}</span>
+                    <span className="flex-1 min-w-0 text-xs font-bold text-muted uppercase flex items-center gap-1.5"><IconFolder size={15} /><span className="truncate">{folder}</span></span>
                     <WeekStrip plan={plan} today={today} nameOf={templateName} />
-                    <span aria-hidden className="text-muted">›</span>
+                    <IconChevronRight size={18} className="text-muted" />
                   </button>
                 )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -147,14 +148,14 @@ export function WorkoutHome() {
             <section className="flex flex-col gap-2">
               <h3 className="text-xs font-bold text-muted uppercase">Folders</h3>
               <ReorderList
-                items={folderList.map((f) => ({ id: `folder:${f}`, title: `📁 ${f}` }))}
+                items={folderList.map((f) => ({ id: `folder:${f}`, title: f, icon: <IconFolder size={16} /> }))}
                 onMove={(from, to) => void saveFolders(reorderFolders(folders, moveItem(folderList, from, to)))}
               />
             </section>
           )}
           {groups.filter(([, list]) => list.length > 1).map(([folder, list]) => (
             <section key={folder || '_'} className="flex flex-col gap-2">
-              <h3 className="text-xs font-bold text-muted uppercase">{folder ? `📁 ${folder}` : 'Templates'}</h3>
+              <h3 className="text-xs font-bold text-muted uppercase flex items-center gap-1.5">{folder ? <><IconFolder size={15} />{folder}</> : 'Templates'}</h3>
               <ReorderList
                 items={list.map((t) => ({ id: t.id, title: t.name }))}
                 onMove={(from, to) => void saveTemplates(renumberTemplates(moveItem(list, from, to)))}

@@ -12,7 +12,9 @@ export type MetaKey =
   | 'backupSnoozedUntil'
   | 'persistGranted'
   | 'installHintDismissed'
-  | 'folders';
+  | 'folders'
+  | 'inspirationDeck'
+  | 'lastInspiration';
 
 export async function getMeta<T>(key: MetaKey): Promise<T | undefined> {
   return (await db.meta.get(key))?.value as T | undefined;

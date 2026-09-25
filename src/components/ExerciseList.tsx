@@ -5,6 +5,7 @@ import { alphaSections, filterExercises } from '../domain/search';
 import { Chip, EmptyState } from './ui';
 import { ExerciseThumb } from './ExerciseThumb';
 import { exerciseMedia } from '../db/exerciseMedia';
+import { IconCheck, IconChevronDown } from './icons';
 
 export interface ExerciseListProps {
   exercises: Exercise[];
@@ -51,7 +52,7 @@ export function ExerciseList({ exercises, recentIds = [], selectedIds = [], mult
           </span>
           {multiSelect && (
             <span aria-hidden className={`w-[26px] h-[26px] flex-none rounded-full flex items-center justify-center text-[13px] font-black ${selected ? 'bg-accent text-accent-contrast' : 'border-[1.5px] border-border-control'}`}>
-              {selected ? '✓' : ''}
+              {selected && <IconCheck size={15} />}
             </span>
           )}
         </button>
@@ -73,10 +74,10 @@ export function ExerciseList({ exercises, recentIds = [], selectedIds = [], mult
         </div>
         <div className="flex gap-2 overflow-x-auto">
           <Chip selected={bodyParts.length > 0 || filterOpen === 'body'} onClick={() => setFilterOpen(filterOpen === 'body' ? null : 'body')}>
-            Body part{bodyParts.length ? ` (${bodyParts.length})` : ''} ▾
+            <span className="inline-flex items-center gap-1">Body part{bodyParts.length ? ` (${bodyParts.length})` : ''} <IconChevronDown size={14} /></span>
           </Chip>
           <Chip selected={equipment.length > 0 || filterOpen === 'equip'} onClick={() => setFilterOpen(filterOpen === 'equip' ? null : 'equip')}>
-            Equipment{equipment.length ? ` (${equipment.length})` : ''} ▾
+            <span className="inline-flex items-center gap-1">Equipment{equipment.length ? ` (${equipment.length})` : ''} <IconChevronDown size={14} /></span>
           </Chip>
           {(bodyParts.length > 0 || equipment.length > 0) && <Chip onClick={() => { setBodyParts([]); setEquipment([]); }}>Clear</Chip>}
           {showArchivedToggle && <Chip selected={showArchived} onClick={() => setShowArchived(!showArchived)}>Archived</Chip>}

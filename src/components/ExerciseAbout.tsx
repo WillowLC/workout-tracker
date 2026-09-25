@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { ExerciseGuide } from '../db/guides';
+import { IconClose, IconPlay } from './icons';
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -45,7 +46,7 @@ export function ExerciseMediaViewer({ images, alt }: { images: string[]; alt: st
           />
         ))}
         {!playing && images.length > 1 && (
-          <span aria-hidden className="absolute bottom-2 right-2 rounded bg-bg px-2 py-0.5 text-xs font-semibold">▶ Play</span>
+          <span aria-hidden className="absolute bottom-2 right-2 rounded bg-bg px-2 py-0.5 text-xs font-semibold inline-flex items-center gap-1"><IconPlay size={12} /> Play</span>
         )}
       </button>
       {images.length > 1 && (
@@ -133,7 +134,7 @@ export function ExerciseAbout({
             <ul className="flex flex-col gap-2">
               {guide.mistakes.map((m, i) => (
                 <li key={i} className="flex gap-3 text-[15px] leading-snug text-secondary">
-                  <span aria-hidden className="flex-none text-danger font-bold">✕</span>
+                  <span aria-hidden className="flex-none text-danger mt-0.5"><IconClose size={16} /></span>
                   <span>{m}</span>
                 </li>
               ))}

@@ -10,6 +10,7 @@ import { useNow } from '../../lib/useNow';
 import { ConfirmDialog } from '../../components/ui';
 import { WorkoutEditor } from './WorkoutEditor';
 import { useWorkoutContext } from './useExerciseContext';
+import { IconChevronDown } from '../../components/icons';
 
 export function ActiveWorkoutScreen() {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ export function ActiveWorkoutScreen() {
   const updateActive = useAppStore((s) => s.updateActive);
   const finishActive = useAppStore((s) => s.finishActive);
   const cancelActive = useAppStore((s) => s.cancelActive);
+  const nextInspiration = useAppStore((s) => s.nextInspiration);
   const { setSummary, setHighlight } = useUiStore();
   const now = useNow(1000);
   const [dialog, setDialog] = useState<'pending' | 'empty' | 'cancel' | null>(null);
@@ -40,7 +42,7 @@ export function ActiveWorkoutScreen() {
     const templateChanged = !!template && !workoutMatchesTemplate(finished, template);
     setHighlight(null);
     await finishActive(finished);
-    setSummary({ workout: finished, templateChanged });
+    setSummary({ workout: finished, templateChanged, inspiration: nextInspiration() });
     navigate('/workout/summary', { replace: true });
   };
 
@@ -62,7 +64,7 @@ export function ActiveWorkoutScreen() {
     <div className="min-h-full bg-bg pb-40">
       <header className="sticky top-0 z-20 bg-bg pt-safe">
         <div className="flex items-center gap-2 px-3 h-[52px] max-w-2xl mx-auto">
-          <button type="button" aria-label="Minimise workout" onClick={() => navigate('/')} className="w-11 h-11 flex items-center justify-center text-sm text-muted">▼</button>
+          <button type="button" aria-label="Minimise workout" onClick={() => navigate('/')} className="w-11 h-11 flex items-center justify-center text-muted"><IconChevronDown size={22} /></button>
           <p className="flex-1 text-center tabular text-[17px] font-semibold text-accent" aria-label="Elapsed time">{formatClock((now - active.startedAt) / 1000)}</p>
           <button type="button" onClick={onFinish} className="h-[34px] px-4 rounded bg-accent text-accent-contrast text-[15px] font-semibold">Finish</button>
         </div>

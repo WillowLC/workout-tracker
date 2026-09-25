@@ -11,7 +11,8 @@ import { PRBadge } from '../components/PRBadge';
 import { SupersetBracket } from '../components/SupersetBracket';
 import { WorkoutSummary } from '../components/WorkoutSummary';
 import { HistoryCard } from '../components/HistoryCard';
-import { Heatmap } from '../components/Heatmap';
+import { WeekdayHeader, WeekRows } from '../components/Calendar';
+import { INSPIRATIONS } from '../domain/inspiration';
 import { PlateCalculator } from '../components/PlateCalculator';
 import { ExerciseList } from '../components/ExerciseList';
 import { BackupBanner, InstallHint, ResumeBar, ToastView, UpdateBanner } from '../components/shell';
@@ -36,7 +37,9 @@ const row = (label: string, type: SetType, extra: Partial<Parameters<typeof SetR
 );
 
 export function DevComponentsScreen() {
-  const weeks = Array.from({ length: 16 }, (_, w) => Array.from({ length: 7 }, (_, d) => ({ date: w * 7 + d, count: (w * 7 + d) % 3 === 0 ? 1 : 0 })));
+  const weeks = Array.from({ length: 3 }, (_, w) =>
+    Array.from({ length: 7 }, (_, d) => ({ date: new Date(2026, 8, 7 + w * 7 + d, 12).getTime(), workouts: (w * 7 + d) % 3 === 0 ? [{ id: 'x', name: 'x', startedAt: 0, exercises: [] }] : [], future: w * 7 + d > 18 })),
+  );
   return (
     <main className="p-4 flex flex-col gap-8 max-w-2xl mx-auto pb-24">
       <h1 className="text-2xl font-bold">Component gallery</h1>
@@ -99,16 +102,17 @@ export function DevComponentsScreen() {
       </Section>
 
       <Section title="WorkoutSummary">
-        <WorkoutSummary name="Push Day" date="24 Sep 2026, 18:30" duration="1h 5m" volume="8,450 kg" sets={18}
+        <WorkoutSummary name="Push Day" date="24 Sep 2026, 18:30" duration="1h 5m" volume="8,450 kg" sets={18} count={42} inspiration={INSPIRATIONS[0]}
           prs={[{ exercise: 'Bench Press (Barbell)', set: '102.5 kg × 5', kinds: ['Best set', 'Est. 1RM'] }]}>
           <Button variant="primary">Done</Button>
         </WorkoutSummary>
       </Section>
 
-      <Section title="HistoryCard / Heatmap">
+      <Section title="HistoryCard / Calendar">
         <HistoryCard name="Push Day" date="Wednesday, 24 September" duration="1h 5m" volume="8,450 kg" prCount={2}
           exercises={[{ line: '3 × Bench Press (Barbell)', best: '100 kg × 5' }, { line: '3 × Pull Up (Assisted)', best: '-20 kg × 8' }]} />
-        <Heatmap weeks={weeks} />
+        <WeekdayHeader />
+        <WeekRows weeks={weeks} now={new Date(2026, 8, 25, 12).getTime()} />
       </Section>
 
       <Section title="PlateCalculator">

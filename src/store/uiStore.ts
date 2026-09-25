@@ -11,6 +11,8 @@ export interface Toast {
 export interface FinishSummary {
   workout: Workout;
   templateChanged: boolean;
+  /** Index into INSPIRATIONS shown on the summary. */
+  inspiration: number;
 }
 
 interface UiState {

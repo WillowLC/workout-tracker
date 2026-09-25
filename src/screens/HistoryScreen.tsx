@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../store/appStore';
 import { useExerciseMap, useTrackingOf } from '../store/selectors';
-import { groupByMonth, trainingHeatmap } from '../domain/history';
+import { groupByMonth, recentWeeks, workoutsByDay } from '../domain/history';
 import { detectPRs } from '../domain/prs';
 import { bestSetOf, statSets, workoutVolume } from '../domain/records';
 import { shouldRemindBackup } from '../domain/backup';
@@ -11,7 +11,8 @@ import { formatDuration, formatVolume } from '../domain/units';
 import { formatDate, formatSet } from '../lib/format';
 import { exportJsonBackup } from '../lib/backupActions';
 import { HistoryCard } from '../components/HistoryCard';
-import { Heatmap } from '../components/Heatmap';
+import { WeekdayHeader, WeekRows } from '../components/Calendar';
+import { IconCalendar, IconChevronRight } from '../components/icons';
 import { BackupBanner } from '../components/shell';
 import { Card, EmptyState, PageHeader, Button } from '../components/ui';
 
@@ -47,6 +48,9 @@ export function HistoryScreen() {
     [workouts, exMap, trackingOf, settings],
   );
 
+  const recent = recentWeeks(workoutsByDay(workouts), now);
+  const recentCount = recent.flat().reduce((n, d) => n + d.workouts.length, 0);
+
   const remind = shouldRemindBackup({ workoutCount: workouts.length, lastBackupAt: meta.lastBackupAt, snoozedUntil: meta.backupSnoozedUntil, now });
 
   return (
@@ -54,7 +58,21 @@ export function HistoryScreen() {
       <PageHeader title="History" />
       {remind && <BackupBanner onBackup={() => void exportJsonBackup()} onDismiss={() => void setMeta({ backupSnoozedUntil: now + 7 * DAY })} />}
       <main className="px-4 flex flex-col gap-4 pb-4">
-        <Card className="p-3"><Heatmap weeks={trainingHeatmap(workouts, now)} /></Card>
+        <button
+          type="button"
+          onClick={() => navigate('/history/calendar')}
+          aria-label="Open full calendar"
+          className="w-full text-left bg-surface rounded-lg border border-border p-3 flex flex-col gap-2"
+        >
+          <span className="flex items-center gap-2">
+            <IconCalendar size={18} className="text-muted" />
+            <span className="flex-1 font-semibold text-sm">Last 3 weeks</span>
+            <span className="text-xs text-muted">{recentCount} workout{recentCount === 1 ? '' : 's'}</span>
+            <IconChevronRight size={18} className="text-muted" />
+          </span>
+          <WeekdayHeader />
+          <WeekRows weeks={recent} now={now} />
+        </button>
         {workouts.length === 0 && (
           <Card>
             <EmptyState title="No workouts yet" message="Finished workouts show up here." action={<Button variant="primary" onClick={() => navigate('/')}>Start a workout</Button>} />

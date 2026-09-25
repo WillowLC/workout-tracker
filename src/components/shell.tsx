@@ -1,7 +1,7 @@
 // App-shell visual pieces: tab bar, resume bar, toast, banners.
 import { NavLink } from 'react-router-dom';
 import { Banner, Button } from './ui';
-import { IconExercises, IconHistory, IconSettings, IconWorkout } from './icons';
+import { IconChevronUp, IconClose, IconExercises, IconHistory, IconSettings, IconWorkout } from './icons';
 
 const TABS = [
   { to: '/', label: 'Workout', icon: <IconWorkout /> },
@@ -40,7 +40,7 @@ export function ResumeBar({ name, elapsed, onClick }: { name: string; elapsed: s
         <span className="block font-semibold truncate">{name}</span>
       </span>
       <span className="tabular font-semibold">{elapsed}</span>
-      <span aria-hidden>▲</span>
+      <IconChevronUp size={20} />
     </button>
   );
 }
@@ -54,7 +54,7 @@ export function ToastView({ message, onUndo, onDismiss }: { message: string; onU
           Undo
         </button>
       )}
-      <button type="button" aria-label="Dismiss" className="min-h-[40px] px-2" onClick={onDismiss}>✕</button>
+      <button type="button" aria-label="Dismiss" className="min-h-[40px] px-2 flex items-center" onClick={onDismiss}><IconClose size={18} /></button>
     </div>
   );
 }

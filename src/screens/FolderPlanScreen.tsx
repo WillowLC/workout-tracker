@@ -6,6 +6,7 @@ import { useUiStore } from '../store/uiStore';
 import { WEEK_DAYS, emptyWeekPlan, groupTemplatesByFolder, setPlanDay, weekdayIndex } from '../domain/templates';
 import { daysAgo } from '../lib/format';
 import { Button, Card, ConfirmDialog, EmptyState, MenuList, PageHeader, Sheet, inputClass } from '../components/ui';
+import { IconChevronLeft, IconChevronRight, IconFolder, IconMoon, IconWorkout } from '../components/icons';
 
 /** Weekly split for one folder: pick a template or rest for each day of the week. */
 export function FolderPlanScreen() {
@@ -31,7 +32,7 @@ export function FolderPlanScreen() {
   if (!list.length) {
     return (
       <div>
-        <PageHeader title="Folder" left={<Button variant="ghost" onClick={() => navigate('/')}>‹</Button>} />
+        <PageHeader title="Folder" left={<Button variant="ghost" aria-label="Back" onClick={() => navigate('/')}><IconChevronLeft size={20} /></Button>} />
         <EmptyState title="Folder not found" message="It has no templates any more." action={<Button onClick={() => navigate('/')}>Go home</Button>} />
       </div>
     );
@@ -49,8 +50,8 @@ export function FolderPlanScreen() {
   return (
     <div className="pb-8">
       <PageHeader
-        title={`📁 ${name}`}
-        left={<Button variant="ghost" aria-label="Back" onClick={() => navigate('/')}>‹</Button>}
+        title={<span className="flex items-center gap-2"><IconFolder size={22} className="text-muted" /><span className="truncate">{name}</span></span>}
+        left={<Button variant="ghost" aria-label="Back" onClick={() => navigate('/')}><IconChevronLeft size={20} /></Button>}
         right={<Button size="sm" onClick={() => setRenaming(name)}>Rename</Button>}
       />
       <main className="px-4 flex flex-col gap-5">
@@ -80,7 +81,7 @@ export function FolderPlanScreen() {
                       {t ? <span className="block font-semibold truncate">{t.name}</span> : <span className="block text-muted">Rest day</span>}
                       {i === today && <span className="block text-xs text-accent">Today</span>}
                     </span>
-                    <span aria-hidden className="text-muted">›</span>
+                    <IconChevronRight size={18} className="text-muted" />
                   </button>
                 </li>
               );
@@ -110,8 +111,8 @@ export function FolderPlanScreen() {
       <Sheet open={pickDay !== null} title={pickDay !== null ? WEEK_DAYS[pickDay] : ''} onClose={() => setPickDay(null)}>
         {pickDay !== null && (
           <MenuList items={[
-            { label: 'Rest day', icon: '😴', active: !plan[pickDay], onClick: () => void choose(null) },
-            ...list.map((t) => ({ label: t.name, icon: '🏋️', active: plan[pickDay] === t.id, onClick: () => void choose(t.id) })),
+            { label: 'Rest day', icon: <IconMoon size={18} />, active: !plan[pickDay], onClick: () => void choose(null) },
+            ...list.map((t) => ({ label: t.name, icon: <IconWorkout size={18} />, active: plan[pickDay] === t.id, onClick: () => void choose(t.id) })),
           ]} />
         )}
       </Sheet>

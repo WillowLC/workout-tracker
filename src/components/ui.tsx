@@ -1,5 +1,6 @@
 // Generic visual primitives. No data fetching; everything via props.
 import { useEffect, useRef, type ButtonHTMLAttributes, type ReactNode } from 'react';
+import { IconCheck, IconClose } from './icons';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 const VARIANT: Record<Variant, string> = {
@@ -51,7 +52,7 @@ export function Sheet({ open, title, onClose, children, footer }: { open: boolea
         {title && (
           <div className="flex items-center justify-between px-4 pt-3 pb-2 border-b border-border">
             <h2 className="font-semibold text-base">{title}</h2>
-            <IconButton label="Close" onClick={onClose}>✕</IconButton>
+            <IconButton label="Close" onClick={onClose}><IconClose size={20} /></IconButton>
           </div>
         )}
         <div className="overflow-y-auto p-4 flex-1">{children}</div>
@@ -94,11 +95,11 @@ export function MenuList({ items }: { items: { label: string; onClick: () => voi
             className={`w-full text-left px-4 min-h-[48px] flex items-center justify-between ${it.danger ? 'text-danger' : ''} ${it.active ? 'font-semibold' : ''}`}
           >
             <span className="flex items-center gap-3">
-              {it.icon !== undefined && <span aria-hidden className="w-5 text-center">{it.icon}</span>}
+              {it.icon !== undefined && <span aria-hidden className="w-5 flex justify-center text-muted">{it.icon}</span>}
               {it.label}
             </span>
             {it.hint && <span className="text-muted text-sm">{it.hint}</span>}
-            {it.active && <span aria-hidden>✓</span>}
+            {it.active && <IconCheck size={18} className="text-accent" />}
           </button>
         </li>
       ))}
@@ -181,7 +182,7 @@ export function Banner({ children, action, onDismiss, tone = 'neutral' }: { chil
     <div role="status" className={`mx-4 my-2 rounded border px-3 py-2 flex items-center gap-2 text-sm ${tone === 'warning' ? 'border-warning bg-surface' : 'border-border bg-surface'}`}>
       <div className="flex-1">{children}</div>
       {action}
-      {onDismiss && <IconButton label="Dismiss" onClick={onDismiss}>✕</IconButton>}
+      {onDismiss && <IconButton label="Dismiss" onClick={onDismiss}><IconClose size={18} /></IconButton>}
     </div>
   );
 }

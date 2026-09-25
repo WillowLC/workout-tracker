@@ -12,6 +12,7 @@ import { WorkoutHome } from './screens/WorkoutHome';
 import { ActiveWorkoutScreen } from './screens/workout/ActiveWorkoutScreen';
 import { SummaryScreen } from './screens/workout/SummaryScreen';
 import { HistoryScreen } from './screens/HistoryScreen';
+import { CalendarScreen } from './screens/CalendarScreen';
 import { EditWorkoutScreen, WorkoutDetailScreen } from './screens/WorkoutDetailScreen';
 import { ExercisesScreen } from './screens/ExercisesScreen';
 import { TemplateEditorScreen } from './screens/TemplateEditorScreen';
@@ -71,6 +72,7 @@ const router = createBrowserRouter(
         { path: '/workout', element: <ActiveWorkoutScreen /> },
         { path: '/workout/summary', element: <SummaryScreen /> },
         { path: '/history', element: <HistoryScreen /> },
+        { path: '/history/calendar', element: <CalendarScreen /> },
         { path: '/history/:id', element: <WorkoutDetailScreen /> },
         { path: '/history/:id/edit', element: <EditWorkoutScreen /> },
         { path: '/exercises', element: <ExercisesScreen /> },

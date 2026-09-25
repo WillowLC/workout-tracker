@@ -12,6 +12,7 @@ import { ExerciseAbout } from '../components/ExerciseAbout';
 import { exerciseMedia } from '../db/exerciseMedia';
 import { EXERCISE_GUIDES } from '../db/guides';
 import { Button, Card, EmptyState, PageHeader, Sheet, Tabs } from '../components/ui';
+import { IconChevronLeft, IconPin } from '../components/icons';
 
 type Tab = 'about' | 'history' | 'records' | 'charts';
 
@@ -30,7 +31,7 @@ export function ExerciseDetailScreen() {
   const sessions = useMemo(() => (ex ? sessionsForExercise(ex.id, workouts) : []), [ex, workouts]);
   const records = useMemo(() => (ex ? computeRecords(ex.id, ex.trackingType, workouts, settings.countWarmupsInStats) : undefined), [ex, workouts, settings.countWarmupsInStats]);
 
-  if (!ex || !records) return <div><PageHeader title="Exercise" left={<Button variant="ghost" onClick={() => navigate(-1)}>‹</Button>} /><EmptyState title="Exercise not found" /></div>;
+  if (!ex || !records) return <div><PageHeader title="Exercise" left={<Button variant="ghost" aria-label="Back" onClick={() => navigate(-1)}><IconChevronLeft size={20} /></Button>} /><EmptyState title="Exercise not found" /></div>;
 
   const t = ex.trackingType;
   const unit = settings.unit;
@@ -61,10 +62,10 @@ export function ExerciseDetailScreen() {
 
   return (
     <div className="pb-8">
-      <PageHeader title={ex.name} left={<Button variant="ghost" onClick={() => navigate(-1)}>‹</Button>} right={<Button size="sm" onClick={() => setEditing(true)}>Edit</Button>} />
+      <PageHeader title={ex.name} left={<Button variant="ghost" aria-label="Back" onClick={() => navigate(-1)}><IconChevronLeft size={20} /></Button>} right={<Button size="sm" onClick={() => setEditing(true)}>Edit</Button>} />
       <main className="px-4 flex flex-col gap-3 max-w-2xl mx-auto">
         <p className="text-sm text-muted">{ex.bodyPart} · {ex.equipment}{ex.isCustom ? ' · Custom' : ''}{ex.archived ? ' · Archived' : ''}</p>
-        {ex.notes && <p className="text-sm">📌 {ex.notes}</p>}
+        {ex.notes && <p className="text-sm flex gap-2"><IconPin size={16} className="text-muted mt-0.5" /> <span>{ex.notes}</span></p>}
         <Tabs<Tab> value={tab} onChange={setTab} options={[...(hasAbout ? [{ value: 'about' as Tab, label: 'About' }] : []), { value: 'history', label: 'History' }, { value: 'records', label: 'Records' }, { value: 'charts', label: 'Charts' }]} />
 
         {tab === 'about' && (

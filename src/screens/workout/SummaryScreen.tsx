@@ -7,6 +7,7 @@ import { useExerciseMap, useTrackingOf } from '../../store/selectors';
 import { detectPRs, PR_LABELS } from '../../domain/prs';
 import { completedSetCount, workoutVolume } from '../../domain/records';
 import { templateFromWorkout } from '../../domain/templates';
+import { INSPIRATIONS } from '../../domain/inspiration';
 import { formatDuration, formatVolume } from '../../domain/units';
 import { formatDateTime, formatSet } from '../../lib/format';
 import { WorkoutSummary } from '../../components/WorkoutSummary';
@@ -25,6 +26,7 @@ export function SummaryScreen() {
   if (!summary) return <Navigate to="/" replace />;
   const w = summary.workout;
   const template = templates.find((t) => t.id === w.templateId);
+  const count = workouts.filter((x) => x.startedAt <= w.startedAt).length || 1;
 
   const prList = [...prs.values()].map((hit) => {
     const ex = exMap.get(hit.exerciseId);
@@ -49,6 +51,8 @@ export function SummaryScreen() {
           volume={formatVolume(workoutVolume(w, trackingOf, settings.countWarmupsInStats), settings.unit)}
           sets={completedSetCount(w, settings.countWarmupsInStats)}
           prs={prList}
+          count={count}
+          inspiration={INSPIRATIONS[summary.inspiration]}
         >
           <div className="flex flex-col gap-2">
             {saved && <p role="status" className="text-sm text-success text-center">{saved}</p>}

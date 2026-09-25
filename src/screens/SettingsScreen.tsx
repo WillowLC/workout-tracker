@@ -9,6 +9,7 @@ import { exportCsv, exportJsonBackup } from '../lib/backupActions';
 import { checkForUpdates } from '../pwa/PwaManager';
 import { Button, Card, ConfirmDialog, PageHeader } from '../components/ui';
 import { NumberInput } from '../components/inputs';
+import { IconAlert, IconCheckCircle } from '../components/icons';
 
 function Row({ label, children, hint }: { label: string; children: React.ReactNode; hint?: string }) {
   return (
@@ -100,7 +101,7 @@ export function SettingsScreen() {
               <Button size="sm" onClick={exportCsv}>Export</Button>
             </Row>
             <Row label="Persistent storage" hint={meta.persistGranted === true ? 'Granted — the browser won’t evict your data.' : meta.persistGranted === false ? 'Not granted — install the app to the home screen and back up regularly.' : 'Not supported by this browser — back up regularly.'}>
-              <span aria-hidden>{meta.persistGranted ? '✅' : '⚠️'}</span>
+              {meta.persistGranted ? <IconCheckCircle className="text-success" /> : <IconAlert className="text-warning" />}
             </Row>
           </Card>
         </section>

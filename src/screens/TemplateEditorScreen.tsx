@@ -16,6 +16,7 @@ import { SupersetBracket, SupersetTag } from '../components/SupersetBracket';
 import { ExercisePicker } from '../components/ExercisePicker';
 import { ReorderList } from '../components/ReorderList';
 import { NumberInput } from '../components/inputs';
+import { IconClose, IconFolder } from '../components/icons';
 
 export function TemplateEditorScreen() {
   const { id } = useParams();
@@ -66,7 +67,7 @@ export function TemplateEditorScreen() {
             <div key={i} className="grid grid-cols-[2.25rem_1fr_2.75rem] gap-2 items-center">
               <SetTypeBadge type={s.type} label={labels[i]} onClick={() => setTypeMenu({ order, index: i })} />
               <NumberInput aria-label={`Set ${labels[i]} target reps`} decimals={false} value={s.targetReps} placeholder="—" onChange={(v) => setT((cur) => setTemplateSet(cur, order, i, { targetReps: v }))} />
-              <IconButton label={`Remove set ${labels[i]}`} onClick={() => setT((cur) => removeTemplateSet(cur, order, i))}>✕</IconButton>
+              <IconButton label={`Remove set ${labels[i]}`} onClick={() => setT((cur) => removeTemplateSet(cur, order, i))}><IconClose size={18} /></IconButton>
             </div>
           ))}
         </div>
@@ -94,7 +95,7 @@ export function TemplateEditorScreen() {
           <div role="group" aria-label="Folder" className="flex flex-wrap gap-2">
             <Chip selected={!newFolder && !t.folder} onClick={() => { setNewFolder(false); setT({ ...t, folder: undefined }); }}>None</Chip>
             {folders.map((f) => (
-              <Chip key={f} selected={!newFolder && t.folder === f} onClick={() => { setNewFolder(false); setT({ ...t, folder: f }); }}>📁 {f}</Chip>
+              <Chip key={f} selected={!newFolder && t.folder === f} onClick={() => { setNewFolder(false); setT({ ...t, folder: f }); }}><span className="inline-flex items-center gap-1.5"><IconFolder size={15} />{f}</span></Chip>
             ))}
             <Chip selected={newFolder} onClick={() => { setNewFolder(true); setT({ ...t, folder: '' }); }}>+ New folder</Chip>
           </div>

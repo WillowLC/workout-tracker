@@ -15,6 +15,7 @@ import { Button, ConfirmDialog, EmptyState, PageHeader } from '../components/ui'
 import { PRBadge } from '../components/PRBadge';
 import { SupersetBracket } from '../components/SupersetBracket';
 import { WorkoutEditor } from './workout/WorkoutEditor';
+import { IconChevronLeft } from '../components/icons';
 
 export function WorkoutDetailScreen() {
   const { id } = useParams();
@@ -26,7 +27,7 @@ export function WorkoutDetailScreen() {
   const w = workouts.find((x) => x.id === id);
   const [confirm, setConfirm] = useState<'delete' | 'repeat' | null>(null);
 
-  if (!w) return <div><PageHeader title="Workout" left={<Button variant="ghost" onClick={() => navigate('/history')}>‹ Back</Button>} /><EmptyState title="Workout not found" /></div>;
+  if (!w) return <div><PageHeader title="Workout" left={<Button variant="ghost" onClick={() => navigate('/history')}><span className="inline-flex items-center gap-1"><IconChevronLeft size={18} />Back</span></Button>} /><EmptyState title="Workout not found" /></div>;
 
   const prs = detectPRs(w, workouts, trackingOf, settings.countWarmupsInStats);
   const groups = supersetInfo(w.exercises);
@@ -59,7 +60,7 @@ export function WorkoutDetailScreen() {
 
   return (
     <div className="pb-8">
-      <PageHeader title={w.name} left={<Button variant="ghost" onClick={() => navigate('/history')}>‹</Button>} right={<Button size="sm" onClick={() => navigate(`/history/${w.id}/edit`)}>Edit</Button>} />
+      <PageHeader title={w.name} left={<Button variant="ghost" aria-label="Back" onClick={() => navigate('/history')}><IconChevronLeft size={20} /></Button>} right={<Button size="sm" onClick={() => navigate(`/history/${w.id}/edit`)}>Edit</Button>} />
       <main className="px-4 flex flex-col gap-3 max-w-2xl mx-auto">
         <p className="text-sm text-muted">
           {formatDateTime(w.startedAt)} · {formatDuration((w.finishedAt ?? w.startedAt) - w.startedAt)} · {formatVolume(workoutVolume(w, trackingOf, settings.countWarmupsInStats), settings.unit)} · {completedSetCount(w, settings.countWarmupsInStats)} sets

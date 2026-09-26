@@ -49,6 +49,8 @@ export interface Exercise {
   repRange?: RepRange | null;
   /** Overrides the equipment's weight step (kg). */
   weightStepKg?: number;
+  /** Pulley height per gym ID ('' = no gym), free text like "12" or "low". Cable exercises only. */
+  cableHeights?: Record<string, string>;
 }
 
 export interface Gym {
@@ -123,11 +125,18 @@ export interface Template {
 /** Monday-first week: each day is a template ID or null for a rest day. */
 export type WeekPlan = (string | null)[];
 
-/** Per-folder settings. Folders themselves are implicit (Template.folder); this only adds order and a weekly split. */
+/** How a folder schedules its workouts: by weekday, or as a repeating cycle (e.g. Push, Pull, Legs, Rest). */
+export type FolderMode = 'weekly' | 'cycle';
+
+/** Per-folder settings. Folders themselves are implicit (Template.folder); this only adds order and a schedule. */
 export interface FolderInfo {
   name: string;
   order?: number;
+  /** Unset = weekly if a weekly plan has any workout day, otherwise cycle (see domain/schedule.ts). */
+  mode?: FolderMode;
   plan?: WeekPlan;
+  /** Cycle order: template IDs, null = rest day. Unset = the folder's templates in order. */
+  cycle?: (string | null)[];
 }
 
 export type WeightSteps = Record<Equipment, number>;

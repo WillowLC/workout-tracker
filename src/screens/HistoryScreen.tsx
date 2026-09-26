@@ -58,7 +58,7 @@ export function HistoryScreen() {
   const lifetime = useMemo(() => {
     const kg = workouts.reduce((a, w) => a + workoutVolume(w, trackingOf, settings.countWarmupsInStats), 0);
     const pick = pickComparison(kg, [], seededRng('lifetime'));
-    return pick ? { volume: formatBigWeight(kg, settings.unit), text: comparisonPhrase(pick), emoji: pick.item.emoji } : undefined;
+    return pick ? { volume: formatBigWeight(kg, settings.unit), text: comparisonPhrase(pick) } : undefined;
   }, [workouts, trackingOf, settings]);
 
   const recent = recentWeeks(workoutsByDay(workouts), now);
@@ -76,7 +76,7 @@ export function HistoryScreen() {
         {view === 'muscles' ? <MusclesView /> : <>
         <div className="grid grid-cols-2 gap-2">
           <Button onClick={() => navigate('/history/recaps')}><span className="inline-flex items-center gap-1.5"><IconBulb size={16} />Recaps</span></Button>
-          <Button onClick={() => navigate('/history/trophies')}><span className="inline-flex items-center gap-1.5"><IconTrophy size={16} className="text-pr" />Trophies</span></Button>
+          <Button onClick={() => navigate('/history/records')}><span className="inline-flex items-center gap-1.5"><IconTrophy size={16} className="text-pr" />Records</span></Button>
         </div>
         {lifetime && <LifetimeLine {...lifetime} comparison={lifetime.text} />}
         <button

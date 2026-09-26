@@ -4,6 +4,7 @@ import { useRef, useState, type ReactNode } from 'react';
 import type { Muscle } from '../domain/types';
 import { MuscleMap, HeatLegend, VOLUME_LEGEND, type HeatLevel } from './MuscleMap';
 import { Button } from './ui';
+import { IconChevronLeft, IconChevronRight } from './icons';
 
 export interface RecapStat {
   label: string;
@@ -18,7 +19,7 @@ export interface RecapDisplay {
   subtitle: string;
   headline: RecapStat[];
   totals: RecapStat[];
-  comparison?: { volume: string; text: string; emoji: string };
+  comparison?: { volume: string; text: string };
   prCount: number;
   biggestJump?: { exercise: string; from: string; to: string; pct: number };
   heaviest?: { exercise: string; set: string };
@@ -29,7 +30,7 @@ export interface RecapDisplay {
     topExercises: { name: string; sets: number }[];
     prTotal: number;
     vsYearAgo: { name: string; now: string; then?: string; pct?: number }[];
-    lifetime?: { volume: string; text: string; emoji: string };
+    lifetime?: { volume: string; text: string };
   };
 }
 
@@ -85,7 +86,7 @@ export function recapCards(d: RecapDisplay): { key: string; node: ReactNode }[] 
           <StatGrid stats={d.totals} />
           {d.comparison && (
             <p className="text-base">
-              <b className="tabular">{d.comparison.volume}</b> — that’s <b>{d.comparison.text}</b> <span aria-hidden>{d.comparison.emoji}</span>
+              <b className="tabular">{d.comparison.volume}</b> — that’s <b>{d.comparison.text}</b>
               <span className="block text-xs text-muted">Weights are approx.</span>
             </p>
           )}
@@ -169,7 +170,7 @@ export function recapCards(d: RecapDisplay): { key: string; node: ReactNode }[] 
             ))}
           </ul>
           {y.lifetime && (
-            <p className="text-sm text-muted mt-auto">Lifetime: <b className="text-text tabular">{y.lifetime.volume}</b> ≈ {y.lifetime.text} <span aria-hidden>{y.lifetime.emoji}</span> (approx.)</p>
+            <p className="text-sm text-muted mt-auto">Lifetime: <b className="text-text tabular">{y.lifetime.volume}</b> ≈ {y.lifetime.text} (approx.)</p>
           )}
         </RecapCard>
       ),
@@ -208,13 +209,13 @@ export function RecapCards({ display, onShare }: { display: RecapDisplay; onShar
         {cards.map((c) => <div key={c.key} className="snap-center shrink-0 w-full px-0.5">{c.node}</div>)}
       </div>
       <div className="flex items-center gap-2">
-        <Button size="sm" variant="ghost" aria-label="Previous card" disabled={index === 0} onClick={() => go(index - 1)}>◀</Button>
+        <Button size="sm" variant="ghost" aria-label="Previous card" disabled={index === 0} onClick={() => go(index - 1)}><IconChevronLeft size={18} /></Button>
         <div className="flex-1 flex justify-center gap-1.5" aria-label={`Card ${index + 1} of ${cards.length}`}>
           {cards.map((c, i) => (
             <button key={c.key} type="button" aria-label={`Card ${i + 1}`} onClick={() => go(i)} className={`w-2 h-2 rounded-full ${i === index ? 'bg-accent' : 'bg-border-strong'}`} />
           ))}
         </div>
-        <Button size="sm" variant="ghost" aria-label="Next card" disabled={index === cards.length - 1} onClick={() => go(index + 1)}>▶</Button>
+        <Button size="sm" variant="ghost" aria-label="Next card" disabled={index === cards.length - 1} onClick={() => go(index + 1)}><IconChevronRight size={18} /></Button>
       </div>
       {onShare && (
         <Button onClick={() => {

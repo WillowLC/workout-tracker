@@ -12,6 +12,8 @@ body {
   -webkit-tap-highlight-color: transparent;
   -webkit-font-smoothing: antialiased;
   overscroll-behavior-y: none;
+  /* Never colour emoji: symbols like arrows render as text (see lib/noEmoji.ts). */
+  font-variant-emoji: text;
 }
 input, select, textarea { color: var(--color-text); background: transparent; }
 input::placeholder, textarea::placeholder { color: var(--color-text-ghost); opacity: 1; }

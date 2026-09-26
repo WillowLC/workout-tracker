@@ -13,6 +13,7 @@ import { formatDate } from '../lib/format';
 import { MuscleMap, HeatLegend, RECENCY_LEGEND, VOLUME_LEGEND } from '../components/MuscleMap';
 import { MuscleTrend, WeeklySetsList } from '../components/WeeklySets';
 import { Button, Card, Chip, MenuList, Sheet, Tabs } from '../components/ui';
+import { IconChevronLeft, IconChevronRight } from '../components/icons';
 
 type PeriodKey = 'this-week' | 'last-week' | 'last-4' | 'this-month' | `month:${number}-${number}`;
 
@@ -88,11 +89,11 @@ export function MusclesView() {
 
       <Card className="p-3 flex flex-col gap-2">
         <div className="flex items-center gap-2">
-          <Button size="sm" variant="ghost" aria-label="Previous week" onClick={() => setWeekOffset((o) => o - 1)}>◀</Button>
+          <Button size="sm" variant="ghost" aria-label="Previous week" onClick={() => setWeekOffset((o) => o - 1)}><IconChevronLeft size={18} /></Button>
           <h3 className="flex-1 text-center text-sm font-semibold">
             {weekOffset === 0 ? 'This week' : weekOffset === -1 ? 'Last week' : `Week of ${formatDate(week.start, { day: 'numeric', month: 'short' })}`}
           </h3>
-          <Button size="sm" variant="ghost" aria-label="Next week" disabled={weekOffset >= 0} onClick={() => setWeekOffset((o) => Math.min(0, o + 1))}>▶</Button>
+          <Button size="sm" variant="ghost" aria-label="Next week" disabled={weekOffset >= 0} onClick={() => setWeekOffset((o) => Math.min(0, o + 1))}><IconChevronRight size={18} /></Button>
         </div>
         <WeeklySetsList rows={weekRows} onSelect={setTrendFor} />
       </Card>

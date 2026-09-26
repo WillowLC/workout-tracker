@@ -77,7 +77,7 @@ export function WorkoutDetailScreen() {
           {prs.size > 0 && ` · ${prs.size} PRs`}
         </p>
         {gym && <p className="text-sm text-muted inline-flex items-center gap-1"><IconPin size={14} />{gym.name}</p>}
-        {comparison && <p className="text-sm">{formatComparison(comparison)[0].toUpperCase() + formatComparison(comparison).slice(1)} lifted <span aria-hidden>{comparison.item.emoji}</span> <span className="text-xs text-muted">(approx.)</span></p>}
+        {comparison && <p className="text-sm">{formatComparison(comparison)[0].toUpperCase() + formatComparison(comparison).slice(1)} lifted <span className="text-xs text-muted">(approx.)</span></p>}
         {w.note && <p className="text-sm">{w.note}</p>}
         <div className="bg-surface border border-border rounded-lg p-2" aria-label="Muscles worked in this workout">
           <MuscleMap levels={levels} height={150} />

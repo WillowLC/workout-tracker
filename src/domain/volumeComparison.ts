@@ -1,4 +1,4 @@
-// "You lifted 8,450 kg — that's about 7 grand pianos 🎹"
+// "You lifted 8,450 kg — that's about 7 grand pianos"
 import type { VolumeComparison } from '../data/volumeComparisons';
 import { VOLUME_COMPARISONS } from '../data/volumeComparisons';
 import type { Settings } from './types';

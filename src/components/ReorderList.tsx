@@ -2,7 +2,7 @@ import { DndContext, closestCenter, PointerSensor, TouchSensor, KeyboardSensor, 
 import { SortableContext, useSortable, verticalListSortingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { ReactNode } from 'react';
-import { IconArrowDown, IconArrowUp, IconGrip } from './icons';
+import { IconArrowDown, IconArrowUp, IconClose, IconGrip } from './icons';
 
 export interface ReorderItem {
   id: string;
@@ -11,7 +11,7 @@ export interface ReorderItem {
   icon?: ReactNode;
 }
 
-function Row({ item, index, count, onMove }: { item: ReorderItem; index: number; count: number; onMove: (from: number, to: number) => void }) {
+function Row({ item, index, count, onMove, onRemove }: { item: ReorderItem; index: number; count: number; onMove: (from: number, to: number) => void; onRemove?: (index: number) => void }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.id });
   return (
     <li
@@ -28,12 +28,13 @@ function Row({ item, index, count, onMove }: { item: ReorderItem; index: number;
       </span>
       <button type="button" aria-label={`Move ${item.title} up`} disabled={index === 0} onClick={() => onMove(index, index - 1)} className="min-w-[40px] min-h-[44px] flex items-center justify-center disabled:opacity-30"><IconArrowUp size={18} /></button>
       <button type="button" aria-label={`Move ${item.title} down`} disabled={index === count - 1} onClick={() => onMove(index, index + 1)} className="min-w-[40px] min-h-[44px] flex items-center justify-center disabled:opacity-30"><IconArrowDown size={18} /></button>
+      {onRemove && <button type="button" aria-label={`Remove ${item.title}`} onClick={() => onRemove(index)} className="min-w-[40px] min-h-[44px] flex items-center justify-center text-muted"><IconClose size={18} /></button>}
     </li>
   );
 }
 
 /** Drag-to-reorder list (touch, mouse, keyboard) with up/down buttons as an accessible fallback. */
-export function ReorderList({ items, onMove }: { items: ReorderItem[]; onMove: (from: number, to: number) => void }) {
+export function ReorderList({ items, onMove, onRemove }: { items: ReorderItem[]; onMove: (from: number, to: number) => void; onRemove?: (index: number) => void }) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 120, tolerance: 6 } }),
@@ -49,7 +50,7 @@ export function ReorderList({ items, onMove }: { items: ReorderItem[]; onMove: (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
       <SortableContext items={items.map((i) => i.id)} strategy={verticalListSortingStrategy}>
         <ul className="flex flex-col gap-2">
-          {items.map((it, i) => <Row key={it.id} item={it} index={i} count={items.length} onMove={onMove} />)}
+          {items.map((it, i) => <Row key={it.id} item={it} index={i} count={items.length} onMove={onMove} onRemove={onRemove} />)}
         </ul>
       </SortableContext>
     </DndContext>

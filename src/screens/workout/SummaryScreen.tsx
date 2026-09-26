@@ -58,7 +58,7 @@ export function SummaryScreen() {
           date={formatDateTime(w.startedAt)}
           duration={formatDuration((w.finishedAt ?? w.startedAt) - w.startedAt)}
           volume={formatVolume(volumeKg, settings.unit)}
-          comparison={pick && <VolumeComparisonLine volume={formatVolume(volumeKg, settings.unit)} comparison={formatComparison(pick)} emoji={pick.item.emoji} className="text-center" />}
+          comparison={pick && <VolumeComparisonLine volume={formatVolume(volumeKg, settings.unit)} comparison={formatComparison(pick)} className="text-center" />}
           sets={completedSetCount(w, settings.countWarmupsInStats)}
           prs={prList}
           count={count}

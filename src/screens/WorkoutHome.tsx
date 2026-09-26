@@ -5,6 +5,7 @@ import { useAppStore } from '../store/appStore';
 import { useUiStore } from '../store/uiStore';
 import { useExerciseMap } from '../store/selectors';
 import { duplicateTemplate, groupTemplatesByFolder, moveItem, renumberTemplates, reorderFolders, weekdayIndex } from '../domain/templates';
+import { currentFolder, cycleSlots, folderMode, suggestForFolder, whenLabel, type DaySuggestion } from '../domain/schedule';
 import { sortedExercises } from '../domain/superset';
 import { daysAgo } from '../lib/format';
 import { isIOS, isStandalone } from '../pwa/storage';
@@ -14,11 +15,9 @@ import { JimLogo } from '../components/JimLogo';
 import { ReorderList } from '../components/ReorderList';
 import { WeekStrip } from '../components/WeekStrip';
 import { IconChevronRight, IconFolder, IconClose } from '../components/icons';
-import { GymMenu, GymSelector } from '../components/GymSelector';
 import { WeeklySetsList } from '../components/WeeklySets';
 import { PlateauCard, PlateauIdeas } from '../components/Plateau';
 import { MuscleSelect } from '../components/MuscleSelect';
-import { AddGymSheet } from './GymsScreen';
 import { muscleSets, untaggedCustomExercises, weekPeriod, weeklyRows } from '../domain/muscles';
 import { detectPlateaus, recentExerciseIds } from '../domain/plateau';
 import { dueRecaps, recapKey } from '../domain/recap';
@@ -28,12 +27,10 @@ export function WorkoutHome() {
   const navigate = useNavigate();
   const exMap = useExerciseMap();
   const { templates, folders, workouts, active, startWorkout, cancelActive, saveTemplate, saveTemplates, saveFolders, deleteTemplate, meta, setMeta,
-    gyms, settings, exercises, setCurrentGym, snoozePlateau, dismissRecap, saveExercises } = useAppStore();
-  const [gymSheet, setGymSheet] = useState<'pick' | 'add' | null>(null);
+    settings, exercises, snoozePlateau, dismissRecap, saveExercises } = useAppStore();
   const [plateauFor, setPlateauFor] = useState<string | null>(null);
   const [tagging, setTagging] = useState<Exercise[] | null>(null);
   const now = Date.now();
-  const currentGym = gyms.find((g) => g.id === settings.currentGymId);
   const weekRows = useMemo(() => weeklyRows(muscleSets(workouts, exMap, settings.countWarmupsInStats, weekPeriod(now)), settings), [workouts, exMap, settings]);
   const plateaus = useMemo(
     () => detectPlateaus(recentExerciseIds(workouts, now), (id) => exMap.get(id)?.trackingType, workouts, settings.countWarmupsInStats, now, meta.plateauSnoozes),
@@ -50,6 +47,20 @@ export function WorkoutHome() {
   const folderList = groups.map(([f]) => f).filter(Boolean);
   const today = weekdayIndex(Date.now());
   const templateName = (id: string) => templates.find((t) => t.id === id)?.name;
+  const byId = useMemo(() => new Map(templates.map((t) => [t.id, t])), [templates]);
+  // Today's workout per folder, and the one to suggest: from the folder you last trained from.
+  const suggestions = useMemo(() => {
+    const m = new Map<string, DaySuggestion>();
+    for (const [f, list] of groups) {
+      const sg = suggestForFolder(f, folders.find((x) => x.name === f), list, workouts, now);
+      if (sg) m.set(f, sg);
+    }
+    return m;
+  }, [groups, folders, workouts]);
+  const suggestion = useMemo(() => {
+    const f = currentFolder(groups, folders, workouts);
+    return f !== undefined ? suggestions.get(f) : undefined;
+  }, [groups, folders, workouts, suggestions]);
 
   const lastPerformed = useMemo(() => {
     const m = new Map<string, number>();
@@ -72,10 +83,7 @@ export function WorkoutHome() {
   return (
     <div>
       <header className="sticky top-0 z-20 bg-bg pt-safe">
-        <div className="flex justify-center px-2">
-          <GymSelector name={currentGym?.name} onClick={() => setGymSheet(gyms.length ? 'pick' : 'add')} />
-        </div>
-        <h1 className="px-4" aria-label="Jim"><JimLogo className="block mx-auto mb-2 h-[37px] w-auto" /></h1>
+        <h1 className="px-4 pt-3" aria-label="Jim"><JimLogo className="block mx-auto mb-3 h-[46px] w-auto" /></h1>
       </header>
       {showInstall && <InstallHint ios={isIOS()} onDismiss={() => void setMeta({ installHintDismissed: true })} />}
       <main className="px-4 flex flex-col gap-6 pb-4">
@@ -102,25 +110,20 @@ export function WorkoutHome() {
           </section>
         )}
 
-        <section className="flex flex-col gap-2">
-          <h2 className="text-sm font-semibold text-muted uppercase">Quick start</h2>
-          {active ? (
-            <Button variant="primary" size="lg" onClick={() => navigate('/workout')}>Resume “{active.name}”</Button>
-          ) : (
-            <Button variant="primary" size="lg" onClick={() => start()}>Start empty workout</Button>
-          )}
-        </section>
-
-        <section className="flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            <h2 className="flex-1 text-sm font-semibold text-muted uppercase">This week</h2>
-            <Button size="sm" variant="ghost" onClick={() => navigate('/history?view=muscles')}>Muscles</Button>
-          </div>
-          <Card className="px-3 py-2">
-            <WeeklySetsList rows={weekRows} limit={6} onSelect={() => navigate('/history?view=muscles')} />
-          </Card>
-          <PlateauCard items={plateaus.map((p) => ({ exerciseId: p.exerciseId, name: exMap.get(p.exerciseId)?.name ?? 'Unknown', weeks: p.weeks }))} onOpen={setPlateauFor} />
-        </section>
+        {(active || suggestion) && (
+          <section className="flex flex-col gap-2" aria-label="Today">
+            {active ? (
+              <Button variant="primary" size="lg" onClick={() => navigate('/workout')}>Resume “{active.name}”</Button>
+            ) : suggestion && (
+              <TodayCard s={suggestion} nameOf={templateName} exercisesOf={(id) => {
+                const t = byId.get(id);
+                return t ? sortedExercises(t).map((te) => exMap.get(te.exerciseId)?.name ?? '?').join(', ') : '';
+              }}
+                onOpen={(id) => { const t = byId.get(id); if (t) setPreview(t); }}
+                onStart={(id) => { const t = byId.get(id); if (t) start(t); }} />
+            )}
+          </section>
+        )}
 
         <section className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
@@ -134,19 +137,24 @@ export function WorkoutHome() {
             </Card>
           )}
           {groups.map(([folder, list]) => {
-            const plan = folders.find((f) => f.name === folder)?.plan;
-            const todayId = plan?.[today] ?? undefined;
+            const info = folders.find((f) => f.name === folder);
+            const plan = info?.plan;
+            // Only the folder you're following gets Today/Next badges.
+            const sg = folder === suggestion?.folder ? suggestion : undefined;
+            const todayId = sg && !sg.doneToday ? sg.templateId : undefined;
+            const nextId = sg && (sg.doneToday || !sg.templateId) ? sg.next?.templateId : undefined;
+            const cycleLen = folderMode(info) === 'cycle' ? cycleSlots(info, list).length : 0;
             return (
               <div key={folder || '_'} className="flex flex-col gap-2">
                 {folder && (
                   <button
                     type="button"
                     onClick={() => navigate(`/folders/${encodeURIComponent(folder)}`)}
-                    aria-label={`Folder ${folder}: weekly plan`}
+                    aria-label={`Folder ${folder}: schedule`}
                     className="flex items-center gap-2 min-h-[44px] -mx-1 px-1 rounded text-left"
                   >
                     <span className="flex-1 min-w-0 text-xs font-bold text-muted uppercase flex items-center gap-1.5"><IconFolder size={15} /><span className="truncate">{folder}</span></span>
-                    <WeekStrip plan={plan} today={today} nameOf={templateName} />
+                    {cycleLen ? cycleLen > 1 && <span className="text-xs text-muted">{cycleLen}-day cycle</span> : <WeekStrip plan={plan} today={today} nameOf={templateName} />}
                     <IconChevronRight size={18} className="text-muted" />
                   </button>
                 )}
@@ -154,11 +162,12 @@ export function WorkoutHome() {
                   {list.map((t) => {
                     const last = lastPerformed.get(t.id);
                     const isToday = todayId === t.id;
+                    const isNext = nextId === t.id;
                     return (
                       <button key={t.id} type="button" onClick={() => setPreview(t)} className={`text-left bg-surface border rounded-lg p-3 min-h-[72px] ${isToday ? 'border-accent-line' : 'border-border'}`}>
                         <div className="flex items-start gap-2">
                           <p className="flex-1 min-w-0 font-semibold">{t.name}</p>
-                          {isToday && <span className="shrink-0 rounded-full bg-accent-soft text-accent text-[11px] font-semibold px-2 py-0.5">Today</span>}
+                          {(isToday || isNext) && <span className="shrink-0 rounded-full bg-accent-soft text-accent text-[11px] font-semibold px-2 py-0.5">{isToday ? 'Today' : 'Next'}</span>}
                           <span className={`shrink-0 text-xs mt-0.5 ${last ? 'text-secondary' : 'text-muted'}`}>{last ? daysAgo(last) : 'Never done'}</span>
                         </div>
                         <p className="text-xs text-muted line-clamp-2">
@@ -172,6 +181,18 @@ export function WorkoutHome() {
             );
           })}
         </section>
+        <section className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <h2 className="flex-1 text-sm font-semibold text-muted uppercase">This week</h2>
+            <Button size="sm" variant="ghost" onClick={() => navigate('/history?view=muscles')}>Muscles</Button>
+          </div>
+          <Card className="px-3 py-2">
+            <WeeklySetsList rows={weekRows} limit={6} onSelect={() => navigate('/history?view=muscles')} />
+          </Card>
+          <PlateauCard items={plateaus.map((p) => ({ exerciseId: p.exerciseId, name: exMap.get(p.exerciseId)?.name ?? 'Unknown', weeks: p.weeks }))} onOpen={setPlateauFor} />
+        </section>
+
+        <Button variant="ghost" className="self-center !text-muted" onClick={() => start()}>Start empty workout</Button>
       </main>
 
       <Sheet
@@ -225,15 +246,6 @@ export function WorkoutHome() {
           ))}
         </div>
       </Sheet>
-
-      <Sheet open={gymSheet === 'pick'} title="Your gym" onClose={() => setGymSheet(null)}>
-        <GymMenu gyms={gyms} currentId={settings.currentGymId} allowNone
-          onPick={(id) => { void setCurrentGym(id); setGymSheet(null); }}
-          onAdd={() => setGymSheet('add')}
-          onManage={() => { setGymSheet(null); navigate('/settings/gyms'); }} />
-        <p className="text-xs text-muted mt-2">New workouts are tagged with this gym, and PREVIOUS shows what you did here last time.</p>
-      </Sheet>
-      <AddGymSheet open={gymSheet === 'add'} onClose={() => setGymSheet(null)} makeCurrent />
 
       <Sheet open={!!plateauFor} title="Plateau" onClose={() => setPlateauFor(null)}>
         {plateauFor && (
@@ -291,5 +303,36 @@ export function WorkoutHome() {
         }]}
       />
     </div>
+  );
+}
+
+/** The suggested workout for today, from the folder you're currently following. */
+function TodayCard({ s, nameOf, exercisesOf, onOpen, onStart }: {
+  s: DaySuggestion;
+  nameOf: (id: string) => string | undefined;
+  exercisesOf: (id: string) => string;
+  onOpen: (id: string) => void;
+  onStart: (id: string) => void;
+}) {
+  const now = Date.now();
+  const today = !s.doneToday && s.templateId;
+  // Rest day or already trained: offer the next one instead.
+  const id = today ? s.templateId! : s.next?.templateId;
+  if (!id) return null;
+  const folder = s.folder || 'Templates';
+  const eyebrow = today ? `Today · ${folder}` : s.doneToday ? `Done today · ${folder}` : `Rest day · ${folder}`;
+  const title = today ? nameOf(id) : s.doneToday ? `${nameOf(s.templateId!) ?? 'Workout'} done` : 'Rest day';
+  const sub = today ? exercisesOf(id) : `Next: ${nameOf(id)} · ${whenLabel(s.next!.inDays, now)}`;
+  return (
+    <Card className={`p-4 flex flex-col gap-3 ${today ? 'border-accent-line' : ''}`}>
+      <button type="button" className="text-left flex flex-col gap-0.5" onClick={() => onOpen(id)}>
+        <span className="text-xs font-bold text-accent uppercase tracking-wide">{eyebrow}</span>
+        <span className="text-xl font-bold leading-tight">{title}</span>
+        <span className="text-sm text-muted line-clamp-2">{sub || 'No exercises'}</span>
+      </button>
+      <Button variant={today ? 'primary' : 'secondary'} size="lg" onClick={() => onStart(id)}>
+        {today || s.doneToday ? `Start ${nameOf(id)}` : `Start ${nameOf(id)} anyway`}
+      </Button>
+    </Card>
   );
 }

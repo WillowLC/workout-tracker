@@ -1,7 +1,9 @@
-// Front and back body outline with one <path> per muscle (left and right
-// sides share a muscle). Placeholder artwork: every muscle shape carries
-// `id` and `data-muscle`, so the drawing can be replaced without touching
-// logic. Shading comes from the --heat-0 … --heat-4 tokens.
+// Front and back anatomical figure with one <path> per muscle (left and right
+// sides share a muscle). Muscles tile the body and meet along thin seams in
+// the body colour, with fibre / separation lines and soft shading drawn on
+// top. Every muscle shape carries `id` and `data-muscle`, so the drawing can
+// be changed without touching logic. Shading comes from --heat-0 … --heat-4.
+import { useId } from 'react';
 import type { Muscle } from '../domain/types';
 import { MUSCLE_LABELS } from '../domain/muscles';
 
@@ -9,52 +11,87 @@ export type HeatLevel = 0 | 1 | 2 | 3 | 4;
 
 type Shape = { muscle: Muscle; side: 'l' | 'r' | 'c'; d: string };
 
-const ellipse = (cx: number, cy: number, rx: number, ry: number) =>
-  `M${cx - rx},${cy} a${rx},${ry} 0 1,0 ${rx * 2},0 a${rx},${ry} 0 1,0 ${-rx * 2},0 Z`;
+// Figure is drawn on a 200 × 400 canvas, centred on x = 100. Left-half paths
+// use absolute "x,y" pairs only, so they can be mirrored to the right.
+const W = 200;
+const H = 400;
+const mirror = (d: string) => d.replace(/(-?[\d.]+),(-?[\d.]+)/g, (_, x, y) => `${W - Number(x)},${y}`);
+const both = (d: string) => [d, mirror(d)];
 
-/** Mirror a left-side shape (absolute "x,y" coordinates only) to the right; the figure is centred on x = 100. */
-function pair(muscle: Muscle, left: string): Shape[] {
-  const right = left.replace(/(-?[\d.]+),(-?[\d.]+)/g, (_, x, y) => `${200 - Number(x)},${y}`);
-  return [{ muscle, side: 'l', d: left }, { muscle, side: 'r', d: right }];
+function pair(muscle: Muscle, ...left: string[]): Shape[] {
+  return left.flatMap((d) => [{ muscle, side: 'l' as const, d }, { muscle, side: 'r' as const, d: mirror(d) }]);
 }
 
-// Ellipses start at their left edge; mirroring an ellipse must start at the mirrored right edge.
-function pairEllipse(muscle: Muscle, cx: number, cy: number, rx: number, ry: number): Shape[] {
-  return [{ muscle, side: 'l', d: ellipse(cx, cy, rx, ry) }, { muscle, side: 'r', d: ellipse(200 - cx, cy, rx, ry) }];
-}
-
-const SILHOUETTE =
-  'M100,8 C113,8 120,18 120,31 C120,42 114,50 108,53 L110,57 C122,59 140,62 150,70 C158,78 160,96 162,120 L168,190 C169,198 162,200 158,196 L146,128 L140,108 L136,170 C140,200 142,230 140,262 L134,330 L132,378 L110,378 L108,330 L104,262 L100,214 L96,262 L92,330 L90,378 L68,378 L66,330 L60,262 C58,230 60,200 64,170 L60,108 L54,128 L42,196 C38,200 31,198 32,190 L38,120 C40,96 42,78 50,70 C60,62 78,59 90,57 L92,53 C86,50 80,42 80,31 C80,18 87,8 100,8 Z';
-
-const FRONT: Shape[] = [
-  ...pair('traps', 'M88,56 L72,62 L90,64 Z'),
-  ...pairEllipse('side_delts', 50, 80, 6, 12),
-  ...pairEllipse('front_delts', 63, 75, 10, 13),
-  ...pair('chest', 'M74,66 Q88,61 98,66 L98,96 Q84,103 72,94 Q70,80 74,66 Z'),
-  ...pairEllipse('biceps', 54, 113, 8, 19),
-  ...pairEllipse('forearms', 45, 160, 7, 24),
-  ...pair('abs', 'M89,102 L98,102 L98,166 L91,162 Q88,130 89,102 Z'),
-  ...pair('obliques', 'M74,104 L86,104 Q85,136 88,164 L78,154 Q72,130 74,104 Z'),
-  ...pairEllipse('abductors', 69, 190, 5, 16),
-  ...pairEllipse('adductors', 94, 214, 5, 22),
-  ...pairEllipse('quads', 82, 232, 13, 44),
-  ...pairEllipse('calves', 80, 318, 8, 30),
+// ---- Body (everything that isn't a tracked muscle: head, neck, hands, knees, shins, feet) ----
+const BODY = [
+  'M100,10 C110,10 116,19 116,30 C116,41 110,49 100,49 C90,49 84,41 84,30 C84,19 90,10 100,10 Z',
+  'M91,40 L109,40 L111,60 L89,60 Z',
+  ...both('M100,54 C90,56 80,58 70,61 C57,63 48,70 46,82 C44,94 47,106 52,114 C60,126 67,132 70,142 C71,158 69,170 68,180 C65,192 63,202 64,214 L100,218 Z'),
+  ...both('M49,76 C43,86 41,102 41,120 C40,134 40,146 39,154 C35,170 31,190 30,210 C29,216 29,222 31,226 L41,226 C43,216 45,204 48,192 C53,176 57,162 59,150 C61,134 61,118 59,104 Z'),
+  ...both('M36,222 C30,226 28,236 30,246 C32,252 38,254 41,248 C43,240 43,230 41,224 Z'),
+  ...both('M65,196 C61,214 59,240 61,264 C63,280 67,292 69,300 C67,320 67,344 71,368 L73,380 L90,380 C91,370 91,356 92,340 C94,320 96,304 94,290 C97,270 99,244 100,214 Z'),
+  ...both('M72,376 C68,384 70,392 79,392 L92,392 C95,388 93,380 90,376 Z'),
 ];
 
+// ---- Front ----
+const FRONT: Shape[] = [
+  ...pair('traps', 'M92,49 C90,55 84,59 73,62 C81,64 89,64 96,61 Z'),
+  ...pair('side_delts', 'M70,61 C57,62 47,70 46,84 C45,96 47,106 51,114 C52,100 56,86 64,73 Z'),
+  ...pair('front_delts', 'M72,62 C64,72 57,88 53,114 C60,112 66,104 70,94 C74,84 78,74 84,65 Z'),
+  ...pair('chest', 'M99,66 L86,65 C79,72 72,84 70,96 C71,107 81,113 92,113 C95,113 97,112 99,111 Z'),
+  ...pair('biceps', 'M52,116 C46,125 43,136 43,148 C46,154 54,156 58,150 C61,138 61,124 59,110 Z'),
+  ...pair('forearms', 'M43,155 C38,169 34,187 32,207 C32,214 35,220 40,220 C44,200 50,180 57,157 C53,153 47,153 43,155 Z'),
+  ...pair('abs', 'M99,115 L87,115 C86,134 86,153 88,172 C90,183 95,191 99,195 Z'),
+  ...pair('obliques', 'M85,115 C77,117 72,125 71,138 C70,152 72,166 77,180 C80,185 84,189 88,191 C85,169 84,141 85,115 Z'),
+  ...pair('abductors', 'M70,186 C66,194 65,203 65,214 L70,219 C71,207 73,197 77,190 Z'),
+  ...pair('quads', 'M72,200 C66,214 63,236 64,258 C65,274 70,286 78,292 C85,294 90,289 91,277 C93,255 93,232 89,212 C85,205 79,200 72,200 Z'),
+  ...pair('adductors', 'M99,210 C95,216 93,228 92,244 C93,251 94,255 96,256 C98,244 99,228 99,212 Z'),
+  ...pair('calves', 'M69,300 C63,318 64,340 70,360 C74,363 78,359 79,350 C80,332 80,314 78,300 Z', 'M88,300 C94,316 95,336 91,354 C88,358 85,356 84,350 C83,332 84,314 86,300 Z'),
+];
+
+const FRONT_DETAIL = [
+  'M100,115 L100,194',
+  ...both('M87,132 C91,131 95,131 99,132'),
+  ...both('M87,150 C91,149 95,149 99,150'),
+  ...both('M88,168 C91,167 95,167 99,168'),
+  ...both('M97,78 C89,80 81,82 73,86'),
+  ...both('M97,90 C89,92 80,94 71,96'),
+  ...both('M96,102 C89,104 81,104 74,101'),
+  ...both('M64,71 C60,81 57,93 55,106'),
+  ...both('M80,206 C78,230 78,256 82,288'),
+  ...both('M89,250 C86,264 84,278 84,290'),
+  ...both('M51,124 C51,134 52,142 53,148'),
+  ...both('M47,164 C44,178 41,194 39,208'),
+  ...both('M77,146 C79,150 81,152 84,154'),
+  ...both('M76,160 C78,164 80,166 85,168'),
+];
+
+// ---- Back ----
 const BACK: Shape[] = [
-  { muscle: 'traps', side: 'c', d: 'M100,52 L76,64 L100,104 L124,64 Z' },
-  ...pairEllipse('side_delts', 50, 80, 6, 12),
-  ...pairEllipse('rear_delts', 63, 75, 10, 13),
-  ...pair('upper_back', 'M80,70 L96,82 L96,112 L84,104 Q78,88 80,70 Z'),
-  ...pair('lats', 'M72,84 L84,108 L96,118 L96,142 L80,134 Q70,110 72,84 Z'),
-  ...pair('lower_back', 'M89,144 L98,146 L98,170 L90,168 Z'),
-  ...pairEllipse('triceps', 54, 113, 8, 19),
-  ...pairEllipse('forearms', 45, 160, 7, 24),
-  ...pairEllipse('abductors', 69, 184, 5, 14),
-  ...pairEllipse('glutes', 86, 188, 14, 16),
-  ...pairEllipse('adductors', 96, 222, 4, 18),
-  ...pairEllipse('hamstrings', 83, 244, 12, 36),
-  ...pairEllipse('calves', 81, 310, 10, 30),
+  ...pair('traps', 'M100,47 C96,53 88,59 72,63 C80,71 88,83 93,99 C96,110 98,122 100,134 Z'),
+  ...pair('side_delts', 'M66,62 C56,62 48,68 46,80 C44,92 46,102 50,110 C50,98 51,86 55,76 Z'),
+  ...pair('rear_delts', 'M70,63 C61,64 54,70 51,80 C51,92 52,100 54,109 C58,98 64,88 74,80 C76,74 75,68 70,63 Z'),
+  ...pair('upper_back', 'M77,80 C71,88 70,98 76,106 C82,111 88,112 94,110 C93,99 88,89 77,80 Z'),
+  ...pair('lats', 'M71,100 C69,118 71,138 77,154 C83,166 90,172 96,176 C93,160 93,146 95,137 C92,126 88,118 84,113 C80,109 75,105 71,100 Z'),
+  ...pair('lower_back', 'M99,136 L95,138 C92,152 91,168 93,184 L99,188 Z'),
+  ...pair('triceps', 'M55,98 C48,108 44,124 43,146 C46,154 55,156 58,150 C61,132 61,114 59,100 Z'),
+  ...pair('forearms', 'M43,155 C38,169 34,187 32,207 C32,214 35,220 40,220 C44,200 50,180 57,157 C53,153 47,153 43,155 Z'),
+  ...pair('abductors', 'M70,180 C67,186 66,194 67,202 C72,194 80,188 93,186 C85,182 77,180 70,180 Z'),
+  ...pair('glutes', 'M99,189 C88,187 76,189 71,199 C66,211 70,224 82,230 C90,232 96,230 99,226 Z'),
+  ...pair('adductors', 'M99,232 C96,238 94,248 94,260 C96,256 98,248 99,242 Z'),
+  ...pair('hamstrings', 'M70,231 C65,250 66,272 72,292 C78,298 86,298 92,292 C95,272 95,250 93,234 C87,234 79,234 70,231 Z'),
+  ...pair('calves', 'M71,300 C66,314 67,332 74,346 C78,352 82,350 83,342 C84,324 82,308 78,298 Z', 'M85,298 C91,306 94,322 92,340 C90,350 86,352 85,346 C84,330 84,312 85,298 Z'),
+];
+
+const BACK_DETAIL = [
+  'M100,50 L100,188',
+  ...both('M76,82 C80,92 86,100 94,104'),
+  ...both('M80,120 C82,134 86,148 92,160'),
+  ...both('M76,196 C82,204 90,208 98,210'),
+  ...both('M82,236 C82,256 82,276 82,294'),
+  ...both('M52,108 C52,122 53,134 54,146'),
+  ...both('M47,164 C44,178 41,194 39,208'),
+  ...both('M78,354 C80,362 82,370 84,376'),
 ];
 
 export interface MuscleMapProps {
@@ -69,36 +106,59 @@ export interface MuscleMapProps {
   describe?: (m: Muscle) => string;
 }
 
-function Figure({ side, shapes, p }: { side: 'front' | 'back'; shapes: Shape[]; p: MuscleMapProps }) {
+function Figure({ side, shapes, detail, p }: { side: 'front' | 'back'; shapes: Shape[]; detail: string[]; p: MuscleMapProps }) {
   const h = p.height ?? 280;
+  const uid = useId().replace(/:/g, '');
+  const shade = `mm-shade-${uid}`;
+  const body = `mm-body-${uid}`;
   return (
-    <svg viewBox="0 0 200 386" height={h} width={(h * 200) / 386} role="group" aria-label={`Muscle map, ${side}`} data-view={side} className="shrink-0">
-      <path d={SILHOUETTE} fill="var(--color-body-outline)" opacity={0.45} aria-hidden />
+    <svg viewBox={`0 0 ${W} ${H}`} height={h} width={(h * W) / H} role="group" aria-label={`Muscle map, ${side}`} data-view={side} className="shrink-0 overflow-visible">
+      <defs>
+        {/* Light from the upper left: gives the flat shapes some volume. */}
+        <linearGradient id={shade} x1="0" y1="0" x2="1" y2="0.35">
+          <stop offset="0" stopColor="#fff" stopOpacity="0.16" />
+          <stop offset="0.5" stopColor="#fff" stopOpacity="0" />
+          <stop offset="1" stopColor="#000" stopOpacity="0.2" />
+        </linearGradient>
+        <clipPath id={body}>{BODY.map((d, i) => <path key={i} d={d} />)}</clipPath>
+      </defs>
+      <ellipse aria-hidden cx={W / 2} cy={H - 6} rx="34" ry="4" fill="#000" opacity="0.1" />
+      <g aria-hidden fill="var(--color-border-strong)">
+        {BODY.map((d, i) => <path key={i} d={d} />)}
+      </g>
       {shapes.map((s) => {
         const level = p.levels[s.muscle] ?? 0;
         const label = `${MUSCLE_LABELS[s.muscle]}${p.describe ? `: ${p.describe(s.muscle)}` : ''}`;
+        const isSel = p.selected === s.muscle;
         return (
           <path
-            key={`${s.muscle}-${s.side}`}
+            key={`${s.muscle}-${s.side}-${s.d.length}-${s.d.slice(1, 8)}`}
             id={`${side}-${s.muscle}-${s.side}`}
             data-muscle={s.muscle}
             data-level={level}
             d={s.d}
             fill={`var(--heat-${level})`}
-            stroke={p.selected === s.muscle ? 'var(--color-text)' : 'var(--color-bg)'}
-            strokeWidth={p.selected === s.muscle ? 2 : 1}
+            stroke={isSel ? 'var(--color-text)' : 'var(--color-border-strong)'}
+            strokeWidth={isSel ? 2 : 1.4}
+            strokeLinejoin="round"
             role={p.onSelect ? 'button' : undefined}
             tabIndex={p.onSelect && s.side !== 'r' ? 0 : undefined}
             aria-label={s.side !== 'r' ? label : undefined}
             aria-hidden={s.side === 'r' ? true : undefined}
             onClick={p.onSelect ? () => p.onSelect!(s.muscle) : undefined}
             onKeyDown={p.onSelect ? (e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), p.onSelect!(s.muscle)) : undefined}
-            style={{ cursor: p.onSelect ? 'pointer' : undefined }}
+            style={{ cursor: p.onSelect ? 'pointer' : undefined, transition: 'fill 200ms' }}
           >
             <title>{label}</title>
           </path>
         );
       })}
+      <g aria-hidden pointerEvents="none">
+        <g fill="none" stroke="#000" strokeOpacity="0.16" strokeWidth="0.9" strokeLinecap="round">
+          {detail.map((d, i) => <path key={i} d={d} />)}
+        </g>
+        <rect x="0" y="0" width={W} height={H} fill={`url(#${shade})`} clipPath={`url(#${body})`} />
+      </g>
     </svg>
   );
 }
@@ -106,9 +166,9 @@ function Figure({ side, shapes, p }: { side: 'front' | 'back'; shapes: Shape[]; 
 export function MuscleMap(p: MuscleMapProps) {
   const view = p.view ?? 'both';
   return (
-    <div className="flex justify-center gap-4">
-      {view !== 'back' && <Figure side="front" shapes={FRONT} p={p} />}
-      {view !== 'front' && <Figure side="back" shapes={BACK} p={p} />}
+    <div className="flex justify-center gap-6">
+      {view !== 'back' && <Figure side="front" shapes={FRONT} detail={FRONT_DETAIL} p={p} />}
+      {view !== 'front' && <Figure side="back" shapes={BACK} detail={BACK_DETAIL} p={p} />}
     </div>
   );
 }

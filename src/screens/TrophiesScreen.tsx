@@ -9,7 +9,7 @@ import { TrophyWall, type TrophyItem } from '../components/TrophyWall';
 import { Button, Chip, PageHeader, inputClass } from '../components/ui';
 import { IconChevronLeft } from '../components/icons';
 
-/** History → Trophies: every PR ever, newest first, grouped by month. */
+/** History → Records: every PR ever, newest first, grouped by month. */
 export function TrophiesScreen() {
   const navigate = useNavigate();
   const { personalRecords, settings } = useAppStore();
@@ -50,7 +50,7 @@ export function TrophiesScreen() {
 
   return (
     <div className="pb-8">
-      <PageHeader title="Trophies" left={<Button variant="ghost" aria-label="Back" onClick={() => navigate('/history')}><IconChevronLeft size={20} /></Button>} />
+      <PageHeader title="Records" left={<Button variant="ghost" aria-label="Back" onClick={() => navigate('/history')}><IconChevronLeft size={20} /></Button>} />
       <main className="px-4 flex flex-col gap-4">
         <div className="flex flex-col gap-2">
           <select aria-label="Filter by exercise" className={inputClass} value={exerciseId} onChange={(e) => setExerciseId(e.target.value)}>

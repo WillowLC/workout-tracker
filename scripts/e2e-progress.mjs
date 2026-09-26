@@ -32,9 +32,10 @@ await page.getByRole('link', { name: /Settings/ }).click();
 await page.getByRole('button', { name: 'Load' }).click();
 await page.getByText(/Loaded \d+ demo workouts/).waitFor();
 
-step('home: gym selector, this week, plateau alert');
+step('home: no gym selector, this week, plateau alert');
 await page.getByRole('link', { name: /Workout/ }).click();
-await page.getByRole('button', { name: /Current gym: Demo Gym Downtown/ }).waitFor();
+await page.getByRole('heading', { name: 'This week' }).waitFor();
+assert(await page.getByRole('button', { name: /Current gym/ }).count() === 0, 'gym selector is not on home');
 const weekCard = page.locator('section', { has: page.getByRole('heading', { name: 'This week' }) });
 assert(await weekCard.locator('[data-status]').count() > 3, 'weekly sets rows');
 await page.getByRole('heading', { name: 'Plateau alerts' }).waitFor();
@@ -59,6 +60,7 @@ await bench.getByRole('button', { name: 'Bench Press (Barbell) options' }).click
 const menu = page.getByRole('dialog', { name: 'Bench Press (Barbell)' });
 assert(await menu.getByRole('button', { name: 'Rep range: 5–8' }).count() === 1, 'rep range in ⋯ menu');
 assert(await menu.getByRole('button', { name: 'Weight step: 2.5 kg' }).count() === 1, 'weight step in ⋯ menu');
+assert(await menu.getByRole('button', { name: /Cable height/ }).count() === 0, 'no cable height for a barbell lift');
 await menu.getByRole('button', { name: 'Close' }).click();
 await shot('2-workout-hints');
 
@@ -69,6 +71,10 @@ await page.getByRole('button', { name: /Gym for this workout: Demo Hotel Gym/ })
 const legPrevHotel = await legPress.locator('[data-set-row]').first().innerText();
 console.log('   Leg Press PREVIOUS:', legPrevMain.split('\n')[1], '→', legPrevHotel.split('\n')[1]);
 assert(legPrevMain !== legPrevHotel, 'PREVIOUS differs by gym');
+await page.waitForTimeout(300); // let the IndexedDB write land before reloading
+await page.goto(BASE + 'settings');
+await page.getByText(/current: Demo Hotel Gym/).waitFor(); // the switch is remembered for next workouts
+await page.goto(BASE + 'workout');
 await page.getByRole('button', { name: /Gym for this workout/ }).click();
 await page.getByRole('dialog', { name: 'Gym for this workout' }).getByRole('button', { name: 'Demo Gym Downtown' }).click();
 
@@ -95,10 +101,10 @@ assert(await page.getByText(/80 kg × 8 →/).count() === 1, 'PR old → new on 
 await shot('4-summary');
 await page.getByRole('button', { name: 'Done' }).click();
 
-step('History → Trophies has the new PR');
+step('History → Records has the new PR');
 await page.getByRole('link', { name: /History/ }).click();
 await page.getByText(/Lifetime:/).waitFor();
-await page.getByRole('button', { name: /Trophies/ }).click();
+await page.getByRole('button', { name: /Records/ }).click();
 await page.getByText(/PRs this year/).waitFor();
 const firstTrophy = page.locator('li button').first();
 assert((await firstTrophy.innerText()).includes('Bench Press (Barbell)'), 'newest trophy is the bench PR');

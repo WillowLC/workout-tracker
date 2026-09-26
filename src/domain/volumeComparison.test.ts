@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { comparisonFor, formatBigWeight, formatComparison, niceCount, pickComparison, seededRng } from './volumeComparison';
 import { VOLUME_COMPARISONS, type VolumeComparison } from '../data/volumeComparisons';
 
-const item = (id: string, kg: number): VolumeComparison => ({ id, singular: id, plural: `${id}s`, kg, emoji: '', category: 'object' });
+const item = (id: string, kg: number): VolumeComparison => ({ id, singular: id, plural: `${id}s`, kg, category: 'object' });
 
 describe('volume comparison library', () => {
   it('has 80+ items with unique ids, spread across every range', () => {

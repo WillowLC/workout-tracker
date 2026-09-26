@@ -42,7 +42,7 @@ export function buildRecapDisplay(d: RecapData, exMap: Map<string, Exercise>, se
       { label: 'Reps', value: d.reps.toLocaleString('en-US') },
       { label: 'New PRs', value: String(d.prCount) },
     ],
-    comparison: pick && { volume: formatBigWeight(d.volumeKg, unit), text: formatComparison(pick), emoji: pick.item.emoji },
+    comparison: pick && { volume: formatBigWeight(d.volumeKg, unit), text: formatComparison(pick) },
     prCount: d.prCount,
     biggestJump: d.biggestJump && { exercise: name(d.biggestJump.exerciseId), from: formatKg(d.biggestJump.from, unit), to: formatKg(d.biggestJump.to, unit), pct: d.biggestJump.pct },
     heaviest: d.heaviestSet && { exercise: name(d.heaviestSet.exerciseId), set: formatSet(d.heaviestSet.set, 'weight_reps', unit) },
@@ -61,7 +61,7 @@ export function buildRecapDisplay(d: RecapData, exMap: Map<string, Exercise>, se
         then: v.then !== undefined ? formatKg(v.then, unit) : undefined,
         pct: v.then ? ((v.now! - v.then) / v.then) * 100 : undefined,
       })),
-      lifetime: life && lifetimeKg ? { volume: formatBigWeight(lifetimeKg, unit), text: comparisonPhrase(life), emoji: life.item.emoji } : undefined,
+      lifetime: life && lifetimeKg ? { volume: formatBigWeight(lifetimeKg, unit), text: comparisonPhrase(life) } : undefined,
     };
   }
   return display;

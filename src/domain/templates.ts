@@ -116,6 +116,11 @@ export function setPlanDay(folders: FolderInfo[], name: string, day: number, tem
   return cur ? folders.map((f) => (f === cur ? { ...f, plan } : f)) : [...folders, { name, plan }];
 }
 
+/** Merge settings into a folder's entry, creating it when missing. */
+export function patchFolderInfo(folders: FolderInfo[], name: string, patch: Partial<Omit<FolderInfo, 'name'>>): FolderInfo[] {
+  return folders.some((f) => f.name === name) ? folders.map((f) => (f.name === name ? { ...f, ...patch } : f)) : [...folders, { name, ...patch }];
+}
+
 /** Rename a folder's settings entry (templates are renamed separately). */
 export function renameFolderInfo(folders: FolderInfo[], from: string, to: string): FolderInfo[] {
   return folders.filter((f) => f.name !== to).map((f) => (f.name === from ? { ...f, name: to } : f));

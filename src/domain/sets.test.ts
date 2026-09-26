@@ -41,7 +41,7 @@ describe('placeholder commit on check-off', () => {
 });
 
 describe('units', () => {
-  it('kg ↔ lb round-trips through the display boundary', () => {
+  it('kg <-> lb round-trips through the display boundary', () => {
     for (const lb of [45, 135, 225, 2.5, 317.5]) {
       expect(toDisplayWeight(fromDisplayWeight(lb, 'lb'), 'lb')).toBe(lb);
     }

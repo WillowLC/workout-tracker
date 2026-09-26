@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, Outlet, RouterProvider, useLocation, useNavigate } from 'react-router-dom';
+import { createBrowserRouter, Navigate, Outlet, RouterProvider, useLocation, useNavigate } from 'react-router-dom';
 import { useAppStore } from './store/appStore';
 import { useUiStore } from './store/uiStore';
 import { usePwaStore } from './store/pwaStore';
@@ -86,7 +86,8 @@ const router = createBrowserRouter(
         { path: '/history/calendar', element: <CalendarScreen /> },
         { path: '/history/recaps', element: <RecapsScreen /> },
         { path: '/history/recaps/:key', element: <RecapScreen /> },
-        { path: '/history/trophies', element: <TrophiesScreen /> },
+        { path: '/history/records', element: <TrophiesScreen /> },
+        { path: '/history/trophies', element: <Navigate to="/history/records" replace /> },
         { path: '/history/:id', element: <WorkoutDetailScreen /> },
         { path: '/history/:id/edit', element: <EditWorkoutScreen /> },
         { path: '/exercises', element: <ExercisesScreen /> },

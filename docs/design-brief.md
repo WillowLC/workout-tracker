@@ -142,7 +142,7 @@ These screens are full screen, with no tab bar:
 - **The library is large:** about 180 exercises. Names follow Strong's pattern, "Movement (Equipment)", so they can be long: "Triceps Pushdown (Cable - Straight Bar)", "Knee Raise (Captain's Chair)".
 
 ### 4.6 Exercise detail
-- The header shows the exercise name and an Edit button. Below it: "Chest · Barbell", then the exercise's note, marked with a 📌.
+- The header shows the exercise name and an Edit button. Below it: "Chest · Barbell", then the exercise's note.
 - There are three tabs: **History | Records | Charts**.
   - **History:** one card per session: workout name, date, and the sets.
   - **Records:**
@@ -167,7 +167,7 @@ Settings is a grouped list: a label on the left (with an optional hint beneath i
   - Export JSON backup, with "Last backup: …" beneath it
   - Import JSON backup, which opens a confirmation sheet with Merge and Replace
   - Export CSV
-  - Persistent storage status, shown as ✅ or ⚠️ with an explanation
+  - Persistent storage status, shown as OK, or as a warning with an explanation
 - **App:** the version and build date, and a "Check for updates" button that becomes "Reload" when an update is ready.
 - **Reset all data:** a danger button that asks for confirmation twice.
 
@@ -223,7 +223,7 @@ The optional **RPE** column is a 6–10 effort rating, shown only when the setti
   - a ⋯ button on the right
 - **Under the name:**
   - the **BestLine**: "**BEST** 100 kg × 5 · e1RM 116.7 kg", or "No records yet"
-  - the exercise's permanent note, marked 📌, if any
+  - the exercise's permanent note, if any
   - a note for this session, if any
 - **Body:** column headings (SET / PREVIOUS / KG / REPS / ✓), then the SetRows.
 - **Footer:** a full-width "+ Add Set" button.
@@ -245,11 +245,11 @@ The optional **RPE** column is a 6–10 effort rating, shown only when the setti
 | **Heatmap** | 16 × 7 grid of rounded squares | trained; rest day; future |
 | **PlateCalculator** | "102.5 kg total · bar 20 kg", then the plates per side as chips (25, 15, 1.25), with a warning if the weight can't be made exactly | normal; bar only; can't make |
 | **ExerciseList / ExercisePicker** | Search, filter chips, sections, rows; the picker is a full-screen overlay with Cancel / title / "Add (2)" | single select; multi select; no results with a "Create 'xyz'" link |
-| **ReorderList** | Drag handle ☰, title and subtitle, ↑ ↓ buttons | idle; dragging |
+| **ReorderList** | Drag handle menu, title and subtitle, ↑ ↓ buttons | idle; dragging |
 | **Sheet / ConfirmDialog / MenuList** | Bottom sheet with a title and ✕; a list of big tappable rows (a ✓ marks the current choice, destructive rows are red) | |
 | **Button** | primary / secondary / ghost / danger, in sizes sm / md / lg | normal; disabled |
 | **Chip, Tabs (segmented), Toggle (switch), Card, EmptyState, PageHeader, Field** | Basic building blocks | |
-| **TabBar** | 4 tabs with icon and label (the icons are currently emoji placeholders: ＋ 🕘 🏋 ⚙). Replace them with a proper icon set | active; inactive |
+| **TabBar** | 4 tabs with icon and label (SVG icons: Workout, History, Exercises, Settings) | active; inactive |
 
 ---
 

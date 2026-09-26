@@ -6,7 +6,7 @@ export interface PRToastData {
   lines: string[];
 }
 
-/** "🏆 New PR · Bench Press (Barbell) · 100 kg × 5 (was 97.5 × 5)". One toast per set, listing every record it set. */
+/** Trophy icon + "New PR · Bench Press (Barbell) · 100 kg × 5 (was 97.5 × 5)". One toast per set, listing every record it set. */
 export function PRToast({ exercise, lines, onDismiss }: PRToastData & { onDismiss?: () => void }) {
   return (
     <div role="status" className="bg-surface border border-pr rounded-lg px-4 py-2 flex items-start gap-3 shadow-lg">

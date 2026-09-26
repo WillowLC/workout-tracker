@@ -57,7 +57,7 @@ const recapMock: RecapDisplay = {
   subtitle: 'September 2026',
   headline: [{ label: 'Workouts', value: '13', change: 8.3 }, { label: 'Time training', value: '14h 5m' }],
   totals: [{ label: 'Volume', value: '96,400 kg', change: 12 }, { label: 'Sets', value: '248', change: -4 }, { label: 'Reps', value: '2,310' }, { label: 'New PRs', value: '9' }],
-  comparison: { volume: '96,400 kg', text: 'about 2 humpback whales', emoji: '🐋' },
+  comparison: { volume: '96,400 kg', text: 'about 2 humpback whales' },
   prCount: 9,
   biggestJump: { exercise: 'Squat (Barbell)', from: '116.7 kg', to: '124.3 kg', pct: 6.5 },
   heaviest: { exercise: 'Deadlift (Barbell)', set: '140 kg × 5' },
@@ -80,7 +80,7 @@ const yearMock: RecapDisplay = {
     topExercises: [{ name: 'Bench Press (Barbell)', sets: 412 }, { name: 'Squat (Barbell)', sets: 380 }, { name: 'Lat Pulldown (Cable)', sets: 301 }, { name: 'Deadlift (Barbell)', sets: 188 }, { name: 'Leg Press', sets: 170 }],
     prTotal: 112,
     vsYearAgo: [{ name: 'Bench Press (Barbell)', now: '106.7 kg', then: '88.3 kg', pct: 20.8 }, { name: 'Squat (Barbell)', now: '133.3 kg', then: '110 kg', pct: 21.2 }, { name: 'Deadlift (Barbell)', now: '163.3 kg' }],
-    lifetime: { volume: '1.2 million kg', text: '3 Space Stations', emoji: '🛰️' },
+    lifetime: { volume: '1.2 million kg', text: '3 Space Stations' },
   },
 };
 
@@ -151,7 +151,7 @@ export function DevComponentsScreen() {
 
       <Section title="WorkoutSummary">
         <WorkoutSummary name="Push Day" date="24 Sep 2026, 18:30" duration="1h 5m" volume="8,450 kg" sets={18} count={42} inspiration={INSPIRATIONS[0]}
-          comparison={<VolumeComparisonLine volume="8,450 kg" comparison="about 19 grand pianos" emoji="🎹" className="text-center" />}
+          comparison={<VolumeComparisonLine volume="8,450 kg" comparison="about 19 grand pianos" className="text-center" />}
           prs={[
             { exercise: 'Bench Press (Barbell)', kind: 'Best set', value: '102.5 kg × 5', was: '100 kg × 5' },
             { exercise: 'Bench Press (Barbell)', kind: 'e1RM', value: '119.6 kg', was: '116.7 kg' },
@@ -235,9 +235,9 @@ export function DevComponentsScreen() {
       </Section>
 
       <Section title="Volume comparison / lifetime">
-        <VolumeComparisonLine volume="8,450 kg" comparison="about 7 grand pianos" emoji="🎹" />
-        <VolumeComparisonLine volume="310 kg" comparison="about a grizzly bear" emoji="🐻" />
-        <LifetimeLine volume="1.2 million kg" comparison="3 Space Stations" emoji="🛰️" />
+        <VolumeComparisonLine volume="8,450 kg" comparison="about 7 grand pianos" />
+        <VolumeComparisonLine volume="310 kg" comparison="about a grizzly bear" />
+        <LifetimeLine volume="1.2 million kg" comparison="3 Space Stations" />
       </Section>
 
       <Section title="Monthly recap cards">

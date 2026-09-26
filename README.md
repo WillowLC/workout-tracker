@@ -4,9 +4,9 @@ A minimal, local-first workout logger in the style of Strong/Hevy. It's an insta
 
 **Live app:** https://willowlc.github.io/workout-tracker/
 
-> ⚠️ **Never change the domain or base path** (`/workout-tracker/`). Browser data is tied to the URL's origin, so the app at a new URL starts empty. If you ever have to move it: **Settings → Export JSON backup**, switch to the new URL, then **Import**.
+> **Never change the domain or base path** (`/workout-tracker/`). Browser data is tied to the URL's origin, so the app at a new URL starts empty. If you ever have to move it: **Settings → Export JSON backup**, switch to the new URL, then **Import**.
 >
-> ⚠️ **On iOS, removing the home-screen app deletes its data.** Export a backup first.
+> **On iOS, removing the home-screen app deletes its data.** Export a backup first.
 
 ## Install on your phone
 
@@ -118,6 +118,10 @@ Every colour, radius and font is a CSS variable in `src/styles/tokens.css` (musc
 - **Haptics:** completing a set gives a short tick. Android uses the Vibration API. iPhones don't support it, so on iOS 18+ the app toggles a hidden native switch, which plays the system haptic; older iOS gets nothing.
 - **Templates** store structure only: exercises, set types, supersets and optional target reps. Weights always come from PREVIOUS.
 - **Folders & weekly split:** folders still come from each template's `folder` name. Folder order and each folder's weekly plan (Monday to Sunday, one template or a rest day per day) are saved in the `folders` meta row and included in JSON backups. Tapping a folder opens its planner. On the Workout screen, the week strip and a "Today" badge show that day's template. Templates are reordered within their folder via `Template.order`; templates with no order sort last, by name.
+- **Folder schedules & today's workout:** each folder is scheduled either by *days of the week* (the weekly plan above) or as a *repeating cycle* (`FolderInfo.mode` / `cycle`: template IDs and `null` rest days, e.g. Push, Pull, Legs, Rest). Folders without a weekly plan default to a cycle of their templates in order. Your place in a cycle comes from history: each rest slot uses up one calendar day, and a missed workout waits for you instead of being skipped (`src/domain/schedule.ts`). The Workout screen suggests today's workout from the folder your most recent template workout came from, so training once from another folder switches the suggestion there. "Start empty workout" is a muted button at the bottom of the screen.
+- **Gym:** chosen inside a workout (header under the timer). Changing it there also becomes the default for the next workouts (`settings.currentGymId`).
+- **Cable height:** every cable exercise (Cable equipment, or "cable" in the name) has "Cable height" in its ⋯ menu. It is free text, saved per gym (`Exercise.cableHeights`), and shown on the exercise card.
+- **No emoji, ever:** `src/noEmoji.test.ts` fails CI (and so blocks deploys) if an emoji appears in source, data or docs. `installEmojiGuard()` (`src/lib/noEmoji.ts`) strips emoji from anything rendered at runtime, including typed text, and CSS asks for text glyphs. Use the SVG icons in `components/icons.tsx` instead.
 - **"Last done"** counts calendar days ("Today", "Yesterday", "12 days ago") from the most recent finished workout started from that template.
 
 ## Progress & motivation (as implemented)
@@ -139,7 +143,7 @@ Every colour, radius and font is a CSS variable in `src/styles/tokens.css` (musc
 **2. Weekly sets per muscle** (`domain/muscles.ts`)
 - +1 per working set for each primary muscle, +0.5 for each secondary. Weeks run Monday 00:00 to Monday 00:00 local time. Cardio exercises are tagged (for the recency map) but don't add weekly sets.
 - Status against the target: under (< min), in range, over (> max). Target is global in Settings (default 10–20) with optional per-muscle overrides.
-- Workout tab → **This week** (top 6, "Show all", untrained muscles collapsed). History → **Muscles** has the full list with ◀ ▶ week navigation; tapping a muscle shows its 12-week trend.
+- Workout tab → **This week** (top 6, "Show all", untrained muscles collapsed). History → **Muscles** has the full list with < > week navigation; tapping a muscle shows its 12-week trend.
 
 **3. Weight steps** (`domain/weightSteps.ts`)
 - kg: Dumbbell 2 · Barbell / Smith 2.5 · Machine / Cable 5 · Kettlebell 4 · others 2.5. lb: Dumbbell 5 · Barbell / Smith 5 · Machine / Cable 10 · Kettlebell 9 · others 5. All editable in Settings → *Weight steps*.

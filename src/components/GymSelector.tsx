@@ -1,7 +1,7 @@
 import { IconChevronDown, IconPin } from './icons';
 import { MenuList } from './ui';
 
-/** Small, unobtrusive current-gym control: "📍 SATS Nørrebro ▾", or "Add your gym". */
+/** Small, unobtrusive current-gym control: pin icon + "SATS Nørrebro" + chevron, or "Add your gym". */
 export function GymSelector({ name, onClick }: { name?: string; onClick: () => void }) {
   return (
     <button type="button" onClick={onClick} aria-label={name ? `Current gym: ${name}. Change gym` : 'Add your gym'}

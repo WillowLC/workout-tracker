@@ -27,6 +27,7 @@ export function ActiveWorkoutScreen() {
   const cancelActive = useAppStore((s) => s.cancelActive);
   const nextInspiration = useAppStore((s) => s.nextInspiration);
   const gyms = useAppStore((s) => s.gyms);
+  const setCurrentGym = useAppStore((s) => s.setCurrentGym);
   const recentComparisons = useAppStore((s) => s.meta.recentComparisons);
   const noteComparison = useAppStore((s) => s.noteComparison);
   const [gymSheet, setGymSheet] = useState<'pick' | 'add' | null>(null);
@@ -94,11 +95,12 @@ export function ActiveWorkoutScreen() {
 
       <Sheet open={gymSheet === 'pick'} title="Gym for this workout" onClose={() => setGymSheet(null)}>
         <GymMenu gyms={gyms} currentId={active.gymId} allowNone
-          onPick={(id) => { updateActive((w) => ({ ...w, gymId: id })); setGymSheet(null); }}
-          onAdd={() => setGymSheet('add')} />
-        <p className="text-xs text-muted mt-2">PREVIOUS uses your last session at this gym. Changing it here only affects this workout.</p>
+          onPick={(id) => { updateActive((w) => ({ ...w, gymId: id })); void setCurrentGym(id); setGymSheet(null); }}
+          onAdd={() => setGymSheet('add')}
+          onManage={() => { setGymSheet(null); navigate('/settings/gyms'); }} />
+        <p className="text-xs text-muted mt-2">PREVIOUS uses your last session at this gym. Your next workouts will start here too.</p>
       </Sheet>
-      <AddGymSheet open={gymSheet === 'add'} onClose={() => setGymSheet(null)} onAdded={(g) => updateActive((w) => ({ ...w, gymId: g.id }))} />
+      <AddGymSheet open={gymSheet === 'add'} onClose={() => setGymSheet(null)} makeCurrent onAdded={(g) => updateActive((w) => ({ ...w, gymId: g.id }))} />
 
       <ConfirmDialog
         open={dialog === 'pending'}

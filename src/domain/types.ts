@@ -137,6 +137,8 @@ export interface FolderInfo {
   plan?: WeekPlan;
   /** Cycle order: template IDs, null = rest day. Unset = the folder's templates in order. */
   cycle?: (string | null)[];
+  /** Templates hidden on the Workout screen (the header and schedule stay visible). */
+  collapsed?: boolean;
 }
 
 export type WeightSteps = Record<Equipment, number>;

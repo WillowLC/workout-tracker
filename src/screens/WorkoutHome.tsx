@@ -4,7 +4,7 @@ import type { Template, Workout } from '../domain/types';
 import { useAppStore } from '../store/appStore';
 import { useUiStore } from '../store/uiStore';
 import { useExerciseMap } from '../store/selectors';
-import { duplicateTemplate, groupTemplatesByFolder, moveItem, renumberTemplates, reorderFolders, weekdayIndex } from '../domain/templates';
+import { duplicateTemplate, groupTemplatesByFolder, moveItem, patchFolderInfo, renumberTemplates, reorderFolders, weekdayIndex } from '../domain/templates';
 import { currentFolder, cycleSlots, folderMode, suggestForFolder, whenLabel, type DaySuggestion } from '../domain/schedule';
 import { sortedExercises } from '../domain/superset';
 import { daysAgo } from '../lib/format';
@@ -14,7 +14,7 @@ import { InstallHint } from '../components/shell';
 import { JimLogo } from '../components/JimLogo';
 import { ReorderList } from '../components/ReorderList';
 import { WeekStrip } from '../components/WeekStrip';
-import { IconChevronRight, IconFolder, IconClose } from '../components/icons';
+import { IconChevronDown, IconChevronRight, IconFolder, IconClose } from '../components/icons';
 import { WeeklySetsList } from '../components/WeeklySets';
 import { PlateauCard, PlateauIdeas } from '../components/Plateau';
 import { MuscleSelect } from '../components/MuscleSelect';
@@ -83,7 +83,7 @@ export function WorkoutHome() {
   return (
     <div>
       <header className="sticky top-0 z-20 bg-bg pt-safe">
-        <h1 className="px-4 pt-3" aria-label="Jim"><JimLogo className="block mx-auto mb-3 h-[46px] w-auto" /></h1>
+        <h1 className="px-4 pt-2 pb-4" aria-label="Jim"><JimLogo className="block mx-auto h-[37px] w-auto" /></h1>
       </header>
       {showInstall && <InstallHint ios={isIOS()} onDismiss={() => void setMeta({ installHintDismissed: true })} />}
       <main className="px-4 flex flex-col gap-6 pb-4">
@@ -144,21 +144,34 @@ export function WorkoutHome() {
             const todayId = sg && !sg.doneToday ? sg.templateId : undefined;
             const nextId = sg && (sg.doneToday || !sg.templateId) ? sg.next?.templateId : undefined;
             const cycleLen = folderMode(info) === 'cycle' ? cycleSlots(info, list).length : 0;
+            const collapsed = !!folder && !!info?.collapsed;
             return (
               <div key={folder || '_'} className="flex flex-col gap-2">
                 {folder && (
-                  <button
-                    type="button"
-                    onClick={() => navigate(`/folders/${encodeURIComponent(folder)}`)}
-                    aria-label={`Folder ${folder}: schedule`}
-                    className="flex items-center gap-2 min-h-[44px] -mx-1 px-1 rounded text-left"
-                  >
-                    <span className="flex-1 min-w-0 text-xs font-bold text-muted uppercase flex items-center gap-1.5"><IconFolder size={15} /><span className="truncate">{folder}</span></span>
-                    {cycleLen ? cycleLen > 1 && <span className="text-xs text-muted">{cycleLen}-day cycle</span> : <WeekStrip plan={plan} today={today} nameOf={templateName} />}
-                    <IconChevronRight size={18} className="text-muted" />
-                  </button>
+                  <div className="flex items-center gap-1 -mx-1">
+                    <button
+                      type="button"
+                      onClick={() => void saveFolders(patchFolderInfo(folders, folder, { collapsed: !collapsed }))}
+                      aria-expanded={!collapsed}
+                      aria-label={`${collapsed ? 'Show' : 'Hide'} ${folder} templates`}
+                      className="flex-1 min-w-0 min-h-[44px] px-1 rounded text-left text-xs font-bold text-muted uppercase flex items-center gap-1.5"
+                    >
+                      <IconChevronDown size={16} className={`transition-transform ${collapsed ? '-rotate-90' : ''}`} />
+                      <IconFolder size={15} /><span className="truncate">{folder}</span>
+                      {collapsed && <span className="normal-case font-medium">· {list.length}</span>}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => navigate(`/folders/${encodeURIComponent(folder)}`)}
+                      aria-label={`Folder ${folder}: schedule`}
+                      className="flex items-center gap-2 min-h-[44px] px-1 rounded"
+                    >
+                      {cycleLen ? cycleLen > 1 && <span className="text-xs text-muted">{cycleLen}-day cycle</span> : <WeekStrip plan={plan} today={today} nameOf={templateName} />}
+                      <IconChevronRight size={18} className="text-muted" />
+                    </button>
+                  </div>
                 )}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {!collapsed && <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {list.map((t) => {
                     const last = lastPerformed.get(t.id);
                     const isToday = todayId === t.id;
@@ -176,7 +189,7 @@ export function WorkoutHome() {
                       </button>
                     );
                   })}
-                </div>
+                </div>}
               </div>
             );
           })}

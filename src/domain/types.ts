@@ -22,10 +22,18 @@ export const TRACKING_TYPES: { value: TrackingType; label: string }[] = [
 ];
 
 export const MUSCLES = [
-  'chest', 'front_delts', 'side_delts', 'rear_delts', 'lats', 'upper_back', 'traps', 'lower_back', 'biceps', 'triceps',
+  'chest_upper', 'chest_mid', 'chest_lower', 'front_delts', 'side_delts', 'rear_delts', 'lats', 'upper_back', 'traps', 'lower_back',
+  'biceps_long', 'biceps_short', 'brachialis', 'triceps_long', 'triceps_lateral',
   'forearms', 'abs', 'obliques', 'quads', 'hamstrings', 'glutes', 'adductors', 'abductors', 'calves',
 ] as const;
 export type Muscle = (typeof MUSCLES)[number];
+
+/** Muscles from before chest, biceps and triceps were split into heads, and what each became. */
+export const LEGACY_MUSCLES: Record<string, Muscle[]> = {
+  chest: ['chest_upper', 'chest_mid', 'chest_lower'],
+  biceps: ['biceps_long', 'biceps_short', 'brachialis'],
+  triceps: ['triceps_long', 'triceps_lateral'],
+};
 
 /** Inclusive target rep range for double progression. */
 export interface RepRange {

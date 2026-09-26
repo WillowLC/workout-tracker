@@ -4,7 +4,9 @@ import { MUSCLES } from './types';
 import { countsInStats } from './sets';
 
 export const MUSCLE_LABELS: Record<Muscle, string> = {
-  chest: 'Chest',
+  chest_upper: 'Upper chest',
+  chest_mid: 'Mid chest',
+  chest_lower: 'Lower chest',
   front_delts: 'Front delts',
   side_delts: 'Side delts',
   rear_delts: 'Rear delts',
@@ -12,8 +14,11 @@ export const MUSCLE_LABELS: Record<Muscle, string> = {
   upper_back: 'Upper back',
   traps: 'Traps',
   lower_back: 'Lower back',
-  biceps: 'Biceps',
-  triceps: 'Triceps',
+  biceps_long: 'Biceps long head',
+  biceps_short: 'Biceps short head',
+  brachialis: 'Brachialis',
+  triceps_long: 'Triceps long head',
+  triceps_lateral: 'Triceps lateral head',
   forearms: 'Forearms',
   abs: 'Abs',
   obliques: 'Obliques',
@@ -94,8 +99,8 @@ export function muscleSets(workouts: Workout[], exMap: Map<string, Exercise>, co
       if (!countsForSets(ex)) continue;
       const n = we.sets.filter((s) => s.completed && countsInStats(s, countWarmups)).length;
       if (!n) continue;
-      for (const m of ex!.primaryMuscles ?? []) out[m].primary += n;
-      for (const m of ex!.secondaryMuscles ?? []) out[m].secondary += n;
+      for (const m of ex!.primaryMuscles ?? []) if (out[m]) out[m].primary += n;
+      for (const m of ex!.secondaryMuscles ?? []) if (out[m]) out[m].secondary += n;
     }
   }
   for (const m of MUSCLES) out[m].total = out[m].primary + out[m].secondary * 0.5;

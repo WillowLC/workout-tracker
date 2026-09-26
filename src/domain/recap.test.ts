@@ -6,7 +6,7 @@ import { set, we, workout } from '../test/fixtures';
 import type { Exercise, Workout } from './types';
 
 const exMap = new Map<string, Exercise>([
-  ['bench', { id: 'bench', name: 'Bench', bodyPart: 'Chest', equipment: 'Barbell', trackingType: 'weight_reps', isCustom: false, primaryMuscles: ['chest'], secondaryMuscles: ['triceps'] }],
+  ['bench', { id: 'bench', name: 'Bench', bodyPart: 'Chest', equipment: 'Barbell', trackingType: 'weight_reps', isCustom: false, primaryMuscles: ['chest_mid'], secondaryMuscles: ['triceps_lateral'] }],
   ['squat', { id: 'squat', name: 'Squat', bodyPart: 'Legs', equipment: 'Barbell', trackingType: 'weight_reps', isCustom: false, primaryMuscles: ['quads', 'glutes'], secondaryMuscles: [] }],
   ['plank', { id: 'plank', name: 'Plank', bodyPart: 'Core', equipment: 'Bodyweight', trackingType: 'duration', isCustom: false, primaryMuscles: ['abs'], secondaryMuscles: [] }],
 ]);

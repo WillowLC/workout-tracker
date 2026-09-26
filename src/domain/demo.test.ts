@@ -51,7 +51,7 @@ describe('demo data', () => {
   it('this week has sets per muscle, and there are PRs and recaps', () => {
     const exMap = new Map([...SEED_BY_ID]);
     const wk = muscleSets(workouts, exMap, false, weekPeriod(now));
-    expect(wk.chest.total + wk.quads.total + wk.lats.total).toBeGreaterThan(5);
+    expect(wk.chest_mid.total + wk.quads.total + wk.lats.total).toBeGreaterThan(5);
     expect(buildPRHistory(workouts, trackingOf, false).length).toBeGreaterThan(50);
     expect(availableRecaps(workouts).years.length).toBe(2);
     expect(workouts.every((w) => w.volumeComparisonId)).toBe(true);

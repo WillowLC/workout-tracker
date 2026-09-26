@@ -60,4 +60,8 @@ describe('migrateSettings', () => {
     const s = { ...DEFAULT_SETTINGS, weightStepsKg: { ...DEFAULT_SETTINGS.weightStepsKg, Cable: 2.5 }, currentGymId: 'g1' };
     expect(migrateSettings(s)).toEqual(s);
   });
+  it('per-muscle targets on pre-split muscles apply to each part', () => {
+    const s = migrateSettings({ muscleTargets: { chest: { min: 8, max: 12 }, quads: { min: 6, max: 10 }, nonsense: { min: 1, max: 2 } } });
+    expect(s.muscleTargets).toEqual({ chest_upper: { min: 8, max: 12 }, chest_mid: { min: 8, max: 12 }, chest_lower: { min: 8, max: 12 }, quads: { min: 6, max: 10 } });
+  });
 });

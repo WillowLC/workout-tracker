@@ -141,6 +141,7 @@ Every colour, radius and font is a CSS variable in `src/styles/tokens.css` (musc
 - Tapping the chip writes the weight into the exercise's not-yet-completed normal/failure sets (real values, not placeholders). Nothing changes automatically. Hints show only during a live workout, and can be turned off in Settings.
 
 **2. Weekly sets per muscle** (`domain/muscles.ts`)
+- Muscles are tracked by head where it matters: upper, mid and lower chest; biceps long head, short head and brachialis; triceps long head and lateral head (the lateral head stands in for the lateral and medial heads, which work together). Built-in exercises are tagged by which head they favour (e.g. incline press: upper chest; incline curl: biceps long head; preacher curl: short head; overhead extension: triceps long head; pushdown: lateral head). Older tags (`chest`, `biceps`, `triceps`) upgrade on load: built-ins get the current tags, custom exercises get every part, and per-muscle targets apply to each part (`LEGACY_MUSCLES` in `domain/types.ts`).
 - +1 per working set for each primary muscle, +0.5 for each secondary. Weeks run Monday 00:00 to Monday 00:00 local time. Cardio exercises are tagged (for the recency map) but don't add weekly sets.
 - Status against the target: under (< min), in range, over (> max). Target is global in Settings (default 10–20) with optional per-muscle overrides.
 - Workout tab → **This week** (top 6, "Show all", untrained muscles collapsed). History → **Muscles** has the full list with < > week navigation; tapping a muscle shows its 12-week trend.

@@ -48,7 +48,7 @@ const row = (label: string, type: SetType, extra: Partial<Parameters<typeof SetR
     onChange={noop} onToggleComplete={noop} onTypeClick={noop} onPreviousClick={noop} {...extra} />
 );
 
-const weeklyMock: WeeklySetsRow[] = ([['chest', 14], ['quads', 12], ['lats', 9.5], ['triceps', 22], ['side_delts', 4], ['calves', 0], ['forearms', 0]] as [Muscle, number][])
+const weeklyMock: WeeklySetsRow[] = ([['chest_mid', 14], ['quads', 12], ['lats', 9.5], ['triceps_lateral', 22], ['side_delts', 4], ['calves', 0], ['forearms', 0]] as [Muscle, number][])
   .map(([muscle, sets]) => ({ muscle, sets, target: { min: 10, max: 20 }, status: muscleStatus(sets, { min: 10, max: 20 }) }));
 const volumeMock = Object.fromEntries(MUSCLES.map((m, i) => [m, (i % 5) as HeatLevel])) as Record<Muscle, HeatLevel>;
 const recencyMock = Object.fromEntries(MUSCLES.map((m, i) => [m, ((i * 3) % 5) as HeatLevel])) as Record<Muscle, HeatLevel>;
@@ -204,7 +204,7 @@ export function DevComponentsScreen() {
       </Section>
 
       <Section title="MuscleMap — volume (front + back)">
-        <MuscleMap levels={volumeMock} selected="chest" onSelect={noop} />
+        <MuscleMap levels={volumeMock} selected="chest_mid" onSelect={noop} />
         <HeatLegend labels={VOLUME_LEGEND} />
       </Section>
       <Section title="MuscleMap — recency">
@@ -216,7 +216,7 @@ export function DevComponentsScreen() {
       </Section>
 
       <Section title="MuscleSelect (exercise form)">
-        <MuscleSelect primary={['chest']} secondary={['front_delts', 'triceps']} onChange={noop} />
+        <MuscleSelect primary={['chest_mid']} secondary={['front_delts', 'triceps_lateral']} onChange={noop} />
       </Section>
 
       <Section title="PR toast">

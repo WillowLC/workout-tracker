@@ -84,7 +84,8 @@ export function ExerciseDetailScreen() {
         <Tabs<Tab> value={tab} onChange={setTab} options={[...(hasAbout ? [{ value: 'about' as Tab, label: 'About' }] : []), { value: 'history', label: 'History' }, { value: 'records', label: 'Records' }, { value: 'charts', label: 'Charts' }]} />
 
         {tab === 'about' && (
-          <ExerciseAbout name={ex.name} images={media?.images} primaryMuscles={media?.primaryMuscles} secondaryMuscles={media?.secondaryMuscles} guide={guide} />
+          <ExerciseAbout name={ex.name} images={media?.images} primaryMuscles={ex.primaryMuscles?.length ? ex.primaryMuscles.map((m) => MUSCLE_LABELS[m]) : media?.primaryMuscles}
+            secondaryMuscles={ex.primaryMuscles?.length ? (ex.secondaryMuscles ?? []).map((m) => MUSCLE_LABELS[m]) : media?.secondaryMuscles} guide={guide} />
         )}
 
         {tab === 'history' && (sessions.length === 0 ? <EmptyState title="No history yet" message="Sessions with this exercise will appear here." /> : sessions.map(({ workout, we }) => {

@@ -1,4 +1,5 @@
-import type { BodyPart, Equipment, Exercise, TrackingType } from '../domain/types';
+import type { BodyPart, Equipment, Exercise, Muscle, TrackingType } from '../domain/types';
+import { LEGACY_MUSCLES } from '../domain/types';
 import { seedMusclesFor } from './seedMuscles';
 
 // Strong naming convention: "Movement (Equipment)". Tracking type is
@@ -124,14 +125,26 @@ export const SEED_EXERCISES: Exercise[] = (Object.entries(LIBRARY) as [BodyPart,
 
 export const SEED_BY_ID = new Map(SEED_EXERCISES.map((e) => [e.id, e]));
 
+const hasLegacy = (list?: string[]) => !!list?.some((m) => m in LEGACY_MUSCLES);
+
+/** Replace pre-split muscles (chest, biceps, triceps) with all of their parts, keeping order and dropping duplicates. */
+export function expandLegacyMuscles(list: string[]): Muscle[] {
+  return [...new Set(list.flatMap((m) => LEGACY_MUSCLES[m] ?? [m as Muscle]))];
+}
+
 /**
- * Give a stored built-in exercise the muscle tags it predates (rows seeded by
- * an older version, or restored from an old backup). Never touches custom
- * exercises or rows that already have tags. Returns undefined if unchanged.
+ * Bring a stored exercise's muscle tags up to date. Built-in exercises get
+ * the tags they predate (rows seeded by an older version, or restored from an
+ * old backup), and pre-split tags (chest, biceps, triceps) become the current
+ * built-in tags. Custom exercises keep their tags, with pre-split muscles
+ * expanded to all of their parts. Returns undefined if unchanged.
  */
 export function backfillSeedTags(e: Exercise): Exercise | undefined {
-  if (e.isCustom || e.primaryMuscles !== undefined) return undefined;
   const seed = SEED_BY_ID.get(e.id);
-  if (!seed) return undefined;
-  return { ...e, primaryMuscles: seed.primaryMuscles, secondaryMuscles: seed.secondaryMuscles };
+  if (!e.isCustom && seed && (e.primaryMuscles === undefined || hasLegacy(e.primaryMuscles) || hasLegacy(e.secondaryMuscles))) {
+    return { ...e, primaryMuscles: seed.primaryMuscles, secondaryMuscles: seed.secondaryMuscles };
+  }
+  if (!hasLegacy(e.primaryMuscles) && !hasLegacy(e.secondaryMuscles)) return undefined;
+  const primary = expandLegacyMuscles(e.primaryMuscles ?? []);
+  return { ...e, primaryMuscles: primary, secondaryMuscles: expandLegacyMuscles(e.secondaryMuscles ?? []).filter((m) => !primary.includes(m)) };
 }

@@ -1,5 +1,5 @@
 import type { Equipment, Exercise, Settings, WeightSteps } from './types';
-import { DEFAULT_WEIGHT_STEPS_KG, DEFAULT_SETTINGS, EQUIPMENT, MUSCLES } from './types';
+import { DEFAULT_WEIGHT_STEPS_KG, DEFAULT_SETTINGS, EQUIPMENT, LEGACY_MUSCLES, MUSCLES } from './types';
 import { lbToKg } from './units';
 
 /** Default ± steps in pounds (stored as kg). */
@@ -60,7 +60,9 @@ export function migrateSettings(raw: unknown): Settings {
   }
   if (!isRange(out.weeklySetTarget)) out.weeklySetTarget = { ...DEFAULT_SETTINGS.weeklySetTarget };
   if (out.muscleTargets) {
-    out.muscleTargets = Object.fromEntries(Object.entries(out.muscleTargets).filter(([m, v]) => (MUSCLES as readonly string[]).includes(m) && isRange(v)));
+    // A target set on a pre-split muscle (chest, biceps, triceps) applies to each of its parts.
+    const entries = Object.entries(out.muscleTargets).flatMap(([m, v]) => (LEGACY_MUSCLES[m] ?? [m]).map((x) => [x, v] as const));
+    out.muscleTargets = Object.fromEntries(entries.filter(([m, v]) => (MUSCLES as readonly string[]).includes(m) && isRange(v)));
   }
   return out;
 }

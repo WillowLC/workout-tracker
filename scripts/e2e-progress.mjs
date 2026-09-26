@@ -115,11 +115,11 @@ await shot('6-workout-detail');
 
 step('History → Muscles: map + weekly sets');
 await page.goto(BASE + 'history?view=muscles');
-await page.locator('[data-muscle="chest"]').first().waitFor();
+await page.locator('[data-muscle="chest_mid"]').first().waitFor();
 assert(await page.locator('svg [data-muscle]').count() > 30, 'muscle paths');
-assert(await page.locator('[data-muscle="chest"][data-level]:not([data-level="0"])').count() > 0, 'chest shaded this week');
-await page.locator('[data-muscle="chest"]').first().click();
-await page.getByRole('dialog', { name: 'Chest' }).getByText('Exercises that hit it').waitFor();
+assert(await page.locator('[data-muscle="chest_mid"][data-level]:not([data-level="0"])').count() > 0, 'mid chest shaded this week');
+await page.locator('[data-muscle="chest_mid"]').first().click();
+await page.getByRole('dialog', { name: 'Mid chest' }).getByText('Exercises that hit it').waitFor();
 await shot('7-muscles');
 await page.keyboard.press('Escape');
 await page.getByRole('tab', { name: 'Recency' }).click();

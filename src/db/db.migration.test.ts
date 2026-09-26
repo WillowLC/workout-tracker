@@ -87,7 +87,7 @@ describe('Dexie migrations', () => {
     expect((await db.meta.get('lastBackupAt'))?.value).toBe(123);
 
     // Built-in exercises get muscle tags (notes kept); custom ones stay untagged.
-    expect(await db.exercises.get(bench.id)).toMatchObject({ notes: 'wide grip', primaryMuscles: ['chest'], secondaryMuscles: ['front_delts', 'triceps'] });
+    expect(await db.exercises.get(bench.id)).toMatchObject({ notes: 'wide grip', primaryMuscles: ['chest_mid', 'chest_lower'], secondaryMuscles: ['chest_upper', 'front_delts', 'triceps_lateral'] });
     expect(await db.exercises.get('c1')).toEqual(custom);
 
     // The changed weight increment becomes the barbell step; other settings are kept.

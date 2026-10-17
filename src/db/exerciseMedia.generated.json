@@ -1688,5 +1688,510 @@
    "hamstrings"
   ],
   "source": "Rope_Jumping"
+ },
+ "seed-high-to-low-cable-fly-cable": {
+  "images": 2,
+  "primaryMuscles": [
+   "chest"
+  ],
+  "secondaryMuscles": [
+   "shoulders"
+  ],
+  "source": "Cable_Crossover"
+ },
+ "seed-incline-cable-fly-cable": {
+  "images": 2,
+  "primaryMuscles": [
+   "chest"
+  ],
+  "secondaryMuscles": [
+   "shoulders"
+  ],
+  "source": "Incline_Cable_Flye"
+ },
+ "seed-single-arm-cable-fly-cable": {
+  "images": 2,
+  "primaryMuscles": [
+   "chest"
+  ],
+  "secondaryMuscles": [],
+  "source": "Single-Arm_Cable_Crossover"
+ },
+ "seed-chest-press-cable": {
+  "images": 2,
+  "primaryMuscles": [
+   "chest"
+  ],
+  "secondaryMuscles": [
+   "shoulders",
+   "triceps"
+  ],
+  "source": "Standing_Cable_Chest_Press"
+ },
+ "seed-decline-chest-press-machine": {
+  "images": 2,
+  "primaryMuscles": [
+   "chest"
+  ],
+  "secondaryMuscles": [
+   "shoulders",
+   "triceps"
+  ],
+  "source": "Leverage_Decline_Chest_Press"
+ },
+ "seed-single-arm-lat-pulldown-cable": {
+  "images": 2,
+  "primaryMuscles": [
+   "lats"
+  ],
+  "secondaryMuscles": [
+   "biceps",
+   "middle back"
+  ],
+  "source": "One_Arm_Lat_Pulldown"
+ },
+ "seed-reverse-grip-lat-pulldown-cable": {
+  "images": 2,
+  "primaryMuscles": [
+   "lats"
+  ],
+  "secondaryMuscles": [
+   "biceps",
+   "middle back",
+   "shoulders"
+  ],
+  "source": "Underhand_Cable_Pulldowns"
+ },
+ "seed-single-arm-seated-row-cable": {
+  "images": 2,
+  "primaryMuscles": [
+   "middle back"
+  ],
+  "secondaryMuscles": [
+   "biceps",
+   "lats",
+   "traps"
+  ],
+  "source": "Seated_One-arm_Cable_Pulley_Rows"
+ },
+ "seed-shrug-cable": {
+  "images": 2,
+  "primaryMuscles": [
+   "traps"
+  ],
+  "secondaryMuscles": [],
+  "source": "Cable_Shrugs"
+ },
+ "seed-seal-row-barbell": {
+  "images": 2,
+  "primaryMuscles": [
+   "middle back"
+  ],
+  "secondaryMuscles": [
+   "biceps",
+   "lats",
+   "traps"
+  ],
+  "source": "Lying_Cambered_Barbell_Row"
+ },
+ "seed-meadows-row-barbell": {
+  "images": 2,
+  "primaryMuscles": [
+   "middle back"
+  ],
+  "secondaryMuscles": [
+   "biceps",
+   "lats"
+  ],
+  "source": "One-Arm_Long_Bar_Row"
+ },
+ "seed-kroc-row-dumbbell": {
+  "images": 2,
+  "primaryMuscles": [
+   "middle back"
+  ],
+  "secondaryMuscles": [
+   "biceps",
+   "lats",
+   "shoulders"
+  ],
+  "source": "One-Arm_Dumbbell_Row"
+ },
+ "seed-t-bar-row-machine": {
+  "images": 2,
+  "primaryMuscles": [
+   "middle back"
+  ],
+  "secondaryMuscles": [
+   "biceps",
+   "lats"
+  ],
+  "source": "Lying_T-Bar_Row"
+ },
+ "seed-renegade-row-dumbbell": {
+  "images": 2,
+  "primaryMuscles": [
+   "middle back"
+  ],
+  "secondaryMuscles": [
+   "abdominals",
+   "biceps",
+   "chest",
+   "lats",
+   "triceps"
+  ],
+  "source": "Alternating_Renegade_Row"
+ },
+ "seed-neutral-grip-pull-up": {
+  "images": 2,
+  "primaryMuscles": [
+   "lats"
+  ],
+  "secondaryMuscles": [
+   "biceps",
+   "middle back",
+   "shoulders"
+  ],
+  "source": "V-Bar_Pullup"
+ },
+ "seed-muscle-up": {
+  "images": 2,
+  "primaryMuscles": [
+   "lats"
+  ],
+  "secondaryMuscles": [
+   "abdominals",
+   "biceps",
+   "forearms",
+   "middle back",
+   "shoulders",
+   "traps",
+   "triceps"
+  ],
+  "source": "Muscle_Up"
+ },
+ "seed-goblet-squat-dumbbell": {
+  "images": 2,
+  "primaryMuscles": [
+   "quadriceps"
+  ],
+  "secondaryMuscles": [
+   "calves",
+   "glutes",
+   "hamstrings",
+   "shoulders"
+  ],
+  "source": "Goblet_Squat"
+ },
+ "seed-pistol-squat": {
+  "images": 2,
+  "primaryMuscles": [
+   "quadriceps"
+  ],
+  "secondaryMuscles": [
+   "calves",
+   "glutes",
+   "hamstrings",
+   "shoulders"
+  ],
+  "source": "Kettlebell_Pistol_Squat"
+ },
+ "seed-pull-through-cable": {
+  "images": 2,
+  "primaryMuscles": [
+   "glutes"
+  ],
+  "secondaryMuscles": [
+   "hamstrings",
+   "lower back"
+  ],
+  "source": "Pull_Through"
+ },
+ "seed-hip-adduction-cable": {
+  "images": 2,
+  "primaryMuscles": [
+   "quadriceps"
+  ],
+  "secondaryMuscles": [],
+  "source": "Cable_Hip_Adduction"
+ },
+ "seed-standing-leg-curl-machine": {
+  "images": 2,
+  "primaryMuscles": [
+   "hamstrings"
+  ],
+  "secondaryMuscles": [],
+  "source": "Standing_Leg_Curl"
+ },
+ "seed-zercher-squat-barbell": {
+  "images": 2,
+  "primaryMuscles": [
+   "quadriceps"
+  ],
+  "secondaryMuscles": [
+   "calves",
+   "glutes",
+   "hamstrings"
+  ],
+  "source": "Zercher_Squats"
+ },
+ "seed-split-squat-smith-machine": {
+  "images": 2,
+  "primaryMuscles": [
+   "quadriceps"
+  ],
+  "secondaryMuscles": [
+   "calves",
+   "glutes",
+   "hamstrings"
+  ],
+  "source": "Smith_Single-Leg_Split_Squat"
+ },
+ "seed-reverse-lunge-dumbbell": {
+  "images": 2,
+  "primaryMuscles": [
+   "quadriceps"
+  ],
+  "secondaryMuscles": [
+   "calves",
+   "glutes",
+   "hamstrings"
+  ],
+  "source": "Dumbbell_Rear_Lunge"
+ },
+ "seed-single-leg-romanian-deadlift-dumbbell": {
+  "images": 2,
+  "primaryMuscles": [
+   "hamstrings"
+  ],
+  "secondaryMuscles": [
+   "glutes",
+   "lower back"
+  ],
+  "source": "Kettlebell_One-Legged_Deadlift"
+ },
+ "seed-donkey-calf-raise-machine": {
+  "images": 2,
+  "primaryMuscles": [
+   "calves"
+  ],
+  "secondaryMuscles": [],
+  "source": "Donkey_Calf_Raises"
+ },
+ "seed-sissy-squat": {
+  "images": 2,
+  "primaryMuscles": [
+   "quadriceps"
+  ],
+  "secondaryMuscles": [
+   "calves",
+   "glutes",
+   "hamstrings"
+  ],
+  "source": "Weighted_Sissy_Squat"
+ },
+ "seed-lateral-raise-cable": {
+  "images": 2,
+  "primaryMuscles": [
+   "shoulders"
+  ],
+  "secondaryMuscles": [
+   "forearms"
+  ],
+  "source": "Standing_Low-Pulley_Deltoid_Raise"
+ },
+ "seed-external-rotation-cable": {
+  "images": 2,
+  "primaryMuscles": [
+   "shoulders"
+  ],
+  "secondaryMuscles": [],
+  "source": "External_Rotation_with_Cable"
+ },
+ "seed-rear-delt-row-cable": {
+  "images": 2,
+  "primaryMuscles": [
+   "shoulders"
+  ],
+  "secondaryMuscles": [
+   "biceps",
+   "middle back"
+  ],
+  "source": "Cable_Rope_Rear-Delt_Rows"
+ },
+ "seed-shoulder-press-smith-machine": {
+  "images": 2,
+  "primaryMuscles": [
+   "shoulders"
+  ],
+  "secondaryMuscles": [
+   "triceps"
+  ],
+  "source": "Smith_Machine_Overhead_Shoulder_Press"
+ },
+ "seed-spider-curl-dumbbell": {
+  "images": 2,
+  "primaryMuscles": [
+   "biceps"
+  ],
+  "secondaryMuscles": [],
+  "source": "Dumbbell_Prone_Incline_Curl"
+ },
+ "seed-preacher-curl-cable": {
+  "images": 2,
+  "primaryMuscles": [
+   "biceps"
+  ],
+  "secondaryMuscles": [
+   "forearms"
+  ],
+  "source": "Cable_Preacher_Curl"
+ },
+ "seed-reverse-curl-cable": {
+  "images": 2,
+  "primaryMuscles": [
+   "biceps"
+  ],
+  "secondaryMuscles": [
+   "forearms"
+  ],
+  "source": "Reverse_Cable_Curl"
+ },
+ "seed-triceps-pushdown-cable-v-bar": {
+  "images": 2,
+  "primaryMuscles": [
+   "triceps"
+  ],
+  "secondaryMuscles": [],
+  "source": "Triceps_Pushdown_-_V-Bar_Attachment"
+ },
+ "seed-single-arm-triceps-pushdown-cable": {
+  "images": 2,
+  "primaryMuscles": [
+   "triceps"
+  ],
+  "secondaryMuscles": [],
+  "source": "Cable_One_Arm_Tricep_Extension"
+ },
+ "seed-jm-press-barbell": {
+  "images": 2,
+  "primaryMuscles": [
+   "triceps"
+  ],
+  "secondaryMuscles": [
+   "chest",
+   "shoulders"
+  ],
+  "source": "JM_Press"
+ },
+ "seed-drag-curl-barbell": {
+  "images": 2,
+  "primaryMuscles": [
+   "biceps"
+  ],
+  "secondaryMuscles": [
+   "forearms"
+  ],
+  "source": "Drag_Curl"
+ },
+ "seed-zottman-curl-dumbbell": {
+  "images": 2,
+  "primaryMuscles": [
+   "biceps"
+  ],
+  "secondaryMuscles": [
+   "forearms"
+  ],
+  "source": "Zottman_Curl"
+ },
+ "seed-cross-body-hammer-curl-dumbbell": {
+  "images": 2,
+  "primaryMuscles": [
+   "biceps"
+  ],
+  "secondaryMuscles": [
+   "forearms"
+  ],
+  "source": "Cross_Body_Hammer_Curl"
+ },
+ "seed-toes-to-bar": {
+  "images": 2,
+  "primaryMuscles": [
+   "abdominals"
+  ],
+  "secondaryMuscles": [],
+  "source": "Hanging_Pike"
+ },
+ "seed-reverse-crunch": {
+  "images": 2,
+  "primaryMuscles": [
+   "abdominals"
+  ],
+  "secondaryMuscles": [],
+  "source": "Reverse_Crunch"
+ },
+ "seed-v-up": {
+  "images": 2,
+  "primaryMuscles": [
+   "abdominals"
+  ],
+  "secondaryMuscles": [],
+  "source": "Jackknife_Sit-Up"
+ },
+ "seed-side-bend-dumbbell": {
+  "images": 2,
+  "primaryMuscles": [
+   "abdominals"
+  ],
+  "secondaryMuscles": [],
+  "source": "Dumbbell_Side_Bend"
+ },
+ "seed-kettlebell-swing": {
+  "images": 2,
+  "primaryMuscles": [
+   "hamstrings"
+  ],
+  "secondaryMuscles": [
+   "calves",
+   "glutes",
+   "lower back",
+   "shoulders"
+  ],
+  "source": "One-Arm_Kettlebell_Swings"
+ },
+ "seed-battle-ropes": {
+  "images": 2,
+  "primaryMuscles": [
+   "shoulders"
+  ],
+  "secondaryMuscles": [
+   "chest",
+   "forearms"
+  ],
+  "source": "Battling_Ropes"
+ },
+ "seed-running": {
+  "images": 2,
+  "primaryMuscles": [
+   "quadriceps"
+  ],
+  "secondaryMuscles": [
+   "calves",
+   "glutes",
+   "hamstrings"
+  ],
+  "source": "Trail_Running_Walking"
+ },
+ "seed-walking": {
+  "images": 2,
+  "primaryMuscles": [
+   "quadriceps"
+  ],
+  "secondaryMuscles": [
+   "calves",
+   "glutes",
+   "hamstrings"
+  ],
+  "source": "Walking_Treadmill"
  }
 }

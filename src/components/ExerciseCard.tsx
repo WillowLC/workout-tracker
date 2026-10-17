@@ -48,15 +48,19 @@ export function ExerciseCard(p: ExerciseCardProps) {
               {p.plateauWeeks !== undefined && <PlateauTag weeks={p.plateauWeeks} onClick={p.onPlateau} />}
             </div>
           )}
-          {p.cableHeight && <CableHeightInput exerciseName={p.name} {...p.cableHeight} />}
           {p.exerciseNote && <p className="text-xs text-muted">{p.exerciseNote}</p>}
           {p.sessionNote && <p className="text-xs text-secondary">{p.sessionNote}</p>}
         </div>
-        {p.onMenu && (
-          <button type="button" aria-label={`${p.name} options`} title={`${p.name} options`} onClick={p.onMenu}
-            className="-mt-2 w-11 h-11 flex items-center justify-center text-lg font-bold text-muted">
-            ⋯
-          </button>
+        {(p.onMenu || p.cableHeight) && (
+          <div className="flex flex-col items-center shrink-0">
+            {p.onMenu && (
+              <button type="button" aria-label={`${p.name} options`} title={`${p.name} options`} onClick={p.onMenu}
+                className="-mt-2 w-11 h-11 flex items-center justify-center text-lg font-bold text-muted">
+                ⋯
+              </button>
+            )}
+            {p.cableHeight && <CableHeightInput exerciseName={p.name} {...p.cableHeight} />}
+          </div>
         )}
       </div>
       <div className="flex flex-col gap-0.5 px-1 pb-1.5">

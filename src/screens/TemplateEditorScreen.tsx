@@ -73,17 +73,19 @@ export function TemplateEditorScreen() {
     }));
     return (
       <article key={order} className="bg-surface border border-border rounded-lg overflow-hidden">
-        <div className="flex items-center gap-2 px-3 pt-2">
-          {g && <SupersetTag letter={g.letter} colorIndex={g.colorIndex} />}
-          <p className="flex-1 font-semibold truncate">{nameOf(te.exerciseId)}</p>
-          <IconButton label={`${nameOf(te.exerciseId)} options`} onClick={() => setMenu(order)}>⋯</IconButton>
-        </div>
-        {ex && isCableExercise(ex) && (
-          <div className="px-3">
-            <CableHeightInput exerciseName={ex.name} value={cableHeightFor(ex, gym?.id)} gymLabel={gym?.name}
-              onSave={(v) => void saveExercise(withCableHeight(ex, gym?.id, v))} />
+        <div className="flex items-start gap-2 px-3 pt-2">
+          <div className="flex-1 min-w-0 flex items-center gap-2 min-h-[44px]">
+            {g && <SupersetTag letter={g.letter} colorIndex={g.colorIndex} />}
+            <p className="flex-1 font-semibold truncate">{nameOf(te.exerciseId)}</p>
           </div>
-        )}
+          <div className="flex flex-col items-center shrink-0">
+            <IconButton label={`${nameOf(te.exerciseId)} options`} onClick={() => setMenu(order)}>⋯</IconButton>
+            {ex && isCableExercise(ex) && (
+              <CableHeightInput exerciseName={ex.name} value={cableHeightFor(ex, gym?.id)} gymLabel={gym?.name}
+                onSave={(v) => void saveExercise(withCableHeight(ex, gym?.id, v))} />
+            )}
+          </div>
+        </div>
         <div className="px-3 py-2 flex flex-col gap-1">
           <div className="grid grid-cols-[2.25rem_1fr_2.75rem] gap-2 text-[11px] font-semibold text-muted uppercase">
             <span className="text-center">Set</span><span>Target reps (optional)</span><span />

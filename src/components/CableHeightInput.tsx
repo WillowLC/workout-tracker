@@ -9,8 +9,7 @@ export function CableHeightInput({ exerciseName, value, onSave, gymLabel }: { ex
   useEffect(() => setDraft(value ?? ''), [value]);
   const commit = () => { if (draft.trim() !== (value ?? '')) onSave(draft); };
   return (
-    <label className="inline-flex items-center gap-1.5 text-xs text-muted w-fit" title={gymLabel ? `Saved for ${gymLabel}` : 'Saved for workouts without a gym'}>
-      Cable height
+    <label className="flex flex-col items-center gap-0.5 text-[10px] leading-tight text-muted text-center" title={gymLabel ? `Saved for ${gymLabel}` : 'Saved for workouts without a gym'}>
       <input
         type="text"
         enterKeyHint="done"
@@ -22,8 +21,9 @@ export function CableHeightInput({ exerciseName, value, onSave, gymLabel }: { ex
         onChange={(e) => setDraft(e.target.value)}
         onBlur={commit}
         onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }}
-        className="w-16 h-6 px-1.5 rounded bg-surface-2 text-center text-xs font-semibold text-text placeholder:text-muted caret-accent focus:outline-none focus:shadow-[0_0_0_1.5px_var(--color-text)]"
+        className="w-14 h-7 px-1 rounded bg-surface-2 text-center text-xs font-semibold text-text placeholder:text-muted caret-accent focus:outline-none focus:shadow-[0_0_0_1.5px_var(--color-text)]"
       />
+      Cable height
     </label>
   );
 }

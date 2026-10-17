@@ -1,0 +1,441 @@
+{
+  "_comment": "Photos for exercises free-exercise-db doesn't cover: openly licensed images from Wikimedia Commons, Flickr (via Openverse) and wger.de, credited in the app, plus close free-exercise-db stand-ins. 'note' tells the user when the photo shows a similar movement. Run: npm run media",
+  "deadlift-dumbbell": {
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/DumbbellDeadlift.JPG/500px-DumbbellDeadlift.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credit": {
+          "author": "GeorgeStepanek",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:DumbbellDeadlift.JPG"
+        }
+      }
+    ]
+  },
+  "lat-pulldown-machine": {
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b1/Lat_Pull_down_Machine.jpg/500px-Lat_Pull_down_Machine.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credit": {
+          "author": "SAgbley",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:Lat_Pull_down_Machine.jpg"
+        }
+      }
+    ]
+  },
+  "wide-grip-seated-row-cable": {
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/Woman_using_a_seated_cable_row_machine_at_the_gym.jpg/500px-Woman_using_a_seated_cable_row_machine_at_the_gym.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credit": {
+          "author": "Miguel Angel Omaña Rojas",
+          "license": "CC0",
+          "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:Woman_using_a_seated_cable_row_machine_at_the_gym.jpg"
+        }
+      }
+    ]
+  },
+  "l-sit": {
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/West_Point_male_gymnast_L-sit.jpg/500px-West_Point_male_gymnast_L-sit.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credit": {
+          "author": "Tommy Gilligan, West Point Public Affairs",
+          "license": "Public domain",
+          "licenseUrl": null,
+          "source": "https://commons.wikimedia.org/wiki/File:West_Point_male_gymnast_L-sit.jpg"
+        }
+      }
+    ]
+  },
+  "burpee": {
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c5/Burpee_2_Squat.jpg/500px-Burpee_2_Squat.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credit": {
+          "author": "Taco fleur",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:Burpee_2_Squat.jpg"
+        }
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f5/Burpee_5_Thrust.jpg/500px-Burpee_5_Thrust.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credit": {
+          "author": "Taco fleur",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:Burpee_5_Thrust.jpg"
+        }
+      }
+    ]
+  },
+  "ski-erg": {
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/CrossFit_workout_on_SkiErg_DSC1807.jpg/500px-CrossFit_workout_on_SkiErg_DSC1807.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credit": {
+          "author": "Kiet Le",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:CrossFit_workout_on_SkiErg_DSC1807.jpg"
+        }
+      }
+    ]
+  },
+  "bayesian-curl-cable": {
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ac/Girl_doing_cable_bicep_curl_exercise.jpg/500px-Girl_doing_cable_bicep_curl_exercise.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credit": {
+          "author": "Tyler  Read",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:Girl_doing_cable_bicep_curl_exercise.jpg"
+        }
+      }
+    ],
+    "note": "a standard cable curl"
+  },
+  "hanging-knee-raise": {
+    "images": [
+      {
+        "url": "https://live.staticflickr.com/65535/48441756477_3e33ec1eaa_b.jpg",
+        "credit": {
+          "author": "PTPioneer",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+          "source": "https://www.flickr.com/photos/182613284@N02/48441756477"
+        }
+      }
+    ]
+  },
+  "thruster-barbell": {
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dc/2008_CrossFit_Games_-_thrusters_2.jpg/500px-2008_CrossFit_Games_-_thrusters_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credit": {
+          "author": "Brad Greenlee",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:2008_CrossFit_Games_-_thrusters_2.jpg"
+        }
+      }
+    ]
+  },
+  "landmine-press-barbell": {
+    "images": [
+      {
+        "url": "https://live.staticflickr.com/856/42031003220_59cc762cc8_b.jpg",
+        "credit": {
+          "author": "personaltrainertoronto",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+          "source": "https://www.flickr.com/photos/121183998@N08/42031003220"
+        }
+      },
+      {
+        "url": "https://live.staticflickr.com/849/42031002110_16bdf93041_b.jpg",
+        "credit": {
+          "author": "personaltrainertoronto",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+          "source": "https://www.flickr.com/photos/121183998@N08/42031002110"
+        }
+      }
+    ]
+  },
+  "pike-push-up": {
+    "images": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Pike_Push_Ups.gif",
+        "credit": {
+          "author": "Danielflefil",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "source": "https://commons.wikimedia.org/w/index.php?curid=160780799"
+        }
+      }
+    ]
+  },
+  "shrug-smith-machine": {
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/Smith-machine-shrugs-1.png/500px-Smith-machine-shrugs-1.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credit": {
+          "author": "Everkinetic",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:Smith-machine-shrugs-1.png"
+        }
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/Smith-machine-shrugs-2.png/500px-Smith-machine-shrugs-2.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credit": {
+          "author": "Everkinetic",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:Smith-machine-shrugs-2.png"
+        }
+      }
+    ]
+  },
+  "high-cable-curl-cable": {
+    "images": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/0/00/High-cable-curls-1.gif?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "credit": {
+          "author": "Everkinetic",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:High-cable-curls-1.gif"
+        }
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/7/74/High-cable-curls-2.gif?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "credit": {
+          "author": "Everkinetic",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:High-cable-curls-2.gif"
+        }
+      }
+    ],
+    "note": "the lying version"
+  },
+  "triceps-kickback-cable": {
+    "images": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/7/71/Triceps-kickback-1.gif?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "credit": {
+          "author": "Everkinetic",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:Triceps-kickback-1.gif"
+        }
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/3/31/Triceps-kickback-2.gif?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "credit": {
+          "author": "Everkinetic",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:Triceps-kickback-2.gif"
+        }
+      }
+    ],
+    "note": "the dumbbell version"
+  },
+  "side-bend-cable": {
+    "images": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Side-bend-1.gif?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "credit": {
+          "author": "Everkinetic",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:Side-bend-1.gif"
+        }
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Side-bend-2.gif?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "credit": {
+          "author": "Everkinetic",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:Side-bend-2.gif"
+        }
+      }
+    ],
+    "note": "the dumbbell version"
+  },
+  "copenhagen-plank": {
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f0/Side-plank-1.png/500px-Side-plank-1.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credit": {
+          "author": "Everkinetic",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:Side-plank-1.png"
+        }
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/Side-plank-2.png/500px-Side-plank-2.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credit": {
+          "author": "Everkinetic",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:Side-plank-2.png"
+        }
+      }
+    ],
+    "note": "a regular side plank"
+  },
+  "standing-leg-curl-cable": {
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fe/Standing-leg-curl-1.png/500px-Standing-leg-curl-1.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credit": {
+          "author": "Everkinetic",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:Standing-leg-curl-1.png"
+        }
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/10/Standing-leg-curl-2.png/500px-Standing-leg-curl-2.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credit": {
+          "author": "Everkinetic",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:Standing-leg-curl-2.png"
+        }
+      }
+    ]
+  },
+  "swimming": {
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/FrontCrawlSwimming.JPG/500px-FrontCrawlSwimming.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credit": {
+          "author": "Chris 73",
+          "license": "Public domain",
+          "licenseUrl": null,
+          "source": "https://commons.wikimedia.org/wiki/File:FrontCrawlSwimming.JPG"
+        }
+      }
+    ]
+  },
+  "assault-bike": {
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/Assault_Bike_Spartan_Games_2.jpg/500px-Assault_Bike_Spartan_Games_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credit": {
+          "author": "HybridFitty",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:Assault_Bike_Spartan_Games_2.jpg"
+        }
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/85/District_Crossfit_Class_Warfare-223.jpg/500px-District_Crossfit_Class_Warfare-223.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credit": {
+          "author": "ROSE PHYSICAL THERAPY GROUP",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+          "source": "https://commons.wikimedia.org/wiki/File:District_Crossfit_Class_Warfare-223.jpg"
+        }
+      }
+    ]
+  },
+  "seated-row-machine": {
+    "images": [
+      {
+        "url": "https://wger.de/media/exercise-images/1725/f0ebd44e-b8e1-400c-b598-ca371f3a07af.png",
+        "credit": {
+          "author": "barry",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "source": "https://wger.de/exercise/1725/view/"
+        }
+      }
+    ]
+  },
+  "lateral-raise-machine": {
+    "images": [
+      {
+        "url": "https://wger.de/media/exercise-images/1654/aa724a58-b3b5-4522-b278-1155416236a5.jpg",
+        "credit": {
+          "author": "roneydya",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "source": "https://wger.de/exercise/1654/view/"
+        }
+      }
+    ]
+  },
+  "hollow-hold": {
+    "images": [
+      {
+        "url": "https://wger.de/media/exercise-images/297/b10d3341-baa8-49ab-b462-5b3529389aac.png",
+        "credit": {
+          "author": "wger.de contributors",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "source": "https://wger.de/exercise/297/view/"
+        }
+      }
+    ]
+  },
+  "cross-body-triceps-extension-cable": {
+    "images": [
+      {
+        "url": "https://wger.de/media/exercise-images/1298/ec4b83ec-5a8f-4303-9050-99ec4389bc2a.png",
+        "credit": {
+          "author": "JackSparrow",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "source": "https://wger.de/exercise/1298/view/"
+        }
+      }
+    ]
+  },
+  "pendlay-row-barbell": {
+    "fedb": "Bent_Over_Barbell_Row",
+    "note": "a regular bent-over row"
+  },
+  "hip-thrust-machine": {
+    "fedb": "Barbell_Hip_Thrust",
+    "note": "the barbell version"
+  },
+  "hip-thrust-smith-machine": {
+    "fedb": "Barbell_Hip_Thrust",
+    "note": "the barbell version"
+  },
+  "thruster-dumbbell": {
+    "fedb": "Kettlebell_Thruster",
+    "note": "the kettlebell version"
+  },
+  "archer-pull-cable": {
+    "fedb": "Shotgun_Row",
+    "note": "a single-arm cable row"
+  },
+  "tibialis-raise": {
+    "fedb": "Smith_Machine_Reverse_Calf_Raises",
+    "note": "a Smith machine reverse calf raise"
+  },
+  "belt-squat-machine": {
+    "fedb": "Weighted_Squat",
+    "note": "a belt squat with a dip belt instead of a machine"
+  },
+  "y-raise-cable": {
+    "fedb": "Dumbbell_Scaption",
+    "note": "the dumbbell version"
+  },
+  "z-press-barbell": {
+    "fedb": "Seated_Barbell_Military_Press",
+    "note": "a seated press on a bench"
+  },
+  "man-maker-dumbbell": {
+    "fedb": "Dumbbell_Clean",
+    "note": "the dumbbell clean, one part of the movement"
+  },
+  "dead-hang": {
+    "fedb": "One_Handed_Hang",
+    "note": "a one-arm hang"
+  },
+  "hip-abduction-cable": {
+    "fedb": "Cable_Hip_Adduction",
+    "reverse": true,
+    "note": "the same cable setup, used for adduction"
+  },
+  "pendulum-squat-machine": {
+    "fedb": "Lying_Machine_Squat",
+    "note": "a similar lying squat machine"
+  }
+}

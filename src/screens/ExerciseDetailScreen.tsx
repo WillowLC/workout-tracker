@@ -84,7 +84,7 @@ export function ExerciseDetailScreen() {
         <Tabs<Tab> value={tab} onChange={setTab} options={[...(hasAbout ? [{ value: 'about' as Tab, label: 'About' }] : []), { value: 'history', label: 'History' }, { value: 'records', label: 'Records' }, { value: 'charts', label: 'Charts' }]} />
 
         {tab === 'about' && (
-          <ExerciseAbout name={ex.name} images={media?.images} primaryMuscles={ex.primaryMuscles?.length ? ex.primaryMuscles.map((m) => MUSCLE_LABELS[m]) : media?.primaryMuscles}
+          <ExerciseAbout name={ex.name} images={media?.images} credits={media?.credits} photoNote={media?.note} primaryMuscles={ex.primaryMuscles?.length ? ex.primaryMuscles.map((m) => MUSCLE_LABELS[m]) : media?.primaryMuscles}
             secondaryMuscles={ex.primaryMuscles?.length ? (ex.secondaryMuscles ?? []).map((m) => MUSCLE_LABELS[m]) : media?.secondaryMuscles} guide={guide} />
         )}
 

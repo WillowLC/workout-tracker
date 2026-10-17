@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { ExerciseGuide } from '../db/guides';
+import type { PhotoCredit } from '../db/exerciseMedia';
 import { IconClose, IconPlay } from './icons';
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -42,7 +43,7 @@ export function ExerciseMediaViewer({ images, alt }: { images: string[]; alt: st
             src={src}
             alt={i === 0 ? `${alt}, start position` : `${alt}, finish position`}
             onError={() => setFailed(true)}
-            className={`absolute inset-0 w-full h-full object-cover ${i === frame ? 'opacity-100' : 'opacity-0'}`}
+            className={`absolute inset-0 w-full h-full object-contain ${i === frame ? 'opacity-100' : 'opacity-0'}`}
           />
         ))}
         {!playing && images.length > 1 && (
@@ -81,19 +82,28 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 export function ExerciseAbout({
   name,
   images,
+  credits,
+  photoNote,
   primaryMuscles = [],
   secondaryMuscles = [],
   guide,
 }: {
   name: string;
   images?: string[];
+  credits?: PhotoCredit[];
+  photoNote?: string;
   primaryMuscles?: string[];
   secondaryMuscles?: string[];
   guide?: ExerciseGuide;
 }) {
   return (
     <div className="flex flex-col gap-5">
-      {images && images.length > 0 && <ExerciseMediaViewer images={images} alt={name} />}
+      {images && images.length > 0 && (
+        <div className="flex flex-col gap-1.5">
+          <ExerciseMediaViewer images={images} alt={name} />
+          {photoNote && <p className="text-xs text-muted">Photo shows {photoNote}.</p>}
+        </div>
+      )}
 
       {(primaryMuscles.length > 0 || secondaryMuscles.length > 0) && (
         <Section title="Muscles">
@@ -143,13 +153,25 @@ export function ExerciseAbout({
         </>
       )}
 
-      {images && images.length > 0 && (
+      {images && images.length > 0 && (credits?.length ? (
+        <p className="text-xs text-muted">
+          {credits.length > 1 ? 'Photos' : 'Photo'}:{' '}
+          {credits.map((c, i) => (
+            <span key={i}>
+              {i > 0 && '; '}
+              <a className="underline" href={c.source} target="_blank" rel="noreferrer">{c.author}</a>,{' '}
+              {c.licenseUrl ? <a className="underline" href={c.licenseUrl} target="_blank" rel="noreferrer">{c.license}</a> : c.license}
+            </span>
+          ))}
+          .
+        </p>
+      ) : (
         <p className="text-xs text-muted">
           Photos:{' '}
           <a className="underline" href="https://github.com/yuhonas/free-exercise-db" target="_blank" rel="noreferrer">free-exercise-db</a>{' '}
           (public domain).
         </p>
-      )}
+      ))}
     </div>
   );
 }

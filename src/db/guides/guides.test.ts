@@ -23,11 +23,22 @@ describe('exercise guides', () => {
 });
 
 describe('exercise media', () => {
+  it('every built-in exercise has photos, and other sources are credited', () => {
+    expect(SEED_EXERCISES.filter((e) => !exerciseMedia(e.id)).map((e) => e.id)).toEqual([]);
+    for (const id of MEDIA_EXERCISE_IDS) {
+      for (const c of exerciseMedia(id)!.credits ?? []) {
+        expect(c.author.length, id).toBeGreaterThan(1);
+        expect(c.license, id).toMatch(/^(CC|Public domain)/);
+        expect(c.source, id).toMatch(/^https:\/\//);
+      }
+    }
+  });
   it('only references real exercises and every file exists', () => {
     expect(MEDIA_EXERCISE_IDS.filter((id) => !seedIds.has(id))).toEqual([]);
     for (const id of MEDIA_EXERCISE_IDS) {
       const m = exerciseMedia(id)!;
-      expect(m.images.length, id).toBe(2);
+      expect(m.images.length, id).toBeGreaterThanOrEqual(1);
+      expect(m.images.length, id).toBeLessThanOrEqual(2);
       for (const url of [...m.images, m.thumb]) expect(existsSync('public' + url.replace(/^\//, '/')), url).toBe(true);
     }
   });

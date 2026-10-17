@@ -22,6 +22,8 @@ const LIBRARY: Record<BodyPart, Row[]> = {
     ['Floor Press (Barbell)'], ['Pullover (Dumbbell)'],
     ['Push Up', R, 'Bodyweight'], ['Incline Push Up', R, 'Bodyweight'], ['Decline Push Up', R, 'Bodyweight'],
     ['Chest Dip', WB, 'Bodyweight'], ['Chest Dip (Weighted)', WB, 'Bodyweight'], ['Chest Dip (Assisted)', AB],
+    ['High to Low Cable Fly (Cable)'], ['Incline Cable Fly (Cable)'], ['Single Arm Cable Fly (Cable)'], ['Chest Press (Cable)'],
+    ['Decline Chest Press (Machine)'],
   ],
   Back: [
     ['Deadlift (Barbell)'], ['Deadlift (Trap Bar)', undefined, 'Barbell'], ['Deadlift (Dumbbell)'],
@@ -34,6 +36,10 @@ const LIBRARY: Record<BodyPart, Row[]> = {
     ['Chin Up (Assisted)', AB], ['Inverted Row', R, 'Bodyweight'], ['Face Pull (Cable)'],
     ['Shrug (Barbell)'], ['Shrug (Dumbbell)'], ['Rack Pull (Barbell)'], ['Good Morning (Barbell)'],
     ['Back Extension', R, 'Bodyweight'], ['Back Extension (Weighted)', WB, 'Bodyweight'],
+    ['Archer Pull (Cable)'], ['Single Arm Lat Pulldown (Cable)'], ['Reverse Grip Lat Pulldown (Cable)'], ['Single Arm Seated Row (Cable)'],
+    ['Wide Grip Seated Row (Cable)'], ['Shrug (Cable)'], ['Shrug (Smith Machine)'], ['Seal Row (Barbell)'], ['Meadows Row (Barbell)'],
+    ['Kroc Row (Dumbbell)'], ['T Bar Row (Machine)'], ['Renegade Row (Dumbbell)'], ['Neutral Grip Pull Up', R, 'Bodyweight'],
+    ['Muscle Up', R, 'Bodyweight'], ['Dead Hang', D, 'Bodyweight'],
   ],
   Legs: [
     ['Squat (Barbell)'], ['Front Squat (Barbell)'], ['Squat (Smith Machine)'], ['Box Squat (Barbell)'],
@@ -47,6 +53,10 @@ const LIBRARY: Record<BodyPart, Row[]> = {
     ['Standing Calf Raise (Machine)'], ['Standing Calf Raise (Dumbbell)'], ['Seated Calf Raise (Machine)'],
     ['Calf Press on Leg Press', undefined, 'Machine'], ['Nordic Hamstring Curl', R, 'Bodyweight'],
     ['Pistol Squat', R, 'Bodyweight'], ['Air Squat', R, 'Bodyweight'], ['Box Jump', R, 'Bodyweight'],
+    ['Pull Through (Cable)'], ['Hip Abduction (Cable)'], ['Hip Adduction (Cable)'], ['Standing Leg Curl (Cable)'],
+    ['Standing Leg Curl (Machine)'], ['Belt Squat (Machine)'], ['Zercher Squat (Barbell)'], ['Split Squat (Smith Machine)'],
+    ['Hip Thrust (Smith Machine)'], ['Reverse Lunge (Dumbbell)'], ['Single Leg Romanian Deadlift (Dumbbell)'],
+    ['Donkey Calf Raise (Machine)'], ['Sissy Squat', R, 'Bodyweight'], ['Tibialis Raise', R, 'Bodyweight'],
   ],
   Shoulders: [
     ['Overhead Press (Barbell)'], ['Overhead Press (Dumbbell)'], ['Seated Overhead Press (Dumbbell)'],
@@ -55,6 +65,8 @@ const LIBRARY: Record<BodyPart, Row[]> = {
     ['Lateral Raise (Machine)'], ['Front Raise (Dumbbell)'], ['Front Raise (Cable)'], ['Reverse Fly (Dumbbell)'],
     ['Reverse Fly (Machine)'], ['Reverse Fly (Cable)'], ['Upright Row (Barbell)'], ['Upright Row (Cable)'],
     ['Handstand Push Up', R, 'Bodyweight'],
+    ['Y Raise (Cable)'], ['External Rotation (Cable)'], ['Rear Delt Row (Cable)'], ['Shoulder Press (Smith Machine)'], ['Z Press (Barbell)'],
+    ['Pike Push Up', R, 'Bodyweight'],
   ],
   Arms: [
     ['Bicep Curl (Barbell)'], ['Bicep Curl (Dumbbell)'], ['Bicep Curl (Cable)'], ['Bayesian Curl (Cable)'], ['Bicep Curl (Machine)'],
@@ -66,6 +78,9 @@ const LIBRARY: Record<BodyPart, Row[]> = {
     ['Overhead Triceps Extension (Cable)'], ['Triceps Extension (Machine)'], ['Triceps Kickback (Dumbbell)'],
     ['Close Grip Bench Press (Barbell)'], ['Triceps Dip', WB, 'Bodyweight'], ['Triceps Dip (Assisted)', AB],
     ['Bench Dip', R, 'Bodyweight'], ['Wrist Curl (Barbell)'], ['Reverse Wrist Curl (Barbell)'],
+    ['High Cable Curl (Cable)'], ['Preacher Curl (Cable)'], ['Reverse Curl (Cable)'], ['Triceps Pushdown (Cable - V Bar)'],
+    ['Single Arm Triceps Pushdown (Cable)'], ['Triceps Kickback (Cable)'], ['Cross Body Triceps Extension (Cable)'],
+    ['JM Press (Barbell)'], ['Drag Curl (Barbell)'], ['Zottman Curl (Dumbbell)'], ['Cross Body Hammer Curl (Dumbbell)'],
   ],
   Core: [
     ['Crunch', R, 'Bodyweight'], ['Cable Crunch', undefined, 'Cable'], ['Crunch (Machine)'],
@@ -75,6 +90,8 @@ const LIBRARY: Record<BodyPart, Row[]> = {
     ['Mountain Climber', R, 'Bodyweight'], ['Plank', D, 'Bodyweight'], ['Side Plank', D, 'Bodyweight'],
     ['Hollow Hold', D, 'Bodyweight'], ['Dead Bug', R, 'Bodyweight'], ['Pallof Press (Cable)'],
     ['Woodchopper (Cable)'],
+    ['Hanging Knee Raise', R, 'Bodyweight'], ['Toes to Bar', R, 'Bodyweight'], ['Reverse Crunch', R, 'Bodyweight'], ['V Up', R, 'Bodyweight'],
+    ['L-Sit', D, 'Bodyweight'], ['Copenhagen Plank', D, 'Bodyweight'], ['Side Bend (Dumbbell)'], ['Side Bend (Cable)'],
   ],
   Olympic: [
     ['Clean (Barbell)'], ['Power Clean (Barbell)'], ['Hang Clean (Barbell)'], ['Clean and Jerk (Barbell)'],
@@ -84,6 +101,7 @@ const LIBRARY: Record<BodyPart, Row[]> = {
     ['Kettlebell Swing', undefined, 'Kettlebell'], ['Turkish Get Up (Kettlebell)'], ['Thruster (Barbell)'],
     ['Thruster (Dumbbell)'], ['Burpee', R, 'Bodyweight'], ["Farmer's Walk (Dumbbell)"], ['Sled Push', undefined, 'Other'],
     ['Man Maker (Dumbbell)'],
+    ['Battle Ropes', D, 'Other'],
   ],
   Cardio: [
     ['Running', DD, 'Other'], ['Running (Treadmill)', DD, 'Machine'], ['Walking', DD, 'Other'],

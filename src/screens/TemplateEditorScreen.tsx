@@ -18,12 +18,16 @@ import { SupersetBracket, SupersetTag } from '../components/SupersetBracket';
 import { ExercisePicker } from '../components/ExercisePicker';
 import { ReorderList } from '../components/ReorderList';
 import { NumberInput } from '../components/inputs';
+import { CableHeightInput } from '../components/CableHeightInput';
+import { cableHeightFor, isCableExercise, withCableHeight } from '../domain/cable';
 import { IconClose, IconFolder } from '../components/icons';
 
 export function TemplateEditorScreen() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { templates, folders: folderInfo, exercises, saveTemplate } = useAppStore();
+  const { templates, folders: folderInfo, exercises, saveTemplate, saveExercise, settings, gyms } = useAppStore();
+  // Cable heights are per gym; templates show the one for the current gym.
+  const gym = gyms.find((x) => x.id === settings.currentGymId);
   const [searchParams] = useSearchParams();
   const exMap = useExerciseMap();
   const recentIds = useRecentExerciseIds();
@@ -74,6 +78,12 @@ export function TemplateEditorScreen() {
           <p className="flex-1 font-semibold truncate">{nameOf(te.exerciseId)}</p>
           <IconButton label={`${nameOf(te.exerciseId)} options`} onClick={() => setMenu(order)}>⋯</IconButton>
         </div>
+        {ex && isCableExercise(ex) && (
+          <div className="px-3">
+            <CableHeightInput exerciseName={ex.name} value={cableHeightFor(ex, gym?.id)} gymLabel={gym?.name}
+              onSave={(v) => void saveExercise(withCableHeight(ex, gym?.id, v))} />
+          </div>
+        )}
         <div className="px-3 py-2 flex flex-col gap-1">
           <div className="grid grid-cols-[2.25rem_1fr_2.75rem] gap-2 text-[11px] font-semibold text-muted uppercase">
             <span className="text-center">Set</span><span>Target reps (optional)</span><span />

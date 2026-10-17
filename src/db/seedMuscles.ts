@@ -54,6 +54,8 @@ export const SEED_MUSCLES: Record<string, string> = {
   'Floor Press (Barbell)': 'chest_mid, triceps_lateral | chest_lower, front_delts', 'Pullover (Dumbbell)': 'chest_mid, lats | triceps_long, chest_lower',
   'Push Up': 'chest_mid, chest_lower | chest_upper, front_delts, triceps_lateral, abs', 'Incline Push Up': DECLINE, 'Decline Push Up': INCLINE,
   'Chest Dip': DIP_CHEST, 'Chest Dip (Weighted)': DIP_CHEST, 'Chest Dip (Assisted)': DIP_CHEST,
+  'High to Low Cable Fly (Cable)': FLY_HIGH_TO_LOW, 'Incline Cable Fly (Cable)': FLY_LOW_TO_HIGH, 'Single Arm Cable Fly (Cable)': FLY,
+  'Chest Press (Cable)': BENCH, 'Decline Chest Press (Machine)': DECLINE,
 
   // Back
   'Deadlift (Barbell)': 'hamstrings, glutes, lower_back | quads, traps, forearms, upper_back',
@@ -73,6 +75,13 @@ export const SEED_MUSCLES: Record<string, string> = {
   'Rack Pull (Barbell)': 'lower_back, glutes, traps | hamstrings, forearms, upper_back',
   'Good Morning (Barbell)': 'hamstrings, lower_back | glutes',
   'Back Extension': 'lower_back | glutes, hamstrings', 'Back Extension (Weighted)': 'lower_back | glutes, hamstrings',
+  'Archer Pull (Cable)': `lats | upper_back, rear_delts, ${BI}`, 'Single Arm Lat Pulldown (Cable)': PULLDOWN,
+  'Reverse Grip Lat Pulldown (Cable)': CHIN, 'Single Arm Seated Row (Cable)': `lats, upper_back | rear_delts, ${BI}`,
+  'Wide Grip Seated Row (Cable)': `upper_back, rear_delts | lats, ${BI}`, 'Shrug (Cable)': 'traps | forearms', 'Shrug (Smith Machine)': 'traps | forearms',
+  'Seal Row (Barbell)': `upper_back, lats | rear_delts, ${BI}`, 'Meadows Row (Barbell)': `lats, upper_back | rear_delts, ${BI}, forearms`,
+  'Kroc Row (Dumbbell)': `lats, upper_back | rear_delts, ${BI}, forearms, traps`, 'T Bar Row (Machine)': `upper_back, lats | rear_delts, ${BI}`,
+  'Renegade Row (Dumbbell)': `lats, upper_back | abs, obliques, ${BI}`, 'Neutral Grip Pull Up': `lats | ${BI}, upper_back`,
+  'Muscle Up': 'lats, triceps_lateral | chest_lower, biceps_long, biceps_short, front_delts, abs', 'Dead Hang': 'forearms | lats',
 
   // Legs
   'Squat (Barbell)': SQUAT, 'Front Squat (Barbell)': 'quads | glutes, abs', 'Squat (Smith Machine)': 'quads, glutes | adductors',
@@ -93,6 +102,12 @@ export const SEED_MUSCLES: Record<string, string> = {
   'Standing Calf Raise (Machine)': CALF, 'Standing Calf Raise (Dumbbell)': CALF, 'Seated Calf Raise (Machine)': CALF,
   'Calf Press on Leg Press': CALF, 'Nordic Hamstring Curl': 'hamstrings',
   'Pistol Squat': 'quads, glutes | abs', 'Air Squat': 'quads, glutes', 'Box Jump': 'quads, glutes | calves',
+  'Pull Through (Cable)': 'glutes, hamstrings | lower_back', 'Hip Abduction (Cable)': 'abductors | glutes', 'Hip Adduction (Cable)': 'adductors',
+  'Standing Leg Curl (Cable)': 'hamstrings | calves', 'Standing Leg Curl (Machine)': 'hamstrings | calves', 'Belt Squat (Machine)': 'quads, glutes | adductors',
+  'Zercher Squat (Barbell)': 'quads, glutes | abs, upper_back, adductors', 'Split Squat (Smith Machine)': 'quads, glutes | adductors',
+  'Hip Thrust (Smith Machine)': 'glutes | hamstrings', 'Reverse Lunge (Dumbbell)': 'glutes, quads | hamstrings, adductors',
+  'Single Leg Romanian Deadlift (Dumbbell)': 'hamstrings, glutes | lower_back, abductors', 'Donkey Calf Raise (Machine)': CALF,
+  'Sissy Squat': 'quads', 'Tibialis Raise': 'calves',
 
   // Shoulders
   'Overhead Press (Barbell)': 'front_delts | side_delts, triceps_lateral, traps, chest_upper', 'Overhead Press (Dumbbell)': PRESS,
@@ -104,6 +119,9 @@ export const SEED_MUSCLES: Record<string, string> = {
   'Reverse Fly (Dumbbell)': REAR, 'Reverse Fly (Machine)': REAR, 'Reverse Fly (Cable)': REAR,
   'Upright Row (Barbell)': UPRIGHT, 'Upright Row (Cable)': UPRIGHT,
   'Handstand Push Up': 'front_delts, triceps_lateral | side_delts, traps, triceps_long',
+  'Y Raise (Cable)': 'side_delts, traps | rear_delts, upper_back', 'External Rotation (Cable)': 'rear_delts | upper_back',
+  'Rear Delt Row (Cable)': 'rear_delts, upper_back | traps, brachialis', 'Shoulder Press (Smith Machine)': PRESS,
+  'Z Press (Barbell)': 'front_delts | side_delts, triceps_lateral, abs, upper_back', 'Pike Push Up': 'front_delts, triceps_lateral | side_delts, chest_upper',
 
   // Arms
   'Bicep Curl (Barbell)': CURL, 'Bicep Curl (Dumbbell)': CURL, 'Bicep Curl (Cable)': CURL, 'Bayesian Curl (Cable)': CURL_LONG,
@@ -117,6 +135,10 @@ export const SEED_MUSCLES: Record<string, string> = {
   'Close Grip Bench Press (Barbell)': 'triceps_lateral, chest_mid | triceps_long, front_delts, chest_lower',
   'Triceps Dip': DIP_TRI, 'Triceps Dip (Assisted)': DIP_TRI, 'Bench Dip': 'triceps_lateral | triceps_long, front_delts, chest_lower',
   'Wrist Curl (Barbell)': 'forearms', 'Reverse Wrist Curl (Barbell)': 'forearms',
+  'High Cable Curl (Cable)': CURL_SHORT, 'Preacher Curl (Cable)': CURL_SHORT, 'Reverse Curl (Cable)': 'brachialis, forearms | biceps_long',
+  'Triceps Pushdown (Cable - V Bar)': PUSHDOWN, 'Single Arm Triceps Pushdown (Cable)': PUSHDOWN, 'Triceps Kickback (Cable)': PUSHDOWN,
+  'Cross Body Triceps Extension (Cable)': 'triceps_lateral, triceps_long', 'JM Press (Barbell)': 'triceps_lateral, triceps_long | chest_mid, front_delts',
+  'Drag Curl (Barbell)': CURL_LONG, 'Zottman Curl (Dumbbell)': 'biceps_long, biceps_short, forearms | brachialis', 'Cross Body Hammer Curl (Dumbbell)': HAMMER,
 
   // Core
   Crunch: 'abs', 'Cable Crunch': 'abs | obliques', 'Crunch (Machine)': 'abs', 'Decline Crunch': 'abs',
@@ -125,6 +147,9 @@ export const SEED_MUSCLES: Record<string, string> = {
   'Ab Wheel': 'abs | lats, obliques', 'Mountain Climber': 'abs | front_delts, quads',
   Plank: 'abs | obliques', 'Side Plank': 'obliques | abs, abductors', 'Hollow Hold': 'abs', 'Dead Bug': 'abs | obliques',
   'Pallof Press (Cable)': 'obliques | abs', 'Woodchopper (Cable)': 'obliques | abs',
+  'Hanging Knee Raise': 'abs | obliques, forearms', 'Toes to Bar': 'abs | obliques, lats, forearms', 'Reverse Crunch': 'abs',
+  'V Up': 'abs | obliques', 'L-Sit': 'abs | triceps_lateral, quads', 'Copenhagen Plank': 'adductors, obliques | abs',
+  'Side Bend (Dumbbell)': 'obliques | abs', 'Side Bend (Cable)': 'obliques | abs',
 
   // Olympic
   'Clean (Barbell)': 'quads, glutes, traps | hamstrings, upper_back, lower_back',
@@ -142,6 +167,7 @@ export const SEED_MUSCLES: Record<string, string> = {
   "Farmer's Walk (Dumbbell)": 'forearms, traps | abs, obliques',
   'Sled Push': 'quads, glutes | calves, hamstrings',
   'Man Maker (Dumbbell)': 'front_delts, chest_mid | upper_back, quads, triceps_lateral',
+  'Battle Ropes': 'front_delts, forearms | abs, upper_back, side_delts',
 
   // Cardio (counts for recency on the muscle map, not for weekly sets)
   Running: RUN, 'Running (Treadmill)': RUN, Walking: RUN, Cycling: BIKE, 'Cycling (Indoor)': BIKE,

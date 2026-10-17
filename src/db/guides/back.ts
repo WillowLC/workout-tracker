@@ -255,4 +255,123 @@ export const backGuides: GuideMap = {
   ),
   'seed-back-extension': backExt,
   'seed-back-extension-weighted': variant(backExt, { cues: ['Hug a plate or dumbbell to your chest for extra load.'] }),
+  'seed-archer-pull-cable': g(
+    [
+      'Set a pulley at about shoulder height and hold the handle in one hand, standing side-on or facing the stack.',
+      'Step back until your arm is straight across your body and you feel a stretch in your lat and upper back.',
+      'Pull the handle back and out in a wide arc, like drawing a bow, until your elbow is behind your torso.',
+      'Return the handle along the same path until your arm is fully straight again.',
+    ],
+    [
+      'Imagine drawing a bowstring back to your ear. The elbow leads, the hand follows.',
+      'Keep your chest square and let only the working shoulder blade move.',
+      'Pause for a second at the end, squeezing your shoulder blade toward your spine.',
+    ],
+    ['Twisting your whole torso to finish the rep.', 'Shrugging the shoulder up toward your ear.', 'Bending the elbow so much it becomes a curl.'],
+  ),
+  'seed-single-arm-lat-pulldown-cable': variant(pulldown, {
+    steps: [
+      'Attach a single handle to a high pulley and kneel or sit underneath it.',
+      'Grab the handle with one hand, arm straight, and let it pull your lat into a stretch.',
+      'Pull your elbow down to your side, finishing with your hand beside your shoulder.',
+      'Let the handle rise under control until your arm is straight again.',
+    ],
+    cues: ['Lean slightly toward the working side to get a deeper stretch at the top.'],
+  }),
+  'seed-reverse-grip-lat-pulldown-cable': variant(pulldown, {
+    setup: 'Adjust the thigh pad, then grip the bar with your palms facing you at about shoulder width.',
+    cues: ['The underhand grip brings your biceps in more. Keep driving with the elbows.'],
+  }),
+  'seed-single-arm-seated-row-cable': variant(seatedRow, {
+    steps: [
+      'Attach a single handle to a low or mid pulley and sit (or kneel) facing it.',
+      'Hold the handle with one arm straight and let your shoulder reach forward slightly.',
+      'Row the handle to your hip, driving your elbow back close to your side.',
+      'Reach forward slowly until your arm is straight again.',
+    ],
+    cues: ['Think "elbow to back pocket" to bias the lats.'],
+    mistakes: ['Rotating the torso to pull the handle further.'],
+  }),
+  'seed-wide-grip-seated-row-cable': variant(seatedRow, {
+    setup: 'Attach a long bar to the low pulley, sit with your feet on the platform and grip the bar wider than your shoulders.',
+    cues: ['Pull to your lower chest with your elbows flared out to about 45° to work the upper back and rear delts.'],
+  }),
+  'seed-shrug-cable': variant(shrug, {
+    setup: 'Attach a straight bar (or two handles) to the low pulley and stand close, holding it with straight arms.',
+    cues: ['The cable keeps tension at the bottom, so pause there before each rep.'],
+  }),
+  'seed-shrug-smith-machine': variant(shrug, {
+    setup: 'Set the Smith bar at mid-thigh, stand close and grip it just outside your legs, then unhook it.',
+  }),
+  'seed-seal-row-barbell': g(
+    [
+      'Lie face down on a high, flat bench with the barbell on the floor or a rack underneath.',
+      'Grip the bar slightly wider than shoulder width, arms hanging straight.',
+      'Pull the bar up toward the underside of the bench, leading with your elbows.',
+      'Lower until your arms are straight and your shoulder blades spread apart.',
+    ],
+    ['Keep your chest glued to the bench. With no way to cheat, use less weight than a bent-over row.', 'Squeeze your shoulder blades together at the top.'],
+    ['Lifting your chest off the bench to heave the weight.', 'Cutting the stretch at the bottom short.'],
+  ),
+  'seed-meadows-row-barbell': g(
+    [
+      'Wedge one end of a barbell in a landmine or corner and load the other end.',
+      'Stand side-on to the bar in a staggered stance, hinge over and grip the sleeve end with an overhand grip.',
+      'Row the bar up toward your hip, driving your elbow high and back.',
+      'Lower until your arm is straight and you feel a stretch in your lat.',
+    ],
+    ['Rest your other forearm on your front knee for support.', 'Let your shoulder drop at the bottom for a full stretch.'],
+    ['Standing up as you pull.', 'Jerking the weight with your legs.'],
+  ),
+  'seed-kroc-row-dumbbell': variant(bentRow, {
+    steps: [
+      'Brace one hand on a bench or rack and hold a heavy dumbbell in the other hand, feet staggered.',
+      'Let the dumbbell hang with a full stretch in your lat.',
+      'Row it powerfully to your hip, allowing a little body English on the last reps.',
+      'Lower under control to a full stretch.',
+    ],
+    cues: ['These are meant for high reps (15–30) with a heavy dumbbell. Use straps if grip limits you.'],
+  }),
+  'seed-t-bar-row-machine': variant(seatedRow, {
+    steps: [
+      'Stand on the platform and lean your chest onto the pad.',
+      'Grab the handles with your chosen grip and lift the weight off the rack with straight arms.',
+      'Row the handles toward your chest, driving your elbows back.',
+      'Lower until your arms are straight and your shoulder blades spread apart.',
+    ],
+    cues: ['Keep your chest on the pad the whole set.'],
+  }),
+  'seed-renegade-row-dumbbell': g(
+    [
+      'Get into a push-up position with your hands on two dumbbells, feet wider than hip width.',
+      'Brace your core and squeeze your glutes so your hips stay level.',
+      'Row one dumbbell to your hip while pushing the other into the floor.',
+      'Put it down under control and repeat on the other side.',
+    ],
+    ['Imagine a glass of water on your lower back that must not spill.', 'Widen your feet if your hips keep twisting.'],
+    ['Rotating the hips to lift the dumbbell.', 'Letting the hips sag.'],
+  ),
+  'seed-neutral-grip-pull-up': variant(pullUp, {
+    setup: 'Grip the parallel handles with your palms facing each other and hang with straight arms.',
+    cues: ['The neutral grip is usually the easiest on the shoulders and elbows.'],
+  }),
+  'seed-muscle-up': g(
+    [
+      'Hang from a bar with a false or overhand grip slightly narrower than shoulder width.',
+      'Pull explosively, driving the bar toward your lower chest and leaning your chest over it.',
+      'As your chest clears the bar, rotate your wrists over and press yourself up to straight arms.',
+      'Lower back through the transition under control and return to a dead hang.',
+    ],
+    ['Pull the bar to your hips, not your chin.', 'A small hip kick before the pull helps while you learn.'],
+    ['Pulling straight up so you hit the bar with your chest.', 'One arm going over before the other ("chicken wing").'],
+  ),
+  'seed-dead-hang': g(
+    [
+      'Grab a pull-up bar with an overhand grip about shoulder width.',
+      'Lift your feet and hang with straight arms.',
+      'Hold for time, breathing steadily.',
+    ],
+    ['Let your shoulders relax up for a passive hang, or pull them down slightly for an active hang.', 'Squeeze the bar as hard as you can.'],
+    ['Swinging or kicking.', 'Bending the arms to make it easier.'],
+  ),
 };

@@ -61,6 +61,7 @@ export function WorkoutEditor({ workout: w, onChange, mode, template }: { workou
   const saveTemplate = useAppStore((s) => s.saveTemplate);
   const plateauSnoozes = useAppStore((s) => s.meta.plateauSnoozes);
   const snoozePlateau = useAppStore((s) => s.snoozePlateau);
+  const gymName = useAppStore((s) => s.gyms.find((g) => g.id === w.gymId)?.name);
   const { showToast, highlightSetId, setHighlight, showPRToast } = useUiStore();
   const recentIds = useRecentExerciseIds();
   const { exMap, trackingOf, perExercise, prs, rows, prior } = useWorkoutContext(w, history, settings, template);
@@ -76,7 +77,6 @@ export function WorkoutEditor({ workout: w, onChange, mode, template }: { workou
   const [plateauFor, setPlateauFor] = useState<string | null>(null);
   const [repRangeFor, setRepRangeFor] = useState<{ exerciseId: string; min?: number; max?: number } | null>(null);
   const [stepFor, setStepFor] = useState<{ exerciseId: string; value?: number } | null>(null);
-  const [heightFor, setHeightFor] = useState<{ exerciseId: string; value: string } | null>(null);
 
   const sorted = useMemo(() => sortedExercises(w), [w]);
   const groups = useMemo(() => supersetInfo(w.exercises), [w.exercises]);
@@ -180,7 +180,7 @@ export function WorkoutEditor({ workout: w, onChange, mode, template }: { workou
         best={rec?.bestSet ? formatSet(rec.bestSet, t, settings.unit) : undefined}
         e1rm={e1 !== undefined ? `${formatNumber(Math.round(toDisplayWeight(e1, settings.unit) * 10) / 10)} ${settings.unit}` : undefined}
         exerciseNote={ex?.notes}
-        cableHeight={isCableExercise(ex) ? cableHeightFor(ex, w.gymId) : undefined}
+        cableHeight={ex && isCableExercise(ex) ? { value: cableHeightFor(ex, w.gymId), gymLabel: gymName, onSave: (v) => void saveExercise(withCableHeight(ex, w.gymId, v)) } : undefined}
         sessionNote={we.sessionNote}
         superset={g ? { letter: g.letter, colorIndex: g.colorIndex } : undefined}
         columns={columnsFor(t, settings.unit)}
@@ -296,9 +296,6 @@ export function WorkoutEditor({ workout: w, onChange, mode, template }: { workou
             items={[
               { label: 'Session note', hint: menuWe.sessionNote ? 'edit' : undefined, onClick: () => { setNoteDraft(menuWe.sessionNote ?? ''); setNoteFor({ weId: menuWe.id, kind: 'session' }); setExMenu(null); } },
               { label: 'Exercise note', onClick: () => { setNoteDraft(exMap.get(menuWe.exerciseId)?.notes ?? ''); setNoteFor({ weId: menuWe.id, kind: 'exercise' }); setExMenu(null); } },
-              ...(menuEx && isCableExercise(menuEx) ? [
-                { label: `Cable height: ${cableHeightFor(menuEx, w.gymId) ?? 'not set'}`, onClick: () => { setHeightFor({ exerciseId: menuEx.id, value: cableHeightFor(menuEx, w.gymId) ?? '' }); setExMenu(null); } },
-              ] : []),
               ...(menuEx && (usesWeightTracking(menuEx.trackingType) || isCableExercise(menuEx)) ? [
                 { label: `Rep range: ${formatRepRange(effectiveRepRange(menuEx, template))}`, onClick: () => { const r = effectiveRepRange(menuEx, template); setRepRangeFor({ exerciseId: menuEx.id, min: r?.min, max: r?.max }); setExMenu(null); } },
                 { label: `Weight step: ${formatKg(effectiveStepKg(menuEx, settings), settings.unit)}`, onClick: () => { setStepFor({ exerciseId: menuEx.id, value: menuEx.weightStepKg !== undefined ? toDisplayWeight(menuEx.weightStepKg, settings.unit) : undefined }); setExMenu(null); } },
@@ -416,23 +413,6 @@ export function WorkoutEditor({ workout: w, onChange, mode, template }: { workou
             </div>
           );
         })()}
-      </Sheet>
-
-      {/* Cable pulley height, remembered per gym */}
-      <Sheet open={!!heightFor} title={heightFor ? `Cable height · ${nameOf(heightFor.exerciseId)}` : ''} onClose={() => setHeightFor(null)}
-        footer={heightFor && <Button variant="primary" className="flex-1" onClick={() => {
-          const ex = exMap.get(heightFor.exerciseId);
-          if (ex) void saveExercise(withCableHeight(ex, w.gymId, heightFor.value));
-          setHeightFor(null);
-        }}>Save</Button>}>
-        {heightFor && (
-          <div className="flex flex-col gap-3">
-            <form onSubmit={(e) => { e.preventDefault(); const ex = exMap.get(heightFor.exerciseId); if (ex) void saveExercise(withCableHeight(ex, w.gymId, heightFor.value)); setHeightFor(null); }}>
-              <input className={inputClass} aria-label="Cable height" autoFocus placeholder="e.g. 12, or chest height" value={heightFor.value} onChange={(e) => setHeightFor({ ...heightFor, value: e.target.value })} />
-            </form>
-            <p className="text-xs text-muted">Shown on the exercise card next time. Saved {w.gymId ? 'for this gym' : 'for workouts without a gym'}, since every cable stack is numbered differently.</p>
-          </div>
-        )}
       </Sheet>
 
       <Sheet open={plates !== null} title="Plate calculator" onClose={() => setPlates(null)}>

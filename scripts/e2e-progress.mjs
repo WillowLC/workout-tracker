@@ -78,6 +78,22 @@ await page.goto(BASE + 'workout');
 await page.getByRole('button', { name: /Gym for this workout/ }).click();
 await page.getByRole('dialog', { name: 'Gym for this workout' }).getByRole('button', { name: 'Demo Gym Downtown' }).click();
 
+step('cable exercises always show the cable height box, saved per gym');
+assert(await bench.getByRole('textbox', { name: /cable height/ }).count() === 0, 'no cable height box for a barbell lift');
+await page.getByRole('button', { name: '+ Add Exercises' }).click();
+await addExercise('Archer Pull (Cable)');
+await page.getByRole('button', { name: /^Add \(1\)/ }).click();
+const archer = page.getByRole('article', { name: 'Archer Pull (Cable)' });
+const archerHeight = archer.getByRole('textbox', { name: 'Archer Pull (Cable) cable height' });
+await archerHeight.fill('7');
+await archerHeight.press('Enter');
+await page.waitForTimeout(300);
+await page.reload();
+assert((await archerHeight.inputValue()) === '7', 'cable height remembered');
+await shot('2b-cable-height');
+await archer.getByRole('button', { name: 'Archer Pull (Cable) options' }).click();
+await page.getByRole('dialog', { name: 'Archer Pull (Cable)' }).getByRole('button', { name: 'Remove exercise' }).click();
+
 step('tap the hint → weight applied to working sets');
 await bench.getByRole('button', { name: /Try 82.5 kg × 5/ }).click();
 assert((await bench.getByRole('textbox', { name: 'Set 1 KG' }).inputValue()) === '82.5', 'hint applied');

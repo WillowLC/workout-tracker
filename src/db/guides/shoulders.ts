@@ -146,4 +146,62 @@ export const shoulderGuides: GuideMap = {
     ['Build up with pike push-ups or by lowering to a raised pad.', 'Keep your elbows at about 45°, not flared out.'],
     ['Arching the lower back.', 'Dropping down onto your head.'],
   ),
+  'seed-y-raise-cable': g(
+    [
+      'Set both pulleys low and cross the cables, holding the left handle in your right hand and the right handle in your left.',
+      'Stand in the middle with your arms crossed in front of your hips, thumbs up.',
+      'Raise your arms up and out into a Y shape, ending a little above shoulder height.',
+      'Lower slowly back to the crossed position.',
+    ],
+    ['Imagine reaching for the corners of the ceiling.', 'Keep a slight bend in the elbows and your shoulders down.'],
+    ['Shrugging the weight up with your traps.', 'Leaning back to swing the handles up.'],
+  ),
+  'seed-external-rotation-cable': g(
+    [
+      'Set a pulley at elbow height and stand side-on to it, holding the handle in your outside hand.',
+      'Bend your elbow to 90° and tuck it against your side (a rolled towel helps).',
+      'Rotate your forearm out, away from your belly, keeping the elbow pinned.',
+      'Return slowly to the start.',
+    ],
+    ['Your forearm moves like a door swinging on its hinge.', 'Go light: this is for shoulder health, not heavy loading.'],
+    ['Letting the elbow drift away from the body.', 'Twisting the torso.'],
+  ),
+  'seed-rear-delt-row-cable': g(
+    [
+      'Attach a rope or two handles to a pulley at about chest height and step back, arms straight.',
+      'Stand tall with your elbows up at shoulder height.',
+      'Row your hands back toward your face, keeping the elbows high and wide.',
+      'Reach forward slowly until your arms are straight.',
+    ],
+    ['Keep your elbows level with your shoulders throughout.', 'Think about spreading the rope apart as you pull.'],
+    ['Dropping the elbows, which shifts the work to the lats.', 'Leaning back to use bodyweight.'],
+  ),
+  'seed-shoulder-press-smith-machine': variant(ohp, {
+    steps: [
+      'Set an upright bench under the Smith bar so the bar comes down in front of your face.',
+      'Grip the bar just outside shoulder width, unhook it and press it to straight arms.',
+      'Lower until the bar is about chin height.',
+      'Press back up until your arms are straight.',
+    ],
+  }),
+  'seed-z-press-barbell': variant(ohp, {
+    steps: [
+      'Sit on the floor with your legs straight out in front, the bar at shoulder height in a low rack or on safeties.',
+      'Unrack the bar to the front of your shoulders with your torso tall.',
+      'Press the bar straight up, moving your head back and then through once it passes your face.',
+      'Lower under control to your upper chest.',
+    ],
+    cues: ['With no legs to help, your core has to keep you upright. Use much less weight than a standing press.'],
+    mistakes: ['Leaning back to make the press easier.'],
+  }),
+  'seed-pike-push-up': g(
+    [
+      'Start in a push-up position, then walk your feet in and lift your hips so your body forms an upside-down V.',
+      'Put your hands slightly wider than shoulder width.',
+      'Bend your elbows and lower the top of your head toward the floor in front of your hands.',
+      'Press back up to straight arms.',
+    ],
+    ['Your head and hands form a triangle at the bottom.', 'Raise your feet on a box to make it harder.'],
+    ['Letting the hips drop so it becomes a normal push-up.', 'Flaring the elbows straight out to the sides.'],
+  ),
 };

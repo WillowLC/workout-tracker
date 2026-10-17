@@ -1,8 +1,17 @@
 import type { Exercise } from './types';
 
-/** Anything on a cable stack: Cable equipment, or "cable" in the name (custom exercises often use Other). */
+// Movements that are (almost) always done on a cable stack, for custom
+// exercises whose equipment was left as Other.
+const CABLE_WORDS = /\b(cables?|pulley|crossovers?|push-?downs?|pull-?downs?|face pulls?|pallof|woodchop(per)?s?|archer pulls?(?!\s*-?\s*ups?))\b/i;
+
+/**
+ * Anything on a cable stack: Cable equipment, "cable" in the name, or (for
+ * custom exercises left as Other) a movement that's done on cables.
+ */
 export function isCableExercise(e: Pick<Exercise, 'equipment' | 'name'> | undefined): boolean {
-  return !!e && (e.equipment === 'Cable' || /\bcables?\b/i.test(e.name));
+  if (!e) return false;
+  if (e.equipment === 'Cable' || /\bcables?\b/i.test(e.name)) return true;
+  return e.equipment === 'Other' && CABLE_WORDS.test(e.name);
 }
 
 /** Pulley height is per gym (every gym's cable stack is numbered differently); '' = no gym. */

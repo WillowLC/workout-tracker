@@ -11,6 +11,15 @@ describe('cable height', () => {
     expect(isCableExercise({ name: 'Cable Row (custom)', equipment: 'Other' })).toBe(true);
   });
 
+  it('spots custom cable movements saved with Other equipment', () => {
+    for (const name of ['Tricep pushdown', 'Face pulls', 'Archer pull', 'Pallof press', 'Lat pull-down'])
+      expect(isCableExercise({ name, equipment: 'Other' }), name).toBe(true);
+    for (const name of ['Archer Pull Up', 'Jump Rope', 'Battle Ropes']) expect(isCableExercise({ name, equipment: 'Other' }), name).toBe(false);
+    // Real equipment wins over the name.
+    expect(isCableExercise({ name: 'Lat Pulldown (Machine)', equipment: 'Machine' })).toBe(false);
+    expect(isCableExercise({ name: 'Straight Arm Pulldown (Band)', equipment: 'Band' })).toBe(false);
+  });
+
   it('stores height per gym and clears empty values', () => {
     let e = withCableHeight({ cableHeights: undefined }, 'g1', ' 12 ');
     e = withCableHeight(e, undefined, 'low');

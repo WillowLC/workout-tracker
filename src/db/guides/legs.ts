@@ -309,4 +309,115 @@ export const legGuides: GuideMap = {
     ['Land as quietly as you can.', 'Pick a box you can land on comfortably, not one that forces a deep squat on landing.'],
     ['A box so high you land in a deep squat.', 'Jumping backwards off the box.', 'Knees caving in on landing.'],
   ),
+  'seed-pull-through-cable': g(
+    [
+      'Attach a rope to the low pulley, face away from the stack and hold the rope between your legs.',
+      'Walk forward until there is tension and stand with feet a little wider than hip width.',
+      'Hinge at the hips, letting the rope pull your hands back between your legs, back flat.',
+      'Drive your hips forward to stand tall, squeezing your glutes at the top.',
+    ],
+    ['Think "hips back, then hips through". Your arms are just hooks.', 'Keep a soft bend in the knees, like a Romanian deadlift.'],
+    ['Squatting down instead of hinging.', 'Pulling the rope up with your arms.', 'Leaning back at the top.'],
+  ),
+  'seed-hip-abduction-cable': g(
+    [
+      'Attach an ankle strap to the low pulley and to your outside ankle, standing side-on to the stack.',
+      'Hold the frame for balance and stand tall on your inside leg.',
+      'Sweep the strapped leg out to the side, away from the stack.',
+      'Return it slowly, letting it cross just in front of your standing leg.',
+    ],
+    ['Lead with your heel and keep your toes pointing forward.', 'Keep your torso upright. The leg moves, not your body.'],
+    ['Leaning away from the stack to lift the leg higher.', 'Turning the toes up, which shifts the work to the hip flexors.'],
+  ),
+  'seed-hip-adduction-cable': g(
+    [
+      'Attach an ankle strap to the low pulley and to your inside ankle, standing side-on to the stack.',
+      'Step away until the weight lifts with your strapped leg out to the side.',
+      'Sweep the leg in and across in front of your standing leg.',
+      'Let it return slowly out to the side.',
+    ],
+    ['Hold the frame and keep your hips square.', 'Move slowly, especially as the leg goes out.'],
+    ['Swinging the leg with momentum.', 'Twisting the hips to finish the rep.'],
+  ),
+  'seed-standing-leg-curl-cable': variant(legCurl, {
+    steps: [
+      'Attach an ankle strap to the low pulley and to one ankle, facing the stack.',
+      'Hold the frame and stand tall with your thighs side by side.',
+      'Curl your heel up toward your glute without moving your thigh.',
+      'Lower slowly until the leg is straight.',
+    ],
+    cues: ['Keep your knee pointing at the floor the whole time.'],
+  }),
+  'seed-standing-leg-curl-machine': variant(legCurl, {
+    setup: 'Set the pad just above your heel and line your knee up with the machine’s pivot, standing tall with your hands on the handles.',
+  }),
+  'seed-belt-squat-machine': g(
+    [
+      'Put the belt on around your hips, clip it to the machine and stand on the platform, feet about shoulder width.',
+      'Release the safety and hold the handles lightly for balance.',
+      'Squat down, pushing your knees out, until your thighs are at least parallel.',
+      'Drive through your whole foot to stand back up.',
+    ],
+    ['Stay upright. With no bar on your back, your spine is unloaded.', 'Imagine sitting straight down between your heels.'],
+    ['Pulling on the handles to help yourself up.', 'Letting the knees cave in.'],
+  ),
+  'seed-zercher-squat-barbell': variant(squat, {
+    setup: 'Set the bar in a rack at about belly height and hold it in the crooks of your elbows, hands together, then step back.',
+    cues: ['Keep your elbows up and your upper back tight so the bar stays put.'],
+    mistakes: ['Letting the elbows drop and the bar roll forward.'],
+  }),
+  'seed-split-squat-smith-machine': variant(lunge, {
+    steps: [
+      'Set the Smith bar on your upper back and step into a long split stance, front foot slightly ahead of the bar.',
+      'Unhook the bar and stand tall.',
+      'Lower straight down until your back knee nearly touches the floor.',
+      'Push through your front foot to return to the start. Finish all reps, then switch legs.',
+    ],
+    cues: ['Move your front foot further forward to bias the glutes, closer for more quads.'],
+  }),
+  'seed-hip-thrust-smith-machine': variant(hipThrust, {
+    setup: 'Sit with your upper back against a bench placed under the Smith bar, roll the padded bar over your hips and unhook it.',
+  }),
+  'seed-reverse-lunge-dumbbell': variant(lunge, {
+    steps: [
+      'Stand tall with a dumbbell in each hand.',
+      'Step one foot back and lower until your back knee nearly touches the floor.',
+      'Push through your front heel to bring your back foot forward to the start.',
+      'Alternate legs, or do all reps on one side.',
+    ],
+    cues: ['Stepping back is easier on the knees than a forward lunge.'],
+  }),
+  'seed-single-leg-romanian-deadlift-dumbbell': variant(rdl, {
+    steps: [
+      'Stand on one leg holding a dumbbell in the opposite hand, standing knee slightly bent.',
+      'Hinge at the hip, letting your free leg travel back in line with your torso.',
+      'Lower the dumbbell until you feel a deep stretch in the standing leg’s hamstring.',
+      'Drive your hip forward to stand back up tall.',
+    ],
+    cues: ['Keep your hips square to the floor, as if shining headlights from both hip bones straight down.'],
+    mistakes: ['Opening the hip as the back leg rises.'],
+  }),
+  'seed-donkey-calf-raise-machine': variant(calf, {
+    setup: 'Get under the pad, bent forward at the hips, with the balls of your feet on the edge of the platform.',
+  }),
+  'seed-sissy-squat': g(
+    [
+      'Stand holding a support with one hand, feet hip-width, heels raised.',
+      'Push your knees forward and lean back, keeping a straight line from knees to shoulders.',
+      'Lower until your knees are well past your toes and you feel a deep stretch in your quads.',
+      'Drive your knees back to return to standing.',
+    ],
+    ['Imagine your body is a plank hinged at the knees.', 'Use a sissy squat bench or a pad under your heels if you have one.'],
+    ['Bending at the hips, which turns it into a normal squat.', 'Going deeper than your knees tolerate.'],
+  ),
+  'seed-tibialis-raise': g(
+    [
+      'Lean your back against a wall with your heels about a foot away from it.',
+      'Keep your legs straight.',
+      'Pull your toes up toward your shins as high as you can.',
+      'Lower them slowly without letting them slap the floor.',
+    ],
+    ['Move your heels further from the wall to make it harder.', 'Hold a plate on your toes or use a tib bar to add load.'],
+    ['Bending the knees.', 'Bouncing through short reps.'],
+  ),
 };

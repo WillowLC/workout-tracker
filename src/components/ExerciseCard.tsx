@@ -4,14 +4,15 @@ import { SetTableHeader, type SetColumn } from './SetRow';
 import { SupersetTag } from './SupersetBracket';
 import { ProgressionHint, type HintKind } from './ProgressionHint';
 import { PlateauTag } from './Plateau';
+import { CableHeightInput } from './CableHeightInput';
 
 export interface ExerciseCardProps {
   name: string;
   best?: string;
   e1rm?: string;
   exerciseNote?: string;
-  /** Saved pulley height for cable exercises. */
-  cableHeight?: string;
+  /** Pulley height box, shown on every cable exercise. */
+  cableHeight?: { value?: string; gymLabel?: string; onSave: (v: string) => void };
   sessionNote?: string;
   superset?: { letter: string; colorIndex: number };
   columns: SetColumn[];
@@ -47,7 +48,7 @@ export function ExerciseCard(p: ExerciseCardProps) {
               {p.plateauWeeks !== undefined && <PlateauTag weeks={p.plateauWeeks} onClick={p.onPlateau} />}
             </div>
           )}
-          {p.cableHeight && <p className="text-xs text-secondary">Cable height: <span className="font-semibold">{p.cableHeight}</span></p>}
+          {p.cableHeight && <CableHeightInput exerciseName={p.name} {...p.cableHeight} />}
           {p.exerciseNote && <p className="text-xs text-muted">{p.exerciseNote}</p>}
           {p.sessionNote && <p className="text-xs text-secondary">{p.sessionNote}</p>}
         </div>

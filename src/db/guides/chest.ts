@@ -241,4 +241,47 @@ export const chestGuides: GuideMap = {
     setup: 'On an assisted dip machine, kneel or stand on the pad and grip the handles with your arms locked out. More counterweight means more help.',
     cues: ['Lower the assistance over time as you get stronger.'],
   }),
+  'seed-high-to-low-cable-fly-cable': variant(cableFly, {
+    steps: [
+      'Set both pulleys at the highest position and hold a handle in each hand.',
+      'Step forward into a split stance with a slight forward lean, arms out wide and a soft bend in your elbows.',
+      'Sweep your hands down and together in front of your belly button.',
+      'Let your arms rise back along the same arc until you feel a stretch across your chest.',
+    ],
+    cues: ['Think "pour downward": this angle emphasises the lower chest.'],
+    mistakes: ['Setting the pulleys too low, which turns it into a flat fly.'],
+  }),
+  'seed-incline-cable-fly-cable': variant(cableFly, {
+    steps: [
+      'Put an incline bench (about 30°) between two low pulleys and lie back holding a handle in each hand.',
+      'Start with your arms out wide, a soft bend in your elbows, and a stretch across your chest.',
+      'Bring your hands up and together over your upper chest.',
+      'Lower along the same arc under control.',
+    ],
+    cues: ['Keep your shoulder blades pinned to the bench.'],
+  }),
+  'seed-single-arm-cable-fly-cable': variant(cableFly, {
+    steps: [
+      'Set one pulley at about shoulder height and stand side-on to it, holding the handle in the nearer hand.',
+      'Step away until the stack lifts, with your arm out to the side and a soft bend in the elbow.',
+      'Sweep your hand across in front of your chest, just past your midline.',
+      'Let your arm return along the same arc until you feel a stretch across your chest.',
+    ],
+    cues: ['Brace your other hand on your hip or the frame so your torso does not twist.'],
+    mistakes: ['Rotating the whole body to move the weight.'],
+  }),
+  'seed-chest-press-cable': g(
+    [
+      'Set both pulleys at about chest height and hold a handle in each hand, facing away from the stack.',
+      'Step forward into a split stance with your hands beside your chest and elbows slightly below shoulder height.',
+      'Press your hands forward and slightly together until your arms are straight.',
+      'Bring your hands back under control until you feel a stretch in your chest.',
+    ],
+    ['Imagine pushing two doors open in front of you.', 'Keep your ribs down and your torso still.'],
+    ['Leaning forward so your bodyweight does the pressing.', 'Letting the elbows flare up to shoulder height.'],
+  ),
+  'seed-decline-chest-press-machine': variant(machinePress, {
+    setup: 'Adjust the seat so the handles line up with your lower chest, and grip them with your wrists straight.',
+    cues: ['Drive the handles down and forward toward your lower chest line.'],
+  }),
 };

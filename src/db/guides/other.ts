@@ -215,4 +215,14 @@ export const otherGuides: GuideMap = {
     ['The fan gives more resistance the harder you go, so pace yourself for longer efforts.'],
     ['Starting too fast.'],
   ),
+  'seed-battle-ropes': g(
+    [
+      'Hold one end of the rope in each hand, standing far enough from the anchor that the rope has a little slack.',
+      'Get into a quarter squat with your chest up and core braced.',
+      'Whip your arms up and down quickly, alternating or together, to send waves down the rope.',
+      'Keep going for the set time.',
+    ],
+    ['The power comes from your hips and shoulders, not just your wrists.', 'Keep the waves reaching all the way to the anchor.'],
+    ['Standing up straight, which shifts the work onto the lower back.', 'Making tiny waves that do not reach the anchor.'],
+  ),
 };

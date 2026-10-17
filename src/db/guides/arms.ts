@@ -185,4 +185,86 @@ export const armGuides: GuideMap = {
     setup: 'Sit with your forearms on your thighs or a bench, palms down, wrists just past the edge.',
     cues: ['Use lighter weight than for wrist curls.'],
   }),
+  'seed-high-cable-curl-cable': g(
+    [
+      'Set both pulleys high and stand in the middle, holding a handle in each hand with your arms straight out to the sides.',
+      'Keep your upper arms level with your shoulders.',
+      'Curl the handles toward your ears, squeezing your biceps.',
+      'Straighten your arms slowly back out to the sides.',
+    ],
+    ['Your upper arms stay still, as if resting on a shelf.', 'Can also be done one arm at a time from a single pulley.'],
+    ['Letting the elbows drop as you curl.', 'Going too heavy so the shoulders take over.'],
+  ),
+  'seed-preacher-curl-cable': variant(preacher, {
+    setup: 'Put a preacher bench in front of a low pulley, attach a straight or EZ bar and sit with your upper arms flat on the pad.',
+    cues: ['The cable keeps tension at the top where a free weight goes slack.'],
+  }),
+  'seed-reverse-curl-cable': variant(curl, {
+    setup: 'Attach a straight bar to the low pulley and hold it with an overhand grip at about shoulder width, arms straight.',
+    cues: ['Keep your wrists straight. This works the forearms and brachialis.'],
+  }),
+  'seed-triceps-pushdown-cable-v-bar': variant(pushdown, {
+    setup: 'Attach a V bar to the high pulley and hold it with your thumbs on top, elbows at your sides.',
+  }),
+  'seed-single-arm-triceps-pushdown-cable': variant(pushdown, {
+    setup: 'Attach a single handle to the high pulley and hold it with one hand, elbow at your side.',
+    cues: ['Try an underhand grip as a variation to feel the lateral head.'],
+  }),
+  'seed-triceps-kickback-cable': g(
+    [
+      'Attach a single handle (or just the cable end) to a low pulley and hold it in one hand, facing the stack.',
+      'Hinge forward and pull your upper arm back so it is in line with your torso, elbow bent to 90°.',
+      'Straighten your arm back behind you until it is locked out.',
+      'Bend the elbow slowly back to 90° without moving the upper arm.',
+    ],
+    ['Your upper arm stays pinned against your side like a closed hinge.', 'Squeeze the triceps hard at lockout.'],
+    ['Swinging the upper arm to move the weight.', 'Going so heavy you cannot fully lock out.'],
+  ),
+  'seed-cross-body-triceps-extension-cable': g(
+    [
+      'Set two pulleys high and cross the cables, holding the left cable end in your right hand and the right in your left.',
+      'Stand in the middle with your elbows bent and hands near your opposite shoulders.',
+      'Extend both arms out and down to the sides until they are straight.',
+      'Bend the elbows slowly back to the start.',
+    ],
+    ['Keep your elbows at about shoulder height and still.', 'Think about pushing the handles out and apart.'],
+    ['Dropping the elbows so it becomes a pushdown.', 'Rushing the return.'],
+  ),
+  'seed-jm-press-barbell': g(
+    [
+      'Lie on a flat bench and hold the bar with a close grip, just inside shoulder width, arms straight over your chest.',
+      'Bend your elbows and let the bar travel down and slightly toward your chin, elbows pointing at your feet.',
+      'Stop when the bar is a few inches above your throat and your forearms are about against your biceps.',
+      'Press the bar back up to straight arms.',
+    ],
+    ['It is a mix of a close-grip bench and a skullcrusher. Let the elbows travel forward a little.', 'Start light: it is hard on the elbows until you learn it.'],
+    ['Flaring the elbows out.', 'Turning it into a close-grip bench by bringing the bar to your chest.'],
+  ),
+  'seed-drag-curl-barbell': variant(curl, {
+    steps: [
+      'Stand holding a barbell with an underhand, shoulder-width grip, arms straight.',
+      'Curl the bar up while pulling your elbows back, dragging the bar along your torso.',
+      'Stop when the bar reaches your lower chest.',
+      'Lower it along your body back to the start.',
+    ],
+    cues: ['Elbows go back, not forward. This targets the long head of the biceps.'],
+  }),
+  'seed-zottman-curl-dumbbell': variant(curl, {
+    steps: [
+      'Stand holding a dumbbell in each hand with your palms facing forward.',
+      'Curl the dumbbells up with your elbows at your sides.',
+      'At the top, rotate your hands so your palms face down.',
+      'Lower slowly with your palms down, then rotate back to palms up at the bottom.',
+    ],
+    cues: ['Lower slowly: the palms-down phase is what trains the forearms.'],
+  }),
+  'seed-cross-body-hammer-curl-dumbbell': variant(curl, {
+    steps: [
+      'Stand holding a dumbbell in each hand with your palms facing your thighs.',
+      'Curl one dumbbell up and across your body toward the opposite shoulder, keeping the neutral grip.',
+      'Lower it slowly back to your side.',
+      'Alternate arms, or do all reps on one side.',
+    ],
+    cues: ['Keep your thumbs pointing up the whole time.'],
+  }),
 };
